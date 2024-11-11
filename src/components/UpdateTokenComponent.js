@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
 
-function UpdateTokenComponent() {
+const UpdateTokenComponent = () => {
 
     const HandleUpdate = async () => {
         try{
@@ -13,7 +13,13 @@ function UpdateTokenComponent() {
                 });
             if(response.status === 200)
             {
-
+                const authToken = response.data.token;
+                if(authToken != null || authToken != undefined || authToken != "")
+                {
+                    const token = authToken.replace("Bearer", "");
+                    localStorage.removeItem("token");
+                    localStorage.setItem("token", token);
+                }
             }
         }
         catch(error)
