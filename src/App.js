@@ -4,7 +4,9 @@ import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import RegisterForm from './components/RegisterForm';
 import AuthenticateForm from './components/AuthenticateForm';
-import UpdateTokenComponent from './components/UpdateTokenComponent';
+import Profile from './components/Profile';
+import Home from './components/Home';
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -12,28 +14,17 @@ function App() {
       <Router>
       <header className="App-header">
         <Header/>
-        <div>
-            <nav>
-                <ul className="nav-links">
-                    <li>
-                        <Link to="/">Главная</Link>
-                    </li>
-                    <li>
-                        <Link to="/reg">Зарегистрироваться</Link>
-                    </li>
-                    <li>
-                        <Link to="/auth">Войти</Link>
-                    </li>
-                </ul>
-            </nav>
-              <UpdateTokenComponent/>
-        </div>
       </header>
         <Routes>
+          <Route path="/" element={<Home/>} />
           <Route path="/reg" element={<RegisterForm/>}/>
           <Route path="/auth" element={<AuthenticateForm/>}/>
+          <Route path="/profile" element={<Profile/>}/>
         </Routes>
       </Router>
+      <footer>
+          <Footer/>
+        </footer>
     </div>
   );
 }

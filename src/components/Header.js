@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import UpdateTokenComponent from './UpdateTokenComponent';
+import Profile from "./Profile";
 
 const Header = () => {
     return(
@@ -16,11 +17,11 @@ const Header = () => {
                     <li>
                         <Link to="/auth">Войти</Link>
                     </li>
+                    <li>
+                        <Link to="/profile">Профиль</Link>
+                    </li>
                 </ul>
             </nav>
-
-            <UpdateTokenComponent/>
-
         </div>
     );
 };
