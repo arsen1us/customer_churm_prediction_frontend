@@ -1,8 +1,9 @@
 import React from "react";
 import HandleCategoryComponent from "./HandleComponents/HandleCategoryComponent";
-import CategoryListComponent from "./CategoryListComponent";
-import HandleProductComponent from "./HandleComponents/HandleProductComponent";
+import CategoryListComponent from "./ListComponents/CategoryListComponent";
 
+import HandleProductComponent from "./HandleComponents/HandleProductComponent";
+import ProductListComponent from "./ListComponents/ProductListComponent";
 const Home = () => {
     return (
         <div>
@@ -31,6 +32,14 @@ const Home = () => {
                 </div>
                 <div>
                     <HandleProductComponent/>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <p>Список продуктов</p>
+                </div>
+                <div>
+                    <ProductListComponent/>
                 </div>
             </div>
         </div>
