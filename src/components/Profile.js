@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
@@ -36,13 +36,13 @@ const Profile = () => {
     }
 
     // Получить информацию о пользователе
-    const GetUserInfo = async (e) => {
-        e.preventDefault();
+    const GetUserInfo = async () => {
         try{
             const token = localStorage.getItem("token");
 
             if(token){
                 const decodedToken = jwtDecode(token);
+                console.log(decodedToken);
                 if(decodedToken.Id)
                 {
                     const response = await axios.get(`https://localhost:7299/api/user/${decodedToken.Id}`,
@@ -55,12 +55,9 @@ const Profile = () => {
 
                     if(response.status === 200)
                     {
-                        if(response.data.firstName && response.data.lastName && response.data.email)
-                        {
-                            setFirstName(response.data.firstName);
-                            setLastName(response.data.lastName);
-                            setEmail(response.data.email);
-                        }
+                        setFirstName(response.data.firstName);
+                        setLastName(response.data.lastName);
+                        setEmail(response.data.email);
                     }
                 }
             }
@@ -78,6 +75,14 @@ const Profile = () => {
             }
         }
     }
+
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            await GetUserInfo();
+        };
+
+        fetchUserInfo();
+    }, [])
 
     return (
         <div>
