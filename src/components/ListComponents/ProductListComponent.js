@@ -1,7 +1,10 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 const ProductListComponent = () => {
+
+    const {categoryId} = useParams();
     const [productList, setProductList] = useState([]);
 
     // Обновить токен
@@ -41,7 +44,11 @@ const ProductListComponent = () => {
     // Получить список категорий 
     const GetProductListAsync = async () => {
         try{
-            const response = await axios.get("https://localhost:7299/api/product");
+            const response = await axios.get("https://localhost:7299/api/product", {
+                headers: {
+                    "Authorization": "Bearer" + localStorage.getItem("token")
+                }
+            });
 
             if(response.status === 200)
             {
@@ -56,12 +63,52 @@ const ProductListComponent = () => {
         {
             // Если токен истёк или не зарегистировался/вошёл
             if(error.response && error.response.status === 401)
+            {
                 await UpdateToken();
+                await GetProductListAsync();
+            }
         }
     }
 
+    // Получить список категорий по id категории
+    const GetProductListByCategoryIdAsync = async () => {
+        try{
+            const response = await axios.get(`https://localhost:7299/api/product/category/${categoryId}`, {
+                headers: {
+                    "Authorization": "Bearer" + localStorage.getItem("token")
+                }
+            });
+            
+            if(response.status === 200)
+            {
+                const responseData = response.data.productList;
+                if(response.data.productList)
+                {
+                    setProductList(responseData);
+                }
+            }
+        }
+        catch (error)
+        {
+            if(categoryId != null && categoryId != "")
+            {
+                // Если токен истёк или не зарегистировался/вошёл
+                if(error.response && error.response.status === 401)
+                {
+                    await UpdateToken();
+                    await GetProductListByCategoryIdAsync();
+                }
+            }
+        }
+    }
+    // Получить список продуктов при загрузке страницы
     useEffect(() => {
-        GetProductListAsync();
+        if(categoryId){
+            GetProductListByCategoryIdAsync();
+        }
+        else{
+            GetProductListAsync();
+        }
       }, []);
 
     return (

@@ -2,10 +2,10 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import UpdateTokenComponent from './UpdateTokenComponent';
 import Profile from "./Profile";
-
 const Header = () => {
     return(
         <div>
+            Хэдер
             <nav>
                 <ul className="nav-links">
                     <li>
@@ -20,8 +20,12 @@ const Header = () => {
                     <li>
                         <Link to="/profile">Профиль</Link>
                     </li>
+                    <li>
+                        <Link to="/category">Категории</Link>
+                    </li>
                 </ul>
             </nav>
+            Хэдер
         </div>
     );
 };

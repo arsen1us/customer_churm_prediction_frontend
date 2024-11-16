@@ -10,38 +10,45 @@ const Home = () => {
             <div>
                 <h3>Главная страница</h3>
             </div>
-            <div>
+            {localStorage.getItem("token") == null ? (
+                <>
+                </>
+            ) : (
                 <div>
-                    <p>Список категорий</p>
+                <div>
+                    <div>
+                        <p>Список категорий</p>
+                    </div>
+                    <div>
+                        <CategoryListComponent/>
+                    </div>
                 </div>
                 <div>
-                    <CategoryListComponent/>
+                    <div>
+                        <p>Управление категориями</p>
+                    </div>
+                    <div>
+                        <HandleCategoryComponent/>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <p>Управление товарами</p>
+                    </div>
+                    <div>
+                        <HandleProductComponent/>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <p>Список продуктов</p>
+                    </div>
+                    <div>
+                        <ProductListComponent/>
+                    </div>
                 </div>
             </div>
-            <div>
-                <div>
-                    <p>Управление категориями</p>
-                </div>
-                <div>
-                    <HandleCategoryComponent/>
-                </div>
-            </div>
-            <div>
-                <div>
-                    <p>Управление товарами</p>
-                </div>
-                <div>
-                    <HandleProductComponent/>
-                </div>
-            </div>
-            <div>
-                <div>
-                    <p>Список продуктов</p>
-                </div>
-                <div>
-                    <ProductListComponent/>
-                </div>
-            </div>
+            ) }
         </div>
     );
 };

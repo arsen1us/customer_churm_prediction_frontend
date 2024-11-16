@@ -6,7 +6,9 @@ import RegisterForm from './components/RegisterForm';
 import AuthenticateForm from './components/AuthenticateForm';
 import Profile from './components/Profile';
 import Home from './components/Home';
+import CategoryListComponent from './components/ListComponents/CategoryListComponent';
 import Footer from './components/Footer';
+import ProductListComponent from './components/ListComponents/ProductListComponent';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path="/reg" element={<RegisterForm/>}/>
           <Route path="/auth" element={<AuthenticateForm/>}/>
           <Route path="/profile" element={<Profile/>}/>
+          <Route path="/category" exact element={<CategoryListComponent/>}/>
+          <Route path="/category/:categoryId" element={<ProductListComponent/>}/>
         </Routes>
       </Router>
       <footer>
