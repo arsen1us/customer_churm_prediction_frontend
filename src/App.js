@@ -10,6 +10,14 @@ import CategoryListComponent from './components/ListComponents/CategoryListCompo
 import Footer from './components/Footer';
 import ProductListComponent from './components/ListComponents/ProductListComponent';
 
+import ControlPanelComponent from './components/HandleComponents/ControlPanelComponent';
+import HandleCategoryComponent from './components/HandleComponents/HandleCategoryComponent';
+import HandleCouponComponent from './components/HandleComponents/HandleCouponComponent';
+import HandleProductComponent from './components/HandleComponents/HandleProductComponent';
+import HandlePromotionComponent from './components/HandleComponents/HandlePromotionComponent';
+import HandleReviewComponent from './components/HandleComponents/HandleReviewComponent';
+import HandleUserComponent from './components/HandleComponents/HandleUserComponent';
+
 function App() {
   return (
     <div className="App">
@@ -24,6 +32,14 @@ function App() {
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/category" exact element={<CategoryListComponent/>}/>
           <Route path="/category/:categoryId" element={<ProductListComponent/>}/>
+
+          <Route path="control-panel" element={<ControlPanelComponent/>}/>
+          <Route path="handle-category" element={<HandleCategoryComponent/>}/>
+          <Route path="handle-coupon" element={<HandleCouponComponent/>}/>
+          <Route path="handle-product" element={<HandleProductComponent/>}/>
+          <Route path="handle-promotion" element={<HandlePromotionComponent/>}/>
+          <Route path="handle-review" element={<HandleReviewComponent/>}/>
+          <Route path="handle-user" element={<HandleUserComponent/>}/>
         </Routes>
       </Router>
       <footer>

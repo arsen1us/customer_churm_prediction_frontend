@@ -23,6 +23,9 @@ const Header = () => {
                     <li>
                         <Link to="/category">Категории</Link>
                     </li>
+                    <li>
+                        <Link to="/control-panel">Панель управления</Link>
+                    </li>
                 </ul>
             </nav>
             Хэдер

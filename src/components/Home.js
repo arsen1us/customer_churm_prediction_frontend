@@ -4,51 +4,13 @@ import CategoryListComponent from "./ListComponents/CategoryListComponent";
 
 import HandleProductComponent from "./HandleComponents/HandleProductComponent";
 import ProductListComponent from "./ListComponents/ProductListComponent";
+
 const Home = () => {
     return (
         <div>
             <div>
                 <h3>Главная страница</h3>
             </div>
-            {localStorage.getItem("token") == null ? (
-                <>
-                </>
-            ) : (
-                <div>
-                <div>
-                    <div>
-                        <p>Список категорий</p>
-                    </div>
-                    <div>
-                        <CategoryListComponent/>
-                    </div>
-                </div>
-                <div>
-                    <div>
-                        <p>Управление категориями</p>
-                    </div>
-                    <div>
-                        <HandleCategoryComponent/>
-                    </div>
-                </div>
-                <div>
-                    <div>
-                        <p>Управление товарами</p>
-                    </div>
-                    <div>
-                        <HandleProductComponent/>
-                    </div>
-                </div>
-                <div>
-                    <div>
-                        <p>Список продуктов</p>
-                    </div>
-                    <div>
-                        <ProductListComponent/>
-                    </div>
-                </div>
-            </div>
-            ) }
         </div>
     );
 };
