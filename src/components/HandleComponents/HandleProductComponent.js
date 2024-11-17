@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
+import CategoryListComponent from "../ListComponents/CategoryListComponent";
 
 const HandleProductComponent = () => {
     
@@ -194,44 +195,62 @@ const HandleProductComponent = () => {
             </div>
             <div>
                 <div>
-                    <form method="post"> 
-                    <label>Название </label>
-                    <input 
-                        type="text"
-                        value={productName}
-                        onChange={(e) => setProductName(e.target.value)}
-                        placeholder="Введите название"
-                    />
-                    <label>Описание</label>
-                    <input 
-                        type="text"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        placeholder="Введите описание"
-                    />
-                    <label>Id категории</label>
-                    <input 
-                        type="text"
-                        value={categoryId}
-                        onChange={(e) => setCategoryId(e.target.value)}
-                        placeholder="Укажите id категории"
-                    />
-                    <label>Цена</label>
-                    <input 
-                        type="number"
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
-                        placeholder="Укажите цену"
-                    />
-                    <button type="submit" onClick={AddProductAsync}>
-                        Добавить
-                    </button>
-                    </form>
+                    <h3>Добавить продукт</h3>
+                </div>
+                <div>
+                    <div>
+                        <form method="post"> 
+                            <div>
+                                <label>Название </label>
+                                <input 
+                                    type="text"
+                                    value={productName}
+                                    onChange={(e) => setProductName(e.target.value)}
+                                    placeholder="Введите название"
+                                />
+                            </div>
+                            <div>
+                                <label>Описание</label>
+                                <input 
+                                    type="text"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    placeholder="Введите описание"
+                                />
+                            </div>
+                            <div>
+                                <label>Id категории</label>
+                                <input 
+                                    type="text"
+                                    value={categoryId}
+                                    onChange={(e) => setCategoryId(e.target.value)}
+                                    placeholder="Укажите id категории"
+                                />
+                                <div>
+                                    <CategoryListComponent/>
+                                </div>
+                            </div>
+                            <div>
+                                <label>Цена</label>
+                                <input 
+                                    type="number"
+                                    value={price}
+                                    onChange={(e) => setPrice(e.target.value)}
+                                    placeholder="Укажите цену"
+                                />
+                            </div>
+                            <div>
+                                <button type="submit" onClick={AddProductAsync}>
+                                    Добавить
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
             <div>
                 <h3>
-                    Список категорий
+                    Список товаров
                 </h3>
             </div>
             <div>
