@@ -103,8 +103,10 @@ const HandlePromotionComponent = () => {
             }
         }
         catch (error) {
+            // Если истёк срок действия токена
             if(error.response && error.response.status === 401) {
-                
+                await UpdateToken();
+                await AddPromotionAsync();
             }
             else if(error.response && error.response.status === 500) {
 
@@ -143,8 +145,12 @@ const HandlePromotionComponent = () => {
             }
         }
         catch (error) {
+            // Если истёк срок действия токена
             if(error.response.status === 401) {
-                
+                await UpdateToken();
+
+                // МБ ТУТ ПОЛОМАЕТСЯ !!! По поводу этого метода максимально не уверен 
+                await UpdatePromotionAsync(currentPromotionIdEditing);
             }
             else if(error.response.status === 500) {
 
