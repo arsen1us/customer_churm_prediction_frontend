@@ -104,24 +104,20 @@ const PromotionComponent = () => {
                 <div>
                     <h3>Компонент с рекламой</h3>
                 </div>
-                <div>
-                    <p>@promotion.title</p>
-                </div>
-                <div>
-                    <p>@promotion.content</p>
-                </div>
-                <div>
-                    <p>@promotion.imageUrl</p>
-                </div>
-                <div>
-                    <p>@promotion.linkUrl</p>
-                </div>
-                <div>
-                    <p>@promotion.startDate</p>
-                </div>
-                <div>
-                    <p>@promotion.endDate</p>
-                </div>
+                {promotion == null ? (
+                    <>
+                        <p>Не удалось загрузить рекламу</p>
+                    </>
+                ) : (
+                    <div>
+                        <div>
+                            <p>{promotion.title}</p>
+                        </div>
+                        <div>
+                            <p>{promotion.content}</p>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     )

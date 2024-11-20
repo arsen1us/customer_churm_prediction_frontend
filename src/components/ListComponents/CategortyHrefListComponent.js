@@ -1,8 +1,10 @@
+// Список категорий, где каждая категория является ссылкой
+
 import React, {useState, useEffect} from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-const CategoryListComponent = () => {
+const CategoryHrefListComponent = () => {
     // Список категорий
     const [categoryList, setCategoryList] = useState([]);
 
@@ -72,7 +74,7 @@ const CategoryListComponent = () => {
                 {categoryList.map((category, index) => (
                     <li key={index}>    
                         <div>
-                           <p>{category.name}</p>
+                           <Link to={`/category/${category.id}`}>{category.name}</Link>
                         </div>
                     </li>
                 ))}
@@ -81,4 +83,4 @@ const CategoryListComponent = () => {
     )
 }
 
-export default CategoryListComponent
+export default CategoryHrefListComponent
