@@ -8,7 +8,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import PromotionComponent from "../PromotionComponent";
 import ProductItemComponent from "../ListItemComponents/ProductItemComponent";
 
-
 const ProductListComponent = () => {
 
     const {categoryId} = useParams();
