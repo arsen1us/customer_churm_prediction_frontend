@@ -19,7 +19,12 @@ const ProductListComponent = () => {
     // Количество продуктов на странице
     const[pageSize, setPageSize] = useState(15);
 
-    // Обновить токен
+    // Список объектов со всеми сущностями
+    const [entityList, setEntityList] = useState([]);
+
+    ///summary
+    /// Обновить токен
+    ///summary
     const UpdateToken = async () => {
         try{
             const response = await axios.get("https://localhost:7777/api/token/update", {
@@ -53,11 +58,20 @@ const ProductListComponent = () => {
         }
     }
 
+    ///summary
+    /// Получить список из 15 продуктов и рекламу при нажатии на кнопку
+    ///summary
     const LoadProductAsync = async () => {
         setPageNumber(prevPageNumber => prevPageNumber + 1);
+        // Получаю 15 продуктов
         await FetchProductsAsync();
+        // Получаю рекламу 
+        await GetPromotionAsync(); 
     }
 
+    ///summary
+    /// Получить список из 15 продуктов
+    ///summary
     const FetchProductsAsync = async () => {
         try{
             const response = await axios.get(`https://localhost:7299/api/product/${pageNumber}/${pageSize}`, {
@@ -69,7 +83,7 @@ const ProductListComponent = () => {
             if(response.status === 200)
             {
                 if(response.data.productList) {
-                    setProductList(list => [...list, ...response.data.productList])    
+                    setEntityList(entityList => [...entityList, ...response.data.productList]);   
                 }
             }
         }
@@ -89,7 +103,39 @@ const ProductListComponent = () => {
         }
     }
 
-    // Получить список категорий по id категории
+    ///summary
+    /// Получить первый рекламный пост (тестовый метод)
+    ///summary
+    const GetPromotionAsync = async () => {
+        try{
+            const response = await axios.get("https://localhost:7299/api/promotion/first", {
+                headers:{
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            });
+
+            if(response.status === 200)
+            {
+                if(response.data.promotion)
+                {
+                    setEntityList(entityList => [...entityList, response.data.promotion])
+                }
+            }
+        }
+        catch(error)
+        {
+            // Если действия токена истекло
+            if(error.response && error.response.status === 401)
+            {
+                await UpdateToken();
+                await GetPromotionAsync();
+            }
+        }
+    }
+
+    ///summary
+    /// Получить список категорий по id категории
+    ///summary
     const GetProductListByCategoryIdAsync = async () => {
         try{
             const response = await axios.get(`https://localhost:7299/api/product/category/${categoryId}`, {
@@ -121,19 +167,25 @@ const ProductListComponent = () => {
         }
     }
 
+    ///summary
+    /// Выбрать текущую категорию
+    ///summary
     const ChangeCurrentCategory = (name) => {
         if(name)
             setCategoryName(name);
         console.log(name);
     }
 
-    // Получить список продуктов при загрузке страницы
+    ///summary
+    /// Получить список продуктов при загрузке страницы
+    ///summary
     useEffect(() => {
         if(categoryId){
             GetProductListByCategoryIdAsync();
         }
         else{
                 FetchProductsAsync();
+                GetPromotionAsync();
             }
       }, []);
 
@@ -163,19 +215,30 @@ const ProductListComponent = () => {
                 <div>
                     <input type="text" value={categoryName} placeholder={categoryName}/>
                     <ul>
-                        {productList.map((product, index) => (
-                            <li key={index}>
-                                <div>
-                                    <button onClick={(() => ChangeCurrentCategory(product.name))}>{product.name}</button>
-                                </div>
-                            </li>
-                        ))}
+                        {entityList.map((entity, index) => {
+                            return (
+                                <li key={index}>
+                                    {entity.name && (
+                                        <div>
+                                            <button onClick={() => ChangeCurrentCategory(entity.name)}>
+                                                {entity.name}
+                                            </button>
+                                        </div>
+                                    )}
+                                    {entity.title && (
+                                        <div>
+                                            <div>
+                                                <p>{entity.title}</p>
+                                            </div>
+                                            <div>
+                                                <p>{entity.content}</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </li>
+                            );
+                        })}
                     </ul>
-                    <div>
-                        <div>
-                            <PromotionComponent/>
-                        </div>
-                    </div>
                 </div>
                 <div>
                     <button onClick={(async () => await LoadProductAsync())} >
