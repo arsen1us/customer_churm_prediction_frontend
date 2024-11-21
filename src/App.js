@@ -8,7 +8,9 @@ import Profile from './components/Profile';
 import Home from './components/Home';
 import CategoryListComponent from './components/ListComponents/CategoryListComponent';
 import Footer from './components/Footer';
+
 import ProductListComponent from './components/ListComponents/ProductListComponent';
+import ProductPageComponent from './components/PageComponents/ProductPageComponent';
 
 import ControlPanelComponent from './components/HandleComponents/ControlPanelComponent';
 import HandleCategoryComponent from './components/HandleComponents/HandleCategoryComponent';
@@ -32,6 +34,8 @@ function App() {
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/category" exact element={<CategoryListComponent/>}/>
           <Route path="/category/:categoryId" element={<ProductListComponent/>}/>
+
+          <Route path="/product/:productId" element={<ProductPageComponent/>}/>
 
           <Route path="control-panel" element={<ControlPanelComponent/>}/>
           <Route path="handle-category" element={<HandleCategoryComponent/>}/>
