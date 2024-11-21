@@ -6,6 +6,7 @@ import CategoryListComponent from "./CategoryListComponent";
 import { useParams } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import PromotionComponent from "../PromotionComponent";
+import ProductItemComponent from "../ListItemComponents/ProductItemComponent";
 
 
 const ProductListComponent = () => {
@@ -219,11 +220,7 @@ const ProductListComponent = () => {
                             return (
                                 <li key={index}>
                                     {entity.name && (
-                                        <div>
-                                            <button onClick={() => ChangeCurrentCategory(entity.name)}>
-                                                {entity.name}
-                                            </button>
-                                        </div>
+                                        <ProductItemComponent product={entity}/>
                                     )}
                                     {entity.title && (
                                         <div>
