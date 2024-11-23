@@ -27,6 +27,9 @@ const ControlPanelComponent = () => {
                     <li>
                         <Link to="/handle-user">Управление пользователями</Link>
                     </li>
+                    <li>
+                        <Link to="/handle-company">Управление компаниями</Link>
+                    </li>
                 </ul>
             </div>
         </div>

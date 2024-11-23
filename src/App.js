@@ -19,6 +19,7 @@ import HandleProductComponent from './components/HandleComponents/HandleProductC
 import HandlePromotionComponent from './components/HandleComponents/HandlePromotionComponent';
 import HandleReviewComponent from './components/HandleComponents/HandleReviewComponent';
 import HandleUserComponent from './components/HandleComponents/HandleUserComponent';
+import HandleCompanyComponent from './components/HandleComponents/HandleCompanyComponent';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
           <Route path="handle-promotion" element={<HandlePromotionComponent/>}/>
           <Route path="handle-review" element={<HandleReviewComponent/>}/>
           <Route path="handle-user" element={<HandleUserComponent/>}/>
+          <Route path="handle-company" element={<HandleCompanyComponent/>}/>
         </Routes>
       </Router>
       <footer>

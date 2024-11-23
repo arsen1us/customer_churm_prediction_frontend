@@ -5,8 +5,9 @@ import CategoryListComponent from "../ListComponents/CategoryListComponent";
 const HandleProductComponent = () => {
     
     const [currentProductIdEditing, setCurrentProductIdEditing] = useState("");
-    const [updateProductName, setUpdateProductName] = useState("");
     const [isProductChanging, setIsProductChanging] = useState(false);
+
+    const [updateProductName, setUpdateProductName] = useState("");
 
     // Наименование продукта
     const [productName, setProductName] = useState("");
@@ -257,7 +258,7 @@ const HandleProductComponent = () => {
                 <ul>
                     {productList.map((product, index) => (
                         <li key={index}>
-                            {!isProductChanging && currentProductIdEditing == product.id ? (
+                            {!isProductChanging && currentProductIdEditing === product.id ? (
                             <>
                                 <div>
                                     <form onSubmit={(async () => await UpdateProductAsync(product.id))}>
