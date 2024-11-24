@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
+import CompanyItemComponent from "../ListItemComponents/CompanyItemComponent";
 
 const HandleCompanyComponent = () => {
 
@@ -395,7 +396,9 @@ const HandleCompanyComponent = () => {
                             </>
                             ) : (
                                 <div>
-                                    <p>{company.name}</p>
+                                    <div>
+                                        <CompanyItemComponent company={company}/>
+                                    </div>
                                     <div>
                                         <div>
                                             <button onClick={(() => OpenEditPanel(company.id))}>

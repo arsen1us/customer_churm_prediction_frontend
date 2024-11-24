@@ -12,7 +12,10 @@ import CategoryListComponent from './components/ListComponents/CategoryListCompo
 import Footer from './components/Footer';
 
 import ProductListComponent from './components/ListComponents/ProductListComponent';
+
+// Страницы
 import ProductPageComponent from './components/PageComponents/ProductPageComponent';
+import CompanyPageComponent from './components/PageComponents/CompanyPageComponent';
 
 import ControlPanelComponent from './components/HandleComponents/ControlPanelComponent';
 import HandleCategoryComponent from './components/HandleComponents/HandleCategoryComponent';
@@ -42,6 +45,7 @@ function App() {
           <Route path="/category/:categoryId" element={<ProductListComponent/>}/>
 
           <Route path="/product/:productId" element={<ProductPageComponent/>}/>
+          <Route path="/company/:companyId" element={<CompanyPageComponent/>}/>
 
           <Route path="control-panel" element={<ControlPanelComponent/>}/>
           <Route path="handle-category" element={<HandleCategoryComponent/>}/>

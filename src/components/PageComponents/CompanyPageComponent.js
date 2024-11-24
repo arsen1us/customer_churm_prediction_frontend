@@ -9,9 +9,12 @@ const CompanyPageComponent = () => {
     const {companyId} = useParams();
     const [company, setCompany] = useState(null);
 
+    const [orderList, setOrderList] = useState([]);
+    const [productList, setProductList] = useState([]);
+
     ///summary
     /// Обновить токен
-    ///summary
+    ///summarygi
     const UpdateToken = async () => {
         try{
             const response = await axios.get("https://localhost:7777/api/token/update", {
@@ -48,7 +51,7 @@ const CompanyPageComponent = () => {
     /// summary
     /// Получить компанию по id
     /// summary
-    const GetCompanyByIdAsync = async (companyId) => {
+    const GetCompanyByIdAsync = async () => {
         try{
             const response = await axios.get(`https://localhost:7299/api/company/${companyId}`, {
                 headers:{
@@ -58,7 +61,6 @@ const CompanyPageComponent = () => {
 
             if(response && response.status === 200) {
                 if(response.data.company) {
-                    console.log(response.data.company);
                     setCompany(response.data.company);
                 }
             }
@@ -72,20 +74,131 @@ const CompanyPageComponent = () => {
         }
     }
 
+    // Скорее всего надо делать fetch для получения списка самых посследних заказов
+    /// summary
+    /// Получить список заказов
+    /// summary
+    const GetOrderListAsync = async () => {
+        try{
+            const response = await axios.get(`https://localhost:7299/api/order/company/${companyId}`, {
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            });
+            if(response && response.status === 200){
+                if(response.data.orderList){
+                    setOrderList(response.data.orderList);
+                }
+            }
+        }
+        catch (error){
+            // Внутрянняя ошибка сервера (Internal server error)
+            if(error.response && error.response.status === 500)
+                console.log(error);
+
+            // Not Found
+            else if(error.response && error.response.status === 404)
+                console.log(error);
+
+            else
+                console.log(error);
+        }
+    }
+
+    // Скорее всего надо делать fetch для получения части продуктов (первой страницы)
+    /// summary
+    /// Получить список продуктов по id компании
+    /// summary
+    const GetProductListByCompanyIdAsync = async () => {
+        try{
+            const response = await axios.get(`https://localhost:7299/api/product/company/${companyId}`, {
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            });
+
+            if(response && response.status === 200){
+                if(response.data.productList){
+                    setProductList(response.data.productList);
+                }
+            }
+
+        }
+        catch (error){
+            // Внутрянняя ошибка сервера (Internal server error)
+            if(error.response && error.response.status === 500)
+                console.log(error);
+
+            // Not Found
+            else if(error.response && error.response.status === 404)
+                console.log(error);
+
+            else
+                console.log(error);
+        }
+    }
+
     useEffect(() => {
         if(companyId){
-            GetCompanyByIdAsync(companyId);
+            GetCompanyByIdAsync();
+            GetProductListByCompanyIdAsync();
+            GetOrderListAsync();
         }
     }, [companyId])
     return (
         <div>
-            {company ? (
+            <div>
+            Страница компании (будет отображаться обычная страница если роль пользователя 
+            - обычный юзер или авторизированный пользоавтель, или страница админа компании, если пользователь Имеет роль админа)
+            </div>
+            <div>
                 <div>
-                    <p>Загруженная компания</p>
+                    <div>
+                        <h3>Список заказов</h3>
+                    </div>
+                    <div>
+                        <ul>
+                            {orderList.map((order, index) => (
+                                <li key={index}>
+                                    <div>
+                                        <div>
+                                            Список ордеров
+                                        </div>
+                                        <div>
+                                            {order.id}
+                                        </div>
+                                    </div>
+                                </li>
+                            ))
+                            }
+                        </ul>
+                    </div>
                 </div>
-            ) : (
-                <p>Загрузка продукта...</p>
-            )}
+                <div>
+                    <div>
+                        <h3>Список продуктов</h3>
+                    </div>
+                    <div>
+                        <ul>
+                            {productList.map((product, index) => (
+                                <li key={index}>
+                                    <div>
+                                        <div>
+                                            Список продуктов
+                                        </div>
+                                        <div>
+                                            {product.id}
+                                            {product.name}
+                                            {product.description}
+                                        </div>
+                                    </div>
+                                </li>
+                            ))
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
