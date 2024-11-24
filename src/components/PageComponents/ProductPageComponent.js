@@ -15,7 +15,8 @@ const ProductPageComponent = () => {
     // Статус заказа (успешно/не успешно создан)
     const [orderStatus, setOrderStatus] = useState(false);
 
-
+    // Id компании (по дефолту - 67431437a422c6e797c334de)
+    const [companyId, setCompanyId] = useState("67431437a422c6e797c334de");
     ///summary
     /// Обновить токен
     ///summary
@@ -98,7 +99,7 @@ const ProductPageComponent = () => {
                     const response = await axios.post("https://localhost:7299/api/order", {
                         productId: product.id,
                         productCount: productCount,
-                        companyId: product.companyId,
+                        companyId: companyId, //product.companyId,
                         userId: decodedToken.Id,
                         price: product.price
                     }, {

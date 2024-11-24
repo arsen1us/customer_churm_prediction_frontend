@@ -26,6 +26,9 @@ const Header = () => {
                     <li>
                         <Link to="/control-panel">Панель управления</Link>
                     </li>
+                    <li>
+                        <Link to="/company-profile">Профиль компании</Link>
+                    </li>
                 </ul>
             </nav>
             Хэдер

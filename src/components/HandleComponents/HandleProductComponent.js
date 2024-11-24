@@ -20,7 +20,8 @@ const HandleProductComponent = () => {
 
     const [productList, setProductList] = useState([]);
 
-    const [companyId, setCompanyId] = useState("");
+    // companyId по умолчанию - 67431437a422c6e797c334de
+    const [companyId, setCompanyId] = useState("67431437a422c6e797c334de");
 
     // Обновить токен
     const UpdateToken = async () => {
