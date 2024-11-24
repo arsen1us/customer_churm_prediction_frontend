@@ -10,6 +10,10 @@ const Profile = () => {
     // Заменил на decodedToken.Id, так как userId обновляется async и не успевает обновиться
     // const[userId, setUserId] = useState("");
 
+
+    /// summary
+    /// Обновить токен
+    /// summary
     const UpdateToken = async () => {
         try{
             const response = await axios.get("https://localhost:7299/api/token/update", 
@@ -35,7 +39,9 @@ const Profile = () => {
         }
     }
 
-    // Получить информацию о пользователе
+    /// summary
+    /// Получить информацию о пользователе
+    /// summary
     const GetUserInfo = async () => {
         try{
             const token = localStorage.getItem("token");
@@ -76,12 +82,15 @@ const Profile = () => {
         }
     }
 
-    useEffect(() => {
-        const fetchUserInfo = async () => {
-            await GetUserInfo();
-        };
+    /// summary
+    /// Получить список заказов по id пользователя
+    /// summary
+    const GetOrdersByIdAsync = async () => {
 
-        fetchUserInfo();
+    }
+
+    useEffect(() => {
+        GetUserInfo();
     }, [])
 
     return (

@@ -20,6 +20,8 @@ const HandleProductComponent = () => {
 
     const [productList, setProductList] = useState([]);
 
+    const [companyId, setCompanyId] = useState("");
+
     // Обновить токен
     const UpdateToken = async () => {
         try{
@@ -84,7 +86,8 @@ const HandleProductComponent = () => {
                 name: productName,
                 description: description,
                 categoryId: categoryId,
-                price: price
+                price: price,
+                companyId: companyId
             }, {
                 headers: {
                     "Authorization": "Bearer" + localStorage.getItem("token")
@@ -237,6 +240,15 @@ const HandleProductComponent = () => {
                                     type="number"
                                     value={price}
                                     onChange={(e) => setPrice(e.target.value)}
+                                    placeholder="Укажите цену"
+                                />
+                            </div>
+                            <div>
+                                <label>Id компании</label>
+                                <input 
+                                    type="number"
+                                    value={companyId}
+                                    onChange={(e) => setCompanyId(e.target.value)}
                                     placeholder="Укажите цену"
                                 />
                             </div>
