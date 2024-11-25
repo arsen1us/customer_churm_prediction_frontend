@@ -22,6 +22,8 @@ const ProductListComponent = () => {
     // Список объектов со всеми сущностями
     const [entityList, setEntityList] = useState([]);
 
+    const [input, setInput] = useState("");
+    const [debouncedInput, setDebouncedInput] = useState("");
     ///summary
     /// Обновить токен
     ///summary
@@ -187,7 +189,69 @@ const ProductListComponent = () => {
                 FetchProductsAsync();
                 GetPromotionAsync();
             }
-      }, []);
+    }, []);
+
+    // Обновляем `debouncedInput` через 1 секунду после последнего ввода
+    useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedInput(input);
+    }, 1000);
+
+    // Очищаем таймер при новом вводе
+    return () => {
+      clearTimeout(handler);
+    };
+    }, [input]);
+
+    // Выполняем запрос на сервер при изменении `debouncedInput`
+    useEffect(() => {
+    if (debouncedInput.trim() === "") {
+      setProductList([]);
+      return;
+    }
+    
+
+    ///summary
+    /// Получить список продуктов по названию или описанию
+    ///summary
+    const SearchProductAsync = async () => {
+        if(input)
+        {
+            try {
+                const response = await axios.get(`https://localhost:7299/api/product/search/${input}`, {
+                    headers: {
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                });
+
+                if(response && response.status === 200){
+                    if(response.data.productList)
+                        setEntityList(response.data.productList);
+                }
+            }
+            catch(error) {
+                // Если действия токена истекло
+                if(error.response && error.response.status === 401)
+                    {
+                        await UpdateToken();
+                        await SearchProductAsync();
+                    }
+                // Внутрянняя ошибка сервера (Internal server error)
+                if(error.response && error.response.status === 500)
+                    console.log(error);
+
+                // Not Found
+                else if(error.response && error.response.status === 404)
+                    console.log(error);
+
+                else
+                    console.log(error);
+            }
+        }
+    }
+
+    SearchProductAsync();
+    }, [debouncedInput]);
 
     return (
         <div>
@@ -213,7 +277,14 @@ const ProductListComponent = () => {
                     </h3>
                 </div>
                 <div>
-                    <input type="text" value={categoryName} placeholder={categoryName}/>
+                <div>
+                    <input
+                        type="text"
+                        value={input}
+                        placeholder="Search for products"
+                        onChange={(e) => setInput(e.target.value)}
+                    />
+                </div>
                     <ul>
                         {entityList.map((entity, index) => {
                             return (
