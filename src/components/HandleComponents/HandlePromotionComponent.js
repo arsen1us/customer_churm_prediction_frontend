@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
+
 
 const HandlePromotionComponent = () => {
 
+    const {companyId} = useParams();
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [imageUrl, setImageUrl] = useState("");
@@ -14,7 +17,11 @@ const HandlePromotionComponent = () => {
     const [isPromotionChanging, setIsPromotionChanging] = useState(false);
     const [currentPromotionIdEditing, setCurrentPromotionIdEditing] = useState("");
 
-    // Обновить токен
+    const [company, setCompany] = useState(null);
+
+    /// summary
+    /// Обновить токен
+    /// summary
     const UpdateToken = async () => {
         try{
             const response = await axios.get("https://localhost:7777/api/token/update", {
@@ -48,10 +55,43 @@ const HandlePromotionComponent = () => {
         }
     }
 
-    // Получить список рекламных постов
-    const GetPromotionListAsync = async () => {
+    /// summary
+    /// Получить компанию по id
+    /// summary
+    const GetCompanyByIdAsync = async () => {
+        try{
+            const response = await axios.get(`https://localhost:7299/api/company/${companyId}`, {
+                headers:{
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            });
+
+            if(response && response.status === 200) {
+                if(response.data.company) {
+                    setCompany(response.data.company);
+                }
+            }
+        }
+        catch(error){
+            // Внутрянняя ошибка сервера (Internal server error)
+            if(error.response && error.response.status === 500)
+                console.log(error);
+
+            // Not Found
+            else if(error.response && error.response.status === 404)
+                console.log(error);
+
+            else
+                console.log(error);
+        }
+    }
+
+    /// summary
+    /// Получить список рекламных постов по id компании
+    /// summary
+    const GetPromotionByCompanyIdAsync = async () => {
         try {
-            const response = await axios.get("https://localhost:7299/api/promotion", {
+            const response = await axios.get(`https://localhost:7299/api/promotion/company/${companyId}`, {
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
@@ -67,7 +107,7 @@ const HandlePromotionComponent = () => {
             // Если истёк срок действия токена
             if(error.response && error.response.status === 401) {
                 await UpdateToken();
-                await GetPromotionListAsync();
+                await GetPromotionByCompanyIdAsync();
             }
             else if(error.response && error.response.status === 500) {
 
@@ -81,7 +121,9 @@ const HandlePromotionComponent = () => {
         }
     }
     
-    // Добавить рекламный пост
+    /// summary
+    /// Добавить рекламный пост
+    /// summary
     const AddPromotionAsync = async (e) => {
         e.preventDefault();
         try{
@@ -91,7 +133,8 @@ const HandlePromotionComponent = () => {
                 imageUrl: imageUrl,
                 linkUrl: linkUrl,
                 startDate: startDate,
-                endDate: endDate
+                endDate: endDate,
+                companyId: companyId
             }, {
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")
@@ -120,7 +163,9 @@ const HandlePromotionComponent = () => {
         }
     }
     
-    // Обновить рекламный пост
+    /// summary
+    /// Обновить рекламный пост
+    /// summary
     const UpdatePromotionAsync = async (promotionId) => {
         try{
             const response = await axios.put(`https://localhost:7299/api/promotion/${promotionId}`, {
@@ -164,7 +209,9 @@ const HandlePromotionComponent = () => {
         }
     }
     
-    // Удалить рекламный пост
+    /// summary
+    /// Удалить рекламный пост
+    /// summary
     const DeletePromotionAsync = async (promotionId) => {
         try{
             const response = await axios.delete(`https://localhost:7299/api/promotion/${promotionId}`, {
@@ -180,8 +227,12 @@ const HandlePromotionComponent = () => {
             }
         }
         catch (error) {
+            // Если истёк срок действия токена
             if(error.response.status === 401) {
-                
+                await UpdateToken();
+
+                // МБ ТУТ ПОЛОМАЕТСЯ !!! По поводу этого метода максимально не уверен 
+                await DeletePromotionAsync(currentPromotionIdEditing);
             }
             else if(error.response.status === 500) {
 
@@ -201,7 +252,8 @@ const HandlePromotionComponent = () => {
     }
 
     useEffect (() => {
-        GetPromotionListAsync()
+        GetPromotionByCompanyIdAsync()
+        GetCompanyByIdAsync();
     }, [])
     return (
         <div>
@@ -283,7 +335,7 @@ const HandlePromotionComponent = () => {
                                                         onChange={(e) => setTitle(e.target.value)}/>
                                                 </div>
                                                 <div>
-                                                    <label>Содержимое посста</label>
+                                                    <label>Содержимое поста</label>
                                                     <input
                                                         type="text"
                                                         value={content}

@@ -46,6 +46,7 @@ function App() {
 
           <Route path="/product/:productId" element={<ProductPageComponent/>}/>
           <Route path="/company/:companyId" element={<CompanyPageComponent/>}/>
+          <Route path="/promotion/:companyId" element={<HandlePromotionComponent/>}/>
 
           <Route path="control-panel" element={<ControlPanelComponent/>}/>
           <Route path="handle-category" element={<HandleCategoryComponent/>}/>

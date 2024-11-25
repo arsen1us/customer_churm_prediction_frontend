@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
-
+import { Link } from "react-router-dom";
 
 // Надо откуда-то достать id компании
 
@@ -125,6 +125,17 @@ const CompanyProfileComponent = () => {
             - обычный юзер или авторизированный пользоавтель, или страница админа компании, если пользователь Имеет роль админа)
             </div>
             <div>
+                <div>
+                    <div>
+                        <h3>Управление рекламой</h3>
+                    </div>
+                    <div>
+                        <Link to={`/promotion/${companyId}`}>
+                            Перейти к настройке
+                        </Link>
+                    </div>
+                    
+                </div>
                 <div>
                     <div>
                         <h3>Список заказов</h3>
