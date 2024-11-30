@@ -42,11 +42,12 @@ function App() {
           <Route path="/company-profile" element={<CompanyProfileComponent/>}/>
 
           <Route path="/category" exact element={<CategoryListComponent/>}/>
-          <Route path="/category/:categoryId" element={<ProductListComponent/>}/>
 
+          <Route path="/category/:categoryId" element={<ProductListComponent/>}/>
           <Route path="/product/:productId" element={<ProductPageComponent/>}/>
           <Route path="/company/:companyId" element={<CompanyPageComponent/>}/>
           <Route path="/promotion/:companyId" element={<HandlePromotionComponent/>}/>
+          <Route path="/coupon/:companyId" element={<HandleCouponComponent/>}/>
 
           <Route path="control-panel" element={<ControlPanelComponent/>}/>
           <Route path="handle-category" element={<HandleCategoryComponent/>}/>

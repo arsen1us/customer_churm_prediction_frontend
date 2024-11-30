@@ -131,10 +131,14 @@ const CompanyProfileComponent = () => {
                     </div>
                     <div>
                         <Link to={`/promotion/${companyId}`}>
-                            Перейти к настройке
+                            Перейти к настройке рекламы
                         </Link>
                     </div>
-                    
+                    <div>
+                        <Link to={`/coupon/${companyId}`}>
+                            Перейти к настройке купонов
+                        </Link>
+                    </div>
                 </div>
                 <div>
                     <div>
