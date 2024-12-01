@@ -1,20 +1,20 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
-// Надо откуда-то достать id компании
+/// <summary>
+/// Компонент для настройки администраторов компании
+/// </summary>
+const CompanyAdminsSettingsComponent = () => {
 
-const CompanyProfileComponent = () => {
-    
-    // Надо откуда-то достать id компании (67431437a422c6e797c334de - по умолчанию)
-    const [companyId, setCompanyId] = useState("67431437a422c6e797c334de");
-    const [company, setCompany] = useState(null);
-
-    const [orderList, setOrderList] = useState([]);
-
-    const [productList, setProductList] = useState([]);
-
-    // Обновить токен
+    const {companyId} = useParams();
+    const [userList, setUserList] = useState([]);
+    // Роль пользователя
+    const [role, setRole] = useState("");
+    /// <summary>
+    /// Обновить токен
+    /// </summary>
     const UpdateToken = async () => {
         try{
             const response = await axios.get("https://localhost:7777/api/token/update", {
@@ -55,120 +55,179 @@ const CompanyProfileComponent = () => {
         }
     }
 
-
-    // Скорее всего надо делать fetch для получения списка самых посследних заказов
     /// <summary>
-    /// Получить список заказов
+    /// Получить список пользователей по id компании
     /// </summary>
-    const GetOrderListAsync = async () => {
+    const GetUserListByCompanyIdAsync = async () => {
         try{
-            const response = await axios.get(`https://localhost:7299/api/order/company/${companyId}`, {
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-            if(response && response.status === 200){
-                if(response.data.orderList){
-                    setOrderList(response.data.orderList);
-                }
-            }
-        }
-        catch (error){
-
-            if(error.response){
-                const status = error.response.status;
-
-                switch(status) {
-                    case 401:
-                        await UpdateToken();
-                        await GetCompanyByIdAsync();
-                        break;
-                    case 403:
-                        alert("У вас недостаточно прав для доступа к ресурсу!")
-                        break;
-                    case 404:
-                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
-                        break;
-                    case 500:
-                        alert("Произошла ошибка сервера!")
-                        break;
-                    default:
-                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
-                }
-            }
-            else {
-                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
-            }
-        }
-    }
-
-    // Скорее всего надо делать fetch для получения части продуктов (первой страницы)
-    /// <summary>
-    /// Получить список продуктов по id компании
-    /// </summary>
-    const GetProductListByCompanyIdAsync = async () => {
-        try{
-            const response = await axios.get(`https://localhost:7299/api/product/company/${companyId}`, {
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-
-            if(response && response.status === 200){
-                if(response.data.productList){
-                    setProductList(response.data.productList);
-                }
-            }
-
-        }
-        catch (error){
-
-            if(error.response){
-                const status = error.response.status;
-
-                switch(status) {
-                    case 401:
-                        await UpdateToken();
-                        await GetCompanyByIdAsync();
-                        break;
-                    case 403:
-                        alert("У вас недостаточно прав для доступа к ресурсу!")
-                        break;
-                    case 404:
-                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
-                        break;
-                    case 500:
-                        alert("Произошла ошибка сервера!")
-                        break;
-                    default:
-                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
-                }
-            }
-            else {
-                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
-            }
-        }
-    }
-
-    /// <summary>
-    /// Получить компанию по id
-    /// </summary>
-    const GetCompanyByIdAsync = async () => {
-        try{
-            const response = await axios.get(`https://localhost:7299/api/company/${companyId}`, {
+            const response = await axios.get(`https://localhost:7299/api/user/company/${companyId}`, {
                 headers:{
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
             });
 
-            if(response && response.status === 200) {
-                if(response.data.company) {
-                    setCompany(response.data.company);
+            if(response && response.status === 200)
+            {
+                if(response.data && response.data.userList){
+                    setUserList(response.data.userList);
                 }
             }
         }
         catch (error){
+            if(error.response){
+                const status = error.response.status;
 
+                switch(status) {
+                    case 401:
+                        await UpdateToken();
+                        await GetCompanyByIdAsync();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Добавить пользователя в работники компании
+    /// </summary>
+    // Пользователь будет передаваться из списка пользователей 
+    const AddUserToCompanyEmployeesAsync = async (user) => {
+        try{
+            if(user)
+            {
+                const response = await axios.post(`https://localhost:7299/api/user/company/${companyId}`, {
+                    user: user
+                }, {
+                    headers:{
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                });
+
+                if(response && response.status){
+                    if(response.data && response.data.user){
+                        setUserList(list => [...list, response.data.user])
+                    }
+                }
+            }
+        }
+        catch (error){
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await UpdateToken();
+                        await GetCompanyByIdAsync();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Обновить роль пользвателя
+    /// </summary>
+    // Пользователь будет передаваться из списка пользователей 
+    const UpdateUserRoleAsync = async (user) => {
+        try{
+            if(user)
+            {
+                const response = await axios.post(`https://localhost:7299/api/token/update-role/${user.id}`, {
+                    user: user
+                }, {
+                    headers:{
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                });
+
+                if(response && response.status){
+                    if(response.data && response.data.user){
+                        setUserList(list => [...list, response.data.user])
+                    }
+                }
+            }
+        }
+        catch (error){
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await UpdateToken();
+                        await GetCompanyByIdAsync();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Добавить пользователя в работники компании
+    /// </summary>
+    // Пользователь будет передаваться из списка пользователей 
+    const DeleteUserFromCompanyEmployeesAsync = async (userId) => {
+        try{
+            if(user)
+            {
+                const response = await axios.post(`https://localhost:7299/api/user/company/${companyId}`, {
+                    userId: userId,
+                    companyId: companyId
+                }, {
+                    headers:{
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                });
+
+                if(response && response.status){
+                    if(response.data && response.data.user){
+                        setUserList(list => list.filter(user => user.id !== userId))
+                    }
+                }
+            }
+        }
+        catch (error){
             if(error.response){
                 const status = error.response.status;
 
@@ -197,88 +256,14 @@ const CompanyProfileComponent = () => {
     }
 
     useEffect(() => {
-        // Получить откуда-то id компании
-        
-            GetCompanyByIdAsync();
-            GetProductListByCompanyIdAsync();
-            GetOrderListAsync();
-        
-    }, [])
+        GetUserListByCompanyIdAsync();
+      }, []);
 
     return (
         <div>
-            <div>
-            Страница компании (будет отображаться обычная страница если роль пользователя 
-            - обычный юзер или авторизированный пользоавтель, или страница админа компании, если пользователь Имеет роль админа)
-            </div>
-            <div>
-                <div>
-                    <div>
-                        <Link to={`/company-settings/${companyId}`}>Настройки компании</Link>
-                    </div>
-                    <div>
-                        <h3>Управление рекламой</h3>
-                    </div>
-                    <div>
-                        <Link to={`/promotion/${companyId}`}>
-                            Перейти к настройке рекламы
-                        </Link>
-                    </div>
-                    <div>
-                        <Link to={`/coupon/${companyId}`}>
-                            Перейти к настройке купонов
-                        </Link>
-                    </div>
-                </div>
-                <div>
-                    <div>
-                        <h3>Список заказов</h3>
-                    </div>
-                    <div>
-                        <ul>
-                            {orderList.map((order, index) => (
-                                <li key={index}>
-                                    <div>
-                                        <div>
-                                            Список ордеров
-                                        </div>
-                                        <div>
-                                            {order.id}
-                                        </div>
-                                    </div>
-                                </li>
-                            ))
-                            }
-                        </ul>
-                    </div>
-                </div>
-                <div>
-                    <div>
-                        <h3>Список продуктов</h3>
-                    </div>
-                    <div>
-                        <ul>
-                            {productList.map((product, index) => (
-                                <li key={index}>
-                                    <div>
-                                        <div>
-                                            Список продуктов
-                                        </div>
-                                        <div>
-                                            {product.id}
-                                            {product.name}
-                                            {product.description}
-                                        </div>
-                                    </div>
-                                </li>
-                            ))
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </div>
+
         </div>
-    );
+    )
 }
 
-export default CompanyProfileComponent;
+export default CompanyAdminsSettingsComponent;
