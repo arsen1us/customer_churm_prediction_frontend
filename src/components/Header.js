@@ -29,6 +29,10 @@ const Header = () => {
                     <li>
                         <Link to="/company-profile">Профиль компании</Link>
                     </li>
+
+                    <li>
+                        <Link to="/company-add">Стать продавцом</Link>
+                    </li>
                 </ul>
             </nav>
             Хэдер

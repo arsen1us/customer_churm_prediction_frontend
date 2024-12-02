@@ -30,7 +30,9 @@ const ProductItemComponent = ({coupon}) => {
                     <p>Список продуктов для купона</p>
                 </div>
                 <div>
-
+                    {coupon.productIds.map((product) => (
+                        <div key={product}>{product}</div>
+                    ))}
                 </div>
             </div>
         </div>

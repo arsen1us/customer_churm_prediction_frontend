@@ -27,6 +27,10 @@ import HandlePromotionComponent from './components/HandleComponents/HandlePromot
 import HandleReviewComponent from './components/HandleComponents/HandleReviewComponent';
 import HandleUserComponent from './components/HandleComponents/HandleUserComponent';
 import HandleCompanyComponent from './components/HandleComponents/HandleCompanyComponent';
+import AddCompanyComponent from './components/AddCompanyComponent';
+
+import AddProductComponent from './components/AddProductComponent';
+import AddCouponComponent from './components/AddCouponComponent';
 
 function App() {
   return (
@@ -42,6 +46,7 @@ function App() {
 
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/company-profile" element={<CompanyProfileComponent/>}/>
+          <Route path="/company-profile/:companyId" element={<CompanyProfileComponent/>}/> 
 
           <Route path="/category" exact element={<CategoryListComponent/>}/>
 
@@ -52,6 +57,10 @@ function App() {
           <Route path="/coupon/:companyId" element={<HandleCouponComponent/>}/>
           
           <Route path="/company-settings/:companyId" element={<CompanySettingsComponent/>}/>
+          <Route path="/company-add" element={<AddCompanyComponent/>}/>
+
+          <Route path="/addproduct" element={<AddProductComponent/>}/>
+          <Route path="/addcoupon" element={<AddCouponComponent/>}/>
 
           <Route path="control-panel" element={<ControlPanelComponent/>}/>
           <Route path="handle-category" element={<HandleCategoryComponent/>}/>

@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+
 import ProductItemComponent from "../ListItemComponents/ProductItemComponent"; 
 import CouponItemComponent from "../ListItemComponents/CouponItemComponent";  
+
+import { Link, useParams } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Dropdown, Button } from 'react-bootstrap';
 
 const HandleCouponComponent = () => {
 
@@ -15,8 +20,8 @@ const HandleCouponComponent = () => {
 
     // Создание
     const[key, setKey] = useState("");
-    const[productIds, setProductIds] = useState([]);
-    const[categoriesIds, setCategoriesIds] = useState([]);
+    const [selectedProducts, setSelectedProducts] = useState([]);
+    const[selectedCategories, setSelectedCategories] = useState([]);
 
     // Изменение
     const[updateKey, setUpdateKey] = useState("");
@@ -24,6 +29,8 @@ const HandleCouponComponent = () => {
     const[updateCategoriesIds, setUpdateCategoriesIds] = useState([]);
 
     const [company, setCompany] = useState(null);
+
+    const [searchText, setSearchText] = useState("");
 
     /// summary
     /// Обновить токен
@@ -78,43 +85,29 @@ const HandleCouponComponent = () => {
                 }
             }
         }
-        catch(error){
-            // Внутрянняя ошибка сервера (Internal server error)
-            if(error.response && error.response.status === 500)
-                console.log(error);
+        catch (error){
+            if(error.response){
+                const status = error.response.status;
 
-            // Not Found
-            else if(error.response && error.response.status === 404)
-                console.log(error);
-
-            else
-                console.log(error);
-        }
-    }
-
-    /// <summary>
-    /// Получить список продуктов по id компании
-    /// </summary>
-    // По этомиу списку будет распределяться, на какие продукты будет действителен купон
-    const GetProductListByCompanyIdAsync = async () => {
-        try{
-            const response = await axios.get(`https://localhost:7299/api/product/company/${companyId}`, {
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-
-            if(response && response.status === 200){
-                if(response.data && response.data.productList){
-                    setProductList(response.data.productList);
+                switch(status) {
+                    case 401:
+                        await UpdateToken();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
                 }
             }
-        }
-        catch (error) {
-            // Если токен устарел
-            if(error.response || error.response.status === 401) {
-                await UpdateToken();
-                await GetProductListByCompanyIdAsync();
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
             }
         }
     }
@@ -136,10 +129,29 @@ const HandleCouponComponent = () => {
                 }
             }
         }
-        catch (error) {
-            if(error.response && error.response.status === 401){
-                await UpdateToken();
-                await GetCouponListByCompanyIdAsync();
+        catch (error){
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await UpdateToken();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
             }
         }
     }
@@ -153,8 +165,7 @@ const HandleCouponComponent = () => {
         try{
             const response = await axios.post("https://localhost:7299/api/coupon", {
                 key: key,
-                productIds: productIds, 
-                categoriesIds: categoriesIds, 
+                productIds: selectedProducts,  
                 companyId: companyId
             }, {
                 headers: {
@@ -169,11 +180,29 @@ const HandleCouponComponent = () => {
 
             }
         } 
-        catch (error) {
-            // Если токен устарел
-            if(error.response || error.response.status === 401) {
-                await UpdateToken();
-                await GetProductListByCompanyIdAsync();
+        catch (error){
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await UpdateToken();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
             }
         }
     }
@@ -199,11 +228,29 @@ const HandleCouponComponent = () => {
                 }
             }
         } 
-        catch (error) {
-            // Если токен устарел
-            if(error.response || error.response.status === 401) {
-                await UpdateToken();
-                await UpdateCouponAsync(couponId);
+        catch (error){
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await UpdateToken();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
             }
         }
     }
@@ -227,11 +274,85 @@ const HandleCouponComponent = () => {
                 }
             }
         } 
-        catch (error) {
-            // Если токен устарел
-            if(error.response || error.response.status === 401) {
-                await UpdateToken();
-                await DeleteCouponAsync(couponId);
+        catch (error){
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await UpdateToken();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
+        }
+    }
+
+    // Скорее всего надо делать fetch для получения части продуктов (первой страницы)
+    /// <summary>
+    /// Получить список продуктов по id компании
+    /// </summary>
+    const GetProductListByCompanyIdAsync = async () => {
+        try{
+            const token = localStorage.getItem("token");
+            if(token){
+                const decodedToken = jwtDecode(token);
+                if(decodedToken){
+                    if(decodedToken.CompanyId)
+                    {
+                        const response = await axios.get(`https://localhost:7299/api/product/company/${decodedToken.CompanyId}`, {
+                            headers: {
+                                "Authorization": "Bearer " + localStorage.getItem("token")
+                            }
+                        });
+            
+                        if(response && response.status === 200){
+                            if(response.data.productList){
+                                setProductList(response.data.productList);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch (error){
+
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await UpdateToken();
+                        await GetCompanyByIdAsync();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
             }
         }
     }
@@ -241,10 +362,25 @@ const HandleCouponComponent = () => {
     }
 
     useEffect(() => {
-        GetCompanyByIdAsync();
-        GetProductListByCompanyIdAsync();
-        GetCouponListByCompanyIdAsync();
+        if(companyId){
+            GetCompanyByIdAsync();
+            GetProductListByCompanyIdAsync();
+            GetCouponListByCompanyIdAsync();
+        }
     }, [])
+
+    const handleSelect = (id) => {
+        setSelectedProducts((prev) =>
+        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      );
+      console.log(id);
+    };
+
+    const isChecked = (id) => selectedProducts.includes(id);
+
+    const filteredProducts = productList.filter((product) => 
+        product.name.toLowerCase().includes(searchText.toLowerCase())
+    );
 
     return (
         <div>
@@ -254,42 +390,9 @@ const HandleCouponComponent = () => {
             <div>
                 <div>
                     <div>
-                        <h3>Создание купона</h3>
+                        <Link to="/addcoupon">Добавить купон</Link>
                     </div>
-                    <div>
-                        <form method="post" onSubmit={AddCouponAsync}>
-                            <div>
-                                <label>Ключ </label>
-                                <input 
-                                    type="text"
-                                    value={key}
-                                    onChange={(e) => setKey(e.target.value)}
-                                    placeholder="Введите ключ"
-                                />
-                            </div>
-                            <div>
-                                <label>Список продуктов </label>
-                                <input 
-                                    type="text"
-                                    value={key}
-                                    onChange={(e) => setKey(e.target.value)}
-                                    placeholder="Введите ключ"
-                                />
-                            </div>
-                            <div>
-                                <label>Список категорий </label>
-                                <input 
-                                    type="text"
-                                    value={key}
-                                    onChange={(e) => setKey(e.target.value)}
-                                    placeholder="Введите ключ"
-                                />
-                            </div>
-                            <div>
-                                <button type="submit">Создать</button>
-                            </div>
-                        </form>
-                    </div>
+                    
                     <div>
                         <h3>Список созданных купонов</h3>
                     </div>
@@ -298,7 +401,7 @@ const HandleCouponComponent = () => {
                             {couponList.map((coupon, index) => (
                                 <li key={index}>
                                     <div>
-                                        <button onClick={ConsoleLog}>
+                                        <button>
                                             <CouponItemComponent coupon={coupon}/>
                                         </button>
                                         <div>
@@ -311,27 +414,9 @@ const HandleCouponComponent = () => {
                         </ul>
                     </div>
                 </div>
-                    <div>
-                        <div>
-                            <h3>Список продуктов для создание купона</h3>
-                        </div>
-                        <div>
-                            <ul>
-                                {productList.map((product, index) => (
-                                    <li key={index}>
-                                        <div>
-                                            <button onClick={ConsoleLog}>
-                                                <ProductItemComponent product={product}/>
-                                            </button>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
             </div>
         </div>
     )
 }
 
-export default HandleCouponComponent
+export default HandleCouponComponent;

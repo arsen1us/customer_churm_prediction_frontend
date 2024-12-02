@@ -15,8 +15,6 @@ const ProductPageComponent = () => {
     // Статус заказа (успешно/не успешно создан)
     const [orderStatus, setOrderStatus] = useState(false);
 
-    // Id компании (по дефолту - 67431437a422c6e797c334de)
-    const [companyId, setCompanyId] = useState("67431437a422c6e797c334de");
     ///summary
     /// Обновить токен
     ///summary
@@ -93,13 +91,11 @@ const ProductPageComponent = () => {
             if(token) {
                 const decodedToken = jwtDecode(token);
 
-                console.log(product.id, productCount, product.companyId, decodedToken.Id, product.price);
-
                 if(decodedToken.Id){
                     const response = await axios.post("https://localhost:7299/api/order", {
                         productId: product.id,
                         productCount: productCount,
-                        companyId: companyId, //product.companyId,
+                        companyId: product.companyId, //product.companyId,
                         userId: decodedToken.Id,
                         price: product.price
                     }, {

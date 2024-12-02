@@ -1,20 +1,26 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import ProductItemComponent from "./ListItemComponents/ProductItemComponent";
 
 // Надо откуда-то достать id компании
 
 const CompanyProfileComponent = () => {
     
-    // Надо откуда-то достать id компании (67431437a422c6e797c334de - по умолчанию)
-    const [companyId, setCompanyId] = useState("67431437a422c6e797c334de");
+    // const {companyId} = useParams();
+
+    const [companyId, setCompanyId] = useState("");
+
     const [company, setCompany] = useState(null);
 
     const [orderList, setOrderList] = useState([]);
 
     const [productList, setProductList] = useState([]);
 
-    // Обновить токен
+    /// <summary>
+    /// Обновить токен
+    /// </summary>
     const UpdateToken = async () => {
         try{
             const response = await axios.get("https://localhost:7777/api/token/update", {
@@ -60,16 +66,25 @@ const CompanyProfileComponent = () => {
     /// <summary>
     /// Получить список заказов
     /// </summary>
-    const GetOrderListAsync = async () => {
+    const GetOrderListByCompanyIdAsync = async () => {
         try{
-            const response = await axios.get(`https://localhost:7299/api/order/company/${companyId}`, {
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-            if(response && response.status === 200){
-                if(response.data.orderList){
-                    setOrderList(response.data.orderList);
+            const token = localStorage.getItem("token");
+            if(token){
+                const decodedToken = jwtDecode(token);
+                if(decodedToken){
+                    if(decodedToken.CompanyId)
+                    {
+                        const response = await axios.get(`https://localhost:7299/api/order/company/${decodedToken.CompanyId}`, {
+                            headers: {
+                                "Authorization": "Bearer " + localStorage.getItem("token")
+                            }
+                        });
+                        if(response && response.status === 200){
+                            if(response.data.orderList){
+                                setOrderList(response.data.orderList);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -82,12 +97,16 @@ const CompanyProfileComponent = () => {
                     case 401:
                         await UpdateToken();
                         await GetCompanyByIdAsync();
+                        await GetOrderListByCompanyIdAsync();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")
                         break;
                     case 404:
                         alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 405:
+                        alert("Ошибка 405. Method Not Allowed (Не могу пока это починить)!")
                         break;
                     case 500:
                         alert("Произошла ошибка сервера!")
@@ -102,24 +121,35 @@ const CompanyProfileComponent = () => {
         }
     }
 
+    // !Добавить join запрос на получение списка заказов 
+
+
     // Скорее всего надо делать fetch для получения части продуктов (первой страницы)
     /// <summary>
     /// Получить список продуктов по id компании
     /// </summary>
     const GetProductListByCompanyIdAsync = async () => {
         try{
-            const response = await axios.get(`https://localhost:7299/api/product/company/${companyId}`, {
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-
-            if(response && response.status === 200){
-                if(response.data.productList){
-                    setProductList(response.data.productList);
+            const token = localStorage.getItem("token");
+            if(token){
+                const decodedToken = jwtDecode(token);
+                if(decodedToken){
+                    if(decodedToken.CompanyId)
+                    {
+                        const response = await axios.get(`https://localhost:7299/api/product/company/${decodedToken.CompanyId}`, {
+                            headers: {
+                                "Authorization": "Bearer " + localStorage.getItem("token")
+                            }
+                        });
+            
+                        if(response && response.status === 200){
+                            if(response.data.productList){
+                                setProductList(response.data.productList);
+                            }
+                        }
+                    }
                 }
             }
-
         }
         catch (error){
 
@@ -155,15 +185,24 @@ const CompanyProfileComponent = () => {
     /// </summary>
     const GetCompanyByIdAsync = async () => {
         try{
-            const response = await axios.get(`https://localhost:7299/api/company/${companyId}`, {
-                headers:{
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-
-            if(response && response.status === 200) {
-                if(response.data.company) {
-                    setCompany(response.data.company);
+            const token = localStorage.getItem("token");
+            if(token){
+                const decodedToken = jwtDecode(token);
+                if(decodedToken){
+                    if(decodedToken.CompanyId)
+                    {
+                        const response = await axios.get(`https://localhost:7299/api/company/${decodedToken.CompanyId}`, {
+                            headers:{
+                                "Authorization": "Bearer " + localStorage.getItem("token")
+                            }
+                        });
+            
+                        if(response && response.status === 200) {
+                            if(response.data.company) {
+                                setCompany(response.data.company);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -196,13 +235,26 @@ const CompanyProfileComponent = () => {
         }
     }
 
+    /// <summary>
+    /// Декодировать компанию из jwt-токена
+    /// </summary>
+    const GetCompanyIdFromToken = () => {
+        const token = localStorage.getItem("token");
+        if(token){
+            const decodedToken = jwtDecode(token);
+            if(decodedToken){
+                if(decodedToken.CompanyId){
+                    setCompanyId(decodedToken.CompanyId);
+                }
+            }
+        }
+    }
+
     useEffect(() => {
-        // Получить откуда-то id компании
-        
-            GetCompanyByIdAsync();
-            GetProductListByCompanyIdAsync();
-            GetOrderListAsync();
-        
+        GetCompanyIdFromToken();
+        GetCompanyByIdAsync();
+        GetProductListByCompanyIdAsync();
+        GetOrderListByCompanyIdAsync();
     }, [])
 
     return (
@@ -257,18 +309,14 @@ const CompanyProfileComponent = () => {
                         <h3>Список продуктов</h3>
                     </div>
                     <div>
+                        <div>
+                            <Link to="/addproduct">Добавить продукт</Link>
+                        </div>
                         <ul>
                             {productList.map((product, index) => (
                                 <li key={index}>
                                     <div>
-                                        <div>
-                                            Список продуктов
-                                        </div>
-                                        <div>
-                                            {product.id}
-                                            {product.name}
-                                            {product.description}
-                                        </div>
+                                        <ProductItemComponent product={product}/>
                                     </div>
                                 </li>
                             ))
