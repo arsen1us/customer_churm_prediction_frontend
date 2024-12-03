@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Dropdown } from 'react-bootstrap';
 
+
 const AddProductComponent = () => {
 
     const [name, setName] = useState("");
@@ -180,6 +181,39 @@ const AddProductComponent = () => {
         GetCategoryListAsync();
     }, [])
 
+    // =====================================================================
+
+    const [selectedFile, setSelectedFile] = useState(null);
+  
+    const handleUpload = async () => {
+      if (!selectedFile || selectedFile.length === 0) {
+        alert("Выберите изображение перед загрузкой");
+        return;
+      }
+  
+      const formData = new FormData();
+      formData.append("image", selectedFile); // Добавляем файл с ключом "image"
+  
+      try {
+        const response = await axios.post("https://localhost:7299/api/image/upload", {
+          file: formData 
+          }, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+  
+        if (response.status === 200) {
+          alert("Изображение успешно загружено!");
+        }
+      } catch (error) {
+        console.error("Ошибка при загрузке изображения:", error);
+        alert("Не удалось загрузить изображение.");
+      }
+    };
+
+    // =====================================================================
+
     return (
         <div>
             <div>
@@ -189,6 +223,7 @@ const AddProductComponent = () => {
                 <div>
                     <div>
                         <form method="post" onSubmit={AddProductAsync}> 
+
                             <div>
                                 <label>Название </label>
                                 <input 
@@ -198,6 +233,7 @@ const AddProductComponent = () => {
                                     placeholder="Введите название"
                                 />
                             </div>
+
                             <div>
                                 <label>Описание</label>
                                 <input 
@@ -207,6 +243,17 @@ const AddProductComponent = () => {
                                     placeholder="Введите описание"
                                 />
                             </div>
+
+                            <div>
+                              <h2>Загрузить изображение</h2>
+                              <input 
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={(e) => setSelectedFile(e.target.files[0])} />
+                              <button onClick={handleUpload}>Загрузить</button>
+                            </div>
+
                             <div>
                                 <label>Id категории</label>
                                 <input 
@@ -216,19 +263,20 @@ const AddProductComponent = () => {
                                     placeholder="Укажите id категории"
                                 />
                                 <div>
-                                <Dropdown onSelect={HandleSelect}>
-                                  <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                                    Выберите категорию
-                                  </Dropdown.Toggle>
+                                    <Dropdown onSelect={HandleSelect}>
+                                      <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                                        Выберите категорию
+                                      </Dropdown.Toggle>
 
-                                  <Dropdown.Menu>
-                                    {categoryList.map((category) => (
-                                        <Dropdown.Item key={category.id} eventKey={category.id}>{category.name}</Dropdown.Item>
-                                    ))}
-                                  </Dropdown.Menu>
-                                </Dropdown>
+                                      <Dropdown.Menu>
+                                        {categoryList.map((category) => (
+                                            <Dropdown.Item key={category.id} eventKey={category.id}>{category.name}</Dropdown.Item>
+                                        ))}
+                                      </Dropdown.Menu>
+                                    </Dropdown>
                                 </div>
                             </div>
+
                             <div>
                                 <label>Цена</label>
                                 <input 
@@ -238,6 +286,7 @@ const AddProductComponent = () => {
                                     placeholder="Укажите цену"
                                 />
                             </div>
+
                             <div>
                                 <button type="submit">Добавить</button>
                             </div>
