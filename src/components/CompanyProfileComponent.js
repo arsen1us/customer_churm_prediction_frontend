@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import ProductItemComponent from "./ListItemComponents/ProductItemComponent";
+import OrderItemComponent from "./ListItemComponents/OrderItemComponent";
 
 // Надо откуда-то достать id компании
 
@@ -23,7 +24,7 @@ const CompanyProfileComponent = () => {
     /// </summary>
     const UpdateToken = async () => {
         try{
-            const response = await axios.get("https://localhost:7777/api/token/update", {
+            const response = await axios.get("https://localhost:7299/api/token/update", {
                 headers:{
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
@@ -251,6 +252,7 @@ const CompanyProfileComponent = () => {
     }
 
     useEffect(() => {
+        console.log(window.location.href);
         GetCompanyIdFromToken();
         GetCompanyByIdAsync();
         GetProductListByCompanyIdAsync();
@@ -287,21 +289,15 @@ const CompanyProfileComponent = () => {
                         <h3>Список заказов</h3>
                     </div>
                     <div>
-                        <ul>
-                            {orderList.map((order, index) => (
-                                <li key={index}>
-                                    <div>
-                                        <div>
-                                            Список ордеров
-                                        </div>
-                                        <div>
-                                            {order.id}
-                                        </div>
-                                    </div>
-                                </li>
+                        {orderList.length > 0 ? (
+                            orderList.map((order, index) => (
+                                <OrderItemComponent key={index} order={order}/>
                             ))
-                            }
-                        </ul>
+                        ) : (
+                            <>
+                                <p>Заказов в данный момент нет</p>
+                            </>
+                        )}
                     </div>
                 </div>
                 <div>

@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
-import CompanyItemComponent from "../ListItemComponents/CompanyItemComponent";
 
 const HandleCompanyComponent = () => {
 
@@ -27,7 +26,7 @@ const HandleCompanyComponent = () => {
     /// summary
     const UpdateToken = async () => {
         try{
-            const response = await axios.get("https://localhost:7777/api/token/update", {
+            const response = await axios.get("https://localhost:7299/api/token/update", {
                 headers:{
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
@@ -397,7 +396,7 @@ const HandleCompanyComponent = () => {
                             ) : (
                                 <div>
                                     <div>
-                                        <CompanyItemComponent company={company}/>
+                                        {`Отображение информации о компании`}
                                     </div>
                                     <div>
                                         <div>

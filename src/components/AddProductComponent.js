@@ -15,6 +15,7 @@ const AddProductComponent = () => {
     const [description, setDescription] = useState("");
     const [categoryId, setCategoryId] = useState("");
     const [price, setPrice] = useState(0);
+    const [count, setCount] = useState(0);
     const [companyId, setCompanyId] = useState("");
 
     const [categoryList, setCategoryList] = useState([]);
@@ -28,7 +29,7 @@ const AddProductComponent = () => {
     /// </summary>
     const UpdateToken = async () => {
         try{
-            const response = await axios.get("https://localhost:7777/api/token/update", {
+            const response = await axios.get("https://localhost:7299/api/token/update", {
                 headers:{
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
@@ -128,6 +129,7 @@ const AddProductComponent = () => {
                         name: name,
                         description: description,
                         categoryId: categoryId,
+                        count:count,
                         price: price,
                         companyId: decodedToken.CompanyId
                     }, {
@@ -275,6 +277,16 @@ const AddProductComponent = () => {
                                       </Dropdown.Menu>
                                     </Dropdown>
                                 </div>
+                            </div>
+
+                            <div>
+                                <label>Количество</label>
+                                <input 
+                                    type="number"
+                                    value={count}
+                                    onChange={(e) => setCount(e.target.value)}
+                                    placeholder="Количество"
+                                />
                             </div>
 
                             <div>

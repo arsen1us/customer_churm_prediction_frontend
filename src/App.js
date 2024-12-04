@@ -32,6 +32,8 @@ import AddCompanyComponent from './components/AddCompanyComponent';
 import AddProductComponent from './components/AddProductComponent';
 import AddCouponComponent from './components/AddCouponComponent';
 
+import CartComponent from './components/CartComponent';
+
 function App() {
   return (
     <div className="App">
@@ -70,6 +72,8 @@ function App() {
           <Route path="handle-review" element={<HandleReviewComponent/>}/>
           <Route path="handle-user" element={<HandleUserComponent/>}/>
           <Route path="handle-company" element={<HandleCompanyComponent/>}/>
+
+          <Route path="/cart" element={<CartComponent/>}/>
         </Routes>
       </Router>
       <footer>

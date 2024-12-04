@@ -24,12 +24,13 @@ const ProductListComponent = () => {
 
     const [input, setInput] = useState("");
     const [debouncedInput, setDebouncedInput] = useState("");
+
     ///summary
     /// Обновить токен
     ///summary
     const UpdateToken = async () => {
         try{
-            const response = await axios.get("https://localhost:7777/api/token/update", {
+            const response = await axios.get("https://localhost:7299/api/token/update", {
                 headers:{
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
@@ -256,27 +257,12 @@ const ProductListComponent = () => {
     return (
         <div>
             <div>
-                <h3>
-                    Список Продуктов
-                </h3>
-            </div>
-            <div>
-                <div>
-                    <div>
-                        <div>
-                            <h3>Выберите категорию</h3>
-                        </div>
-                        <div>
-                            <CategoryListComponent/>
-                        </div>
-                    </div>
-                </div>
                 <div>
                     <h3>
                         Список Продуктов
                     </h3>
                 </div>
-                <div>
+
                 <div>
                     <input
                         type="text"
@@ -285,6 +271,8 @@ const ProductListComponent = () => {
                         onChange={(e) => setInput(e.target.value)}
                     />
                 </div>
+                
+                <div>
                     <ul>
                         {entityList.map((entity, index) => {
                             return (
@@ -307,11 +295,13 @@ const ProductListComponent = () => {
                         })}
                     </ul>
                 </div>
+
                 <div>
                     <button onClick={(async () => await LoadProductAsync())} >
                         Загрузить ещё
                     </button>
                 </div>
+
             </div>
         </div>
     )

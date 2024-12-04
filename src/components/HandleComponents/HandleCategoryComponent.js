@@ -15,7 +15,7 @@ const HandleCategoryComponent = () => {
     // Обновить токен
     const UpdateToken = async () => {
         try{
-            const response = await axios.get("https://localhost:7777/api/token/update", {
+            const response = await axios.get("https://localhost:7299/api/token/update", {
                 headers:{
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
@@ -63,8 +63,8 @@ const HandleCategoryComponent = () => {
         catch(error)
         {
             // Если токен истёк или не зарегистировался/вошёл
-            // if(error.response && error.response.status === 401)
-            //     await UpdateToken();
+            if(error.response && error.response.status === 401)
+                await UpdateToken();
         }
     }
 

@@ -36,17 +36,25 @@ const ProductPageComponent = () => {
                 }
             }
         }
-        catch(error) {
-            // Внутрянняя ошибка сервера (Internal server error)
-            if(error.response && error.response.status === 500)
-                console.log(error);
+        catch (error){
 
-            // Not Found
-            else if(error.response && error.response.status === 404)
-                console.log(error);
+            if(error.response){
+                const status = error.response.status;
 
-            else
-                console.log(error);
+                switch(status) {
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
         }
     }
 
@@ -68,12 +76,31 @@ const ProductPageComponent = () => {
                 }
             }
         }
-        catch(error) {
-            if(error.response && error.response.status === 401)
-                {
-                    await UpdateToken();
-                    await GetProductByIdAsync(productId);
+        catch (error){
+
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await UpdateToken();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
                 }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
         }
     }
 
@@ -117,18 +144,85 @@ const ProductPageComponent = () => {
             }
         }
         catch (error){
-            // Внутрянняя ошибка сервера (Internal server error)
-            if(error.response && error.response.status === 500)
-                console.log(error);
 
-            // Not Found
-            else if(error.response && error.response.status === 404)
-                console.log(error);
+            if(error.response){
+                const status = error.response.status;
 
-            else
-                console.log(error);
+                switch(status) {
+                    case 401:
+                        await UpdateToken();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
         }
-        
+    }
+
+    /// <summary>
+    /// Добавить продукт в корзину
+    /// </summary>
+    const AddProductToCartAsync = async () => {
+        try{
+            const token = localStorage.getItem("token");
+            if(token) {
+                const decodedToken = jwtDecode(token);
+
+                if(decodedToken.Id){
+                    const response = await axios.post("https://localhost:7299/api/cart", {
+                        userId: decodedToken.Id,
+                        productId: productId
+                    }, {
+                        headers: {
+                            "Authorization": "Bearer " + localStorage.getItem("token")
+                        }
+                    });
+                    if(response && response.status === 200){
+                        if(response.data && response.data.cart){
+                            alert("Продукт успешно добавлен в корзину");
+                        }
+                    }
+                }
+            }
+        }
+        catch (error){
+
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await UpdateToken();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
+        }
     }
 
     useEffect(() => {
@@ -183,6 +277,9 @@ const ProductPageComponent = () => {
                                     <button type="submit">Заказать</button>
                                 </div>
                             </form>
+                        </div>
+                        <div>
+                            <button onClick={AddProductToCartAsync}>Добавить в корзину</button>
                         </div>
                     </div>
                 </div>
