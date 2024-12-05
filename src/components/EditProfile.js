@@ -3,11 +3,15 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import OrderItemComponent from "./ListItemComponents/OrderItemComponent";
 import { Link } from "react-router-dom";
-const Profile = () => {
+
+const EditProfile = () => {
 
     const [user, setUser] = useState(null);
-    // Заменил на decodedToken.Id, так как userId обновляется async и не успевает обновиться
-    // const[userId, setUserId] = useState("");
+
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     const [orderList, setOrderList] = useState([]);
 
@@ -153,11 +157,41 @@ const Profile = () => {
         }
     }
 
-    /// <summary>
-    /// Выйти из аккаунта
-    /// </summary>
-    const LogOut = () => {
-        localStorage.removeItem("token");
+    const UpdateUserInfoAsync = async (e) => {
+        e.preventDefault();
+        try{
+            const token = localStorage.getItem("token");
+            const decodedToken = jwtDecode(token);
+    
+            if (decodedToken.Id) {
+
+            const formData = new FormData();
+            for (let i = 0; i < selectedFiles.length; i++) {
+                formData.append('images', selectedFiles[i]);
+            }
+
+            formData.append("firstName",firstName);
+            formData.append("lastName",lastName);
+            formData.append("email",email);
+            formData.append("password",password);
+
+                const response = await axios.put(`https://localhost:7299/api/user/${decodedToken.Id}`, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                });
+
+                if (response.status && response.status === 200) {
+                    if (response.data.product) {
+                        alert("Информация о пользователе успешно обновлена")
+                    }
+                }
+            }
+        }
+        catch(error){
+
+        }
     }
 
     useEffect(() => {
@@ -166,42 +200,82 @@ const Profile = () => {
         GetOrderListByUserIdAsync();
     }, [])
 
+    // =====================================================================
+
+    const [selectedFiles, setSelectedFiles] = useState(null);
+  
+    const handleFileChange = (event) => {
+        setSelectedFiles(event.target.files); // Сохраняем все выбранные файлы
+    };
+
+    // =====================================================================
+
     return (
         <div>
             <div>
                 {user ? (
                     <>
+                        <form method="post" onSubmit={UpdateUserInfoAsync}>
+                
                         <div>
-                            {user.imageSrcs.map((src, index) => (
-                                <div>
-                                    <img 
-                                        key={index} 
-                                        src={`https://localhost:7299/uploads/${src}`}
-                                        alt={`Image ${index}`}
-                                        width="200px"
-                                    />
-                                </div>
-                            ))}
+                            <h2>Загрузить аватарку (для нескольких)</h2>
+                            <input 
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={handleFileChange} 
+                                required
+                                />
                         </div>
-                        <h2>User information</h2>
+
                         <div>
-                            
+                            <label>FirstName</label>
+                            <input 
+                                type="text"
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
+                                placeholder={user.firstName}
+                                required
+                            />
                         </div>
-                        <p>FirstName: {user.firstName}</p>
+
                         <div>
-                            
+                            <label>LastName</label>
+                            <input 
+                                type="text"
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
+                                placeholder={user.lastName}
+                                required
+                            />    
                         </div>
-                        <p>LastName: {user.lastName}</p>
+
                         <div>
-                            
+                            <label>Email</label>
+                            <input 
+                                type="text"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder={user.email}
+                                required
+                            />
                         </div>
-                        <p>Email: {user.email}</p>
+
                         <div>
-                            <Link to="/edit-profile">Редактировать</Link>
+                            <label>Password</label>
+                            <input 
+                                type="password"
+                                value={password}    
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder={user.password}
+                                required
+                            />
                         </div>
+
                         <div>
-                            <button onClick={LogOut}>Выйти</button>
+                            <button type="submit">Сохранить изменения</button>
                         </div>
+                    </form>
                     </>
                 ) : (
                     <>
@@ -209,24 +283,8 @@ const Profile = () => {
                     </>
                 )}
             </div>
-            <div>
-                <ul>
-                    {orderList.length > 0 ? (
-                        <>
-                        {orderList.map((order, index) => (
-                            <OrderItemComponent order={order}/>
-                        ))}
-                        </>
-                    ) : (
-                    <>
-                        Делайте заказы
-                    </>
-                    )}
-                </ul>
-            </div>
         </div>
     );
 }
 
-export default Profile;
-
+export default EditProfile;

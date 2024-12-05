@@ -133,29 +133,16 @@ const AddProductComponent = () => {
             formData.append("price", price);
             formData.append("companyId", decodedToken.CompanyId);
 
-            //formData.append('images', selectedFiles);
-
-                const response = await axios.post("https://localhost:7299/api/product", 
-                    
-                    formData
-                    // { name: name,
-                    // description: description,
-                    // categoryId: categoryId,
-                    // count: count,
-                    // price: price,
-                    // companyId: companyId,
-                    // images: formData
-                    // }
-                    , {
+                const response = await axios.post("https://localhost:7299/api/product", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
-                        "Authorization": "Bearer " + token // Убедитесь, что есть пробел после "Bearer"
+                        "Authorization": "Bearer " + localStorage.getItem("token")
                     }
                 });
 
-                if (response.status === 200) {
+                if (response.status && response.status === 200) {
                     if (response.data.product) {
-                        // Обработка успешного ответа
+                        alert("Продукт успешно добавлен!")
                     }
                 }
             }
@@ -204,7 +191,6 @@ const AddProductComponent = () => {
         setSelectedFiles(event.target.files); // Сохраняем все выбранные файлы
     };
 
-
     // =====================================================================
 
     return (
@@ -245,14 +231,7 @@ const AddProductComponent = () => {
                                     multiple
                                     onChange={handleFileChange} />
                             </div>
-
-                            <div>
-                                <h2>Загрузить изображение (для одного)</h2>
-                                <input 
-                                    type="file" 
-                                    onChange={handleFileChange} 
-                                    accept="image/*" />
-                            </div>
+                            
                             <div>
                                 <label>Id категории</label>
                                 <input 

@@ -58,6 +58,9 @@ const RegisterForm = () => {
                 Форма регистрации
             </div>
             <form method="post" onSubmit={HandleSubmit}>
+                <div>
+
+                </div>
                 <label>FirstName</label>
                 <input 
                     type="text"
@@ -65,6 +68,9 @@ const RegisterForm = () => {
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="First name"
                 />
+                <div>
+                    
+                </div>
                 <label>LastName</label>
                 <input 
                     type="text"
@@ -72,6 +78,9 @@ const RegisterForm = () => {
                     onChange={(e) => setLastName(e.target.value)}
                     placeholder="Second name"
                 />
+                <div>
+                    
+                </div>
                 <label>Email</label>
                 <input 
                     type="text"
@@ -79,21 +88,29 @@ const RegisterForm = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Email"
                 />
-                <label>Password</label>
-                <input 
-                    type="password"
-                    value={password}    
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password"
-                />
-                <label>Submit password</label>
-                <input 
-                    type="password"
-                    value={submitPassword}
-                    onChange={(e) => setSubmitPassword(e.target.value)}
-                    placeholder="Submit password"
-                />
-                <button type="submit">Register</button>
+                <div>
+                    <label>Password</label>
+                    <input 
+                        type="password"
+                        value={password}    
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Password"
+                    />
+                </div>
+                    
+                <div>
+                    <label>Submit password</label>
+                    <input 
+                        type="password"
+                        value={submitPassword}
+                        onChange={(e) => setSubmitPassword(e.target.value)}
+                        placeholder="Submit password"
+                    />                    
+                </div>
+
+                <div>
+                    <button type="submit">Register</button>
+                </div>
             </form>
         </div>
     );

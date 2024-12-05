@@ -6,6 +6,8 @@ import RegisterForm from './components/RegisterForm';
 import AuthenticateForm from './components/AuthenticateForm';
 
 import Profile from './components/Profile';
+import EditProfile from './components/EditProfile';
+
 import CompanyProfileComponent from './components/CompanyProfileComponent';
 import Home from './components/Home';
 import CategoryListComponent from './components/ListComponents/CategoryListComponent';
@@ -47,6 +49,8 @@ function App() {
           <Route path="/auth" element={<AuthenticateForm/>}/>
 
           <Route path="/profile" element={<Profile/>}/>
+          <Route path="/edit-profile" element={<EditProfile/>}/>
+
           <Route path="/company-profile" element={<CompanyProfileComponent/>}/>
           <Route path="/company-profile/:companyId" element={<CompanyProfileComponent/>}/> 
 
