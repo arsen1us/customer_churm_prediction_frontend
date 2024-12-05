@@ -123,11 +123,7 @@ const Header = () => {
                     {userId ? (
                         <>
                             <li>
-                                <Link to="/reg">Зарегистрироваться</Link>
-                            </li>
-
-                            <li>
-                                <Link to="/auth">Войти</Link>
+                                <Link to="/profile">Профиль</Link>
                             </li>
                         </>
                     ) : (

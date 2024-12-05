@@ -126,28 +126,29 @@ const AddProductComponent = () => {
                 formData.append('images', selectedFiles[i]);
             }
 
-            // formData.append('name', name);
-            // formData.append('description', description);
-            // formData.append('categoryId', categoryId);
-            // formData.append('count', count);
-            // formData.append('price', price);
-            // formData.append('companyId', decodedToken.CompanyId);
+            formData.append("name", name);
+            formData.append("description", description);
+            formData.append("categoryId", categoryId);
+            formData.append("count", count);
+            formData.append("price", price);
+            formData.append("companyId", decodedToken.CompanyId);
 
             //formData.append('images', selectedFiles);
 
                 const response = await axios.post("https://localhost:7299/api/product", 
                     
-                    //formData
-                    { name: name,
-                    description: description,
-                    categoryId: categoryId,
-                    count: count,
-                    price: price,
-                    companyId: companyId,
-                    images: formData
-                    }
+                    formData
+                    // { name: name,
+                    // description: description,
+                    // categoryId: categoryId,
+                    // count: count,
+                    // price: price,
+                    // companyId: companyId,
+                    // images: formData
+                    // }
                     , {
                     headers: {
+                        "Content-Type": "multipart/form-data",
                         "Authorization": "Bearer " + token // Убедитесь, что есть пробел после "Bearer"
                     }
                 });

@@ -15,12 +15,15 @@ const ProductPageComponent = () => {
     // Статус заказа (успешно/не успешно создан)
     const [orderStatus, setOrderStatus] = useState(false);
 
+    // Темплейт для отображения изображений (временное решение, думаю)
+    const imageTemplate = "https://localhost:7299/uploads/";
+
     ///summary
     /// Обновить токен
     ///summary
     const UpdateToken = async () => {
         try{
-            const response = await axios.get("https://localhost:7777/api/token/update", {
+            const response = await axios.get("https://localhost:7299/api/token/update", {
                 headers:{
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
@@ -107,6 +110,7 @@ const ProductPageComponent = () => {
     /// summary
     /// Заказать товар
     /// summary
+    
     // Цена товара 
     // Количество товара => цена товара 
     // Создать и отправить запрос на сервак => отобразить инфу о заказе на странице компании (послать уведомление о том, что заказали продукт)
@@ -237,6 +241,17 @@ const ProductPageComponent = () => {
                     <div>
                         <div>
                             <h1>{product.name}</h1>
+                        </div>
+                        <div>
+                            {product.imageSrcs.map((src, index) => (
+                                <div>
+                                    <img 
+                                        key={index} 
+                                        src={`https://localhost:7299/uploads/${src}`}
+                                        alt={`Image ${index}`}
+                                    />
+                                </div>
+                            ))}
                         </div>
                         <div>
                             <p><strong>Описание:</strong> {product.description || "Нет описания"}</p>
