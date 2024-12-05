@@ -2,10 +2,11 @@ import React, { useState, useEffect} from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
 
-
+    const navigate = useNavigate();
     /// <summary>
     /// Обновить токен
     /// </summary>
@@ -33,6 +34,9 @@ const Header = () => {
                 const status = error.response.status;
 
                 switch(status) {
+                    case 401:
+                        navigate("/auth")
+                        break;
                     case 404:
                         alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
                         break;
@@ -67,6 +71,7 @@ const Header = () => {
 
                 switch(status) {
                     case 401:
+                        console.log("Check token method - 401 not authorized")
                         await UpdateToken();
                         break;
                     case 403:
@@ -118,7 +123,11 @@ const Header = () => {
                     {userId ? (
                         <>
                             <li>
-                                <Link to="/profile">Профиль</Link>
+                                <Link to="/reg">Зарегистрироваться</Link>
+                            </li>
+
+                            <li>
+                                <Link to="/auth">Войти</Link>
                             </li>
                         </>
                     ) : (
