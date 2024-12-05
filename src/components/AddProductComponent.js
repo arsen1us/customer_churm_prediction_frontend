@@ -20,8 +20,6 @@ const AddProductComponent = () => {
 
     const [categoryList, setCategoryList] = useState([]);
 
-    const [selectedCategory, setSelectedCategory] = useState("Выберите категорию")
-
     const navigate = useNavigate();
 
     /// <summary>
@@ -119,30 +117,44 @@ const AddProductComponent = () => {
         e.preventDefault();
         try{
             const token = localStorage.getItem("token");
+            const decodedToken = jwtDecode(token);
+    
+            if (decodedToken.CompanyId) {
 
-            if(token){
-                // декодирование токена
-                const decodedToken = jwtDecode(token);
-                // id - пользователя
-                if(decodedToken.CompanyId){
-                    const response = await axios.post("https://localhost:7299/api/product", {
-                        name: name,
-                        description: description,
-                        categoryId: categoryId,
-                        count:count,
-                        price: price,
-                        companyId: decodedToken.CompanyId
-                    }, {
-                        headers: {
-                            "Authorization": "Bearer" + localStorage.getItem("token")
-                        }
-                    });
-                
-                    if(response.status === 200)
-                    {
-                        if(response.data.product){
+            const formData = new FormData();
+            for (let i = 0; i < selectedFiles.length; i++) {
+                formData.append('images', selectedFiles[i]);
+            }
 
-                        }
+            // formData.append('name', name);
+            // formData.append('description', description);
+            // formData.append('categoryId', categoryId);
+            // formData.append('count', count);
+            // formData.append('price', price);
+            // formData.append('companyId', decodedToken.CompanyId);
+
+            //formData.append('images', selectedFiles);
+
+                const response = await axios.post("https://localhost:7299/api/product", 
+                    
+                    //formData
+                    { name: name,
+                    description: description,
+                    categoryId: categoryId,
+                    count: count,
+                    price: price,
+                    companyId: companyId,
+                    images: formData
+                    }
+                    , {
+                    headers: {
+                        "Authorization": "Bearer " + token // Убедитесь, что есть пробел после "Bearer"
+                    }
+                });
+
+                if (response.status === 200) {
+                    if (response.data.product) {
+                        // Обработка успешного ответа
                     }
                 }
             }
@@ -170,7 +182,7 @@ const AddProductComponent = () => {
                 }
             }
             else {
-                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!" + error);
             }
         }
     }
@@ -185,34 +197,12 @@ const AddProductComponent = () => {
 
     // =====================================================================
 
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedFiles, setSelectedFiles] = useState(null);
   
-    const handleUpload = async () => {
-      if (!selectedFile || selectedFile.length === 0) {
-        alert("Выберите изображение перед загрузкой");
-        return;
-      }
-  
-      const formData = new FormData();
-      formData.append("image", selectedFile); // Добавляем файл с ключом "image"
-  
-      try {
-        const response = await axios.post("https://localhost:7299/api/image/upload", {
-          file: formData 
-          }, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-  
-        if (response.status === 200) {
-          alert("Изображение успешно загружено!");
-        }
-      } catch (error) {
-        console.error("Ошибка при загрузке изображения:", error);
-        alert("Не удалось загрузить изображение.");
-      }
+    const handleFileChange = (event) => {
+        setSelectedFiles(event.target.files); // Сохраняем все выбранные файлы
     };
+
 
     // =====================================================================
 
@@ -247,15 +237,21 @@ const AddProductComponent = () => {
                             </div>
 
                             <div>
-                              <h2>Загрузить изображение</h2>
-                              <input 
-                                type="file"
-                                accept="image/*"
-                                multiple
-                                onChange={(e) => setSelectedFile(e.target.files[0])} />
-                              <button onClick={handleUpload}>Загрузить</button>
+                                <h2>Загрузить изображения (для нескольких)</h2>
+                                <input 
+                                    type="file"
+                                    accept="image/*"
+                                    multiple
+                                    onChange={handleFileChange} />
                             </div>
 
+                            <div>
+                                <h2>Загрузить изображение (для одного)</h2>
+                                <input 
+                                    type="file" 
+                                    onChange={handleFileChange} 
+                                    accept="image/*" />
+                            </div>
                             <div>
                                 <label>Id категории</label>
                                 <input 
