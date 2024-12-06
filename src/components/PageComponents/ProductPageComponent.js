@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
+import Popup from "../Popup";
+
 // Компонент для отображения страницы с продуктом
 const ProductPageComponent = () => {
 
@@ -229,11 +231,127 @@ const ProductPageComponent = () => {
         }
     }
 
+    /// <summary>
+    /// Добавить отзыв на продукт
+    /// <summary>
+    const AddReviewForProduct = async (e) => {
+        e.preventDefault();
+        try{
+            const token = localStorage.getItem("token");
+            if(token) {
+                const decodedToken = jwtDecode(token);
+
+                if(decodedToken.Id){
+                    const response = await axios.post("https://localhost:7299/api/review", {
+                        userId: decodedToken.Id,
+                        productId: product.id,
+                        text: reviewText,
+                        grade: reviewGrade
+                    }, {
+                        headers: {
+                            "Authorization": "Bearer " + localStorage.getItem("token")
+                        }
+                    });
+
+                    if(response && response.status === 200){
+                        if(response.data && response.data.review)
+                            alert("Отзыв успешно добавлен!");
+                    }
+                }
+            }
+        }
+        catch (error){
+
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await UpdateToken();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Добавить отзыв на продукт
+    /// <summary>
+    const LoadReviewsForProduct = async () => {
+        try{
+            const response = await axios.get(`https://localhost:7299/api/review/${productId}`, {
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            });
+            if(response && response.status === 200){
+                if(response.data && response.data.reviewModelList)
+                    setReviewModelList(response.data.reviewModelList);
+            }
+        }
+        catch (error){
+
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await UpdateToken();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Произошла ошибка во время получения списка отзывов. Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!" + error);
+            }
+        }
+    }
+
     useEffect(() => {
         if(productId){
+            // получить инфу о продукте
             GetProductByIdAsync(productId);
+            // получить список отзывов на продукт
+            LoadReviewsForProduct();
         }
     }, [productId])
+
+    // Управление popup ===================================
+
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const openPopup = () => setIsPopupOpen(true);
+    const closePopup = () => setIsPopupOpen(false);
+
+    const [reviewText, setReviewText] = useState("");
+    const [reviewGrade, setReviewGrade] = useState(1);
+    const [reviewModelList, setReviewModelList] = useState([]);
+
+    // Управление popup ===================================
+
     return (
         <div>
             {product ? (
@@ -301,6 +419,81 @@ const ProductPageComponent = () => {
             ) : (
                 <p>Загрузка продукта...</p>
             )}
+            <div>
+                <div>
+                    <div>
+                        <p>Отзывы на продукт</p> 
+                    </div>
+
+                    <div>
+                        <button onClick={openPopup}>Оставить отзыв для продукта</button>
+
+                        <Popup isOpen={isPopupOpen} onClose={closePopup} title="Оставить отзыв">
+                            <form method="post" onSubmit={AddReviewForProduct}>
+                                <div>
+                                    <label>Ваш отзыв</label>
+                                    <textarea 
+                                        type="text"
+                                        value={reviewText}
+                                        onChange={(e) => setReviewText(e.target.value)}
+                                        placeholder="Напишите отзыв" 
+                                        rows="5"></textarea>
+                                </div>
+
+                                <div>
+                                    <label>Оценка</label>
+                                    <input 
+                                        type="number"
+                                        value={reviewGrade}
+                                        onChange={(e) => setReviewGrade(e.target.value)}
+                                        max="5" min="1"
+                                        placeholder="Оцените от 1 до 5" />
+                                </div>
+
+                                <div>
+                                    <button type="submit">Отправить</button>
+                                </div>
+                            </form>
+                        </Popup>
+                    </div>
+
+                    <div>
+                        {reviewModelList.map((reviewModel, index) => (
+                            <div key={index}>
+                                <div>
+                                    <Link key={index} to="/profile">
+                                            {reviewModel.user.imageSrcs.map((src, index) => (
+                                                <div>
+                                                    <img 
+                                                        key={index} 
+                                                        src={`https://localhost:7299/uploads/${src}`}
+                                                        alt={`Image ${index}`}
+                                                        width="50px"
+                                                        style={{
+                                                            borderRadius: "50%", // Делает изображение круглым
+                                                            width: "50px", // Задаём ширину
+                                                            height: "50px", // Задаём высоту (должна быть равна ширине для круга)
+                                                            objectFit: "cover", // Обрезает изображение, чтобы не искажалось
+                                                        }}
+                                                    />
+                                                </div>
+                                            ))}
+                                            {reviewModel.user.firstName} {reviewModel.user.lastName}
+                                    </Link>
+                                </div>
+                                <div>
+                                    <div>
+                                        <p>Текст отзыва - {reviewModel.review.text}</p>
+                                    </div>
+                                    <div>
+                                        <p>Оценка - {reviewModel.review.grade}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

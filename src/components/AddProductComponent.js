@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Dropdown } from 'react-bootstrap';
 
+import Popup from "./Popup";
 
 const AddProductComponent = () => {
 

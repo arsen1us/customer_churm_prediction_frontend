@@ -188,7 +188,8 @@ const ProductListComponent = () => {
         }
         else{
                 FetchProductsAsync();
-                GetPromotionAsync();
+                // Запрос для получения рекламы
+                // GetPromotionAsync();
             }
     }, []);
 
