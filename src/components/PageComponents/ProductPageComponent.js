@@ -5,6 +5,10 @@ import { useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 import Popup from "../Popup";
+import ImageSlider from "../Slider";
+
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 // Компонент для отображения страницы с продуктом
 const ProductPageComponent = () => {
@@ -407,38 +411,39 @@ const ProductPageComponent = () => {
                         <div>
                             <h1>{product.name}</h1>
                         </div>
+
                         <div>
-                            {product.imageSrcs.map((src, index) => (
-                                <div>
-                                    <img 
-                                        key={index} 
-                                        src={`https://localhost:7299/uploads/${src}`}
-                                        alt={`Image ${index}`}
-                                    />
-                                </div>
-                            ))}
+                            <ImageSlider imageSrcs={product.imageSrcs}/>
                         </div>
+
                         <div>
                             <p><strong>Описание:</strong> {product.description || "Нет описания"}</p>
                         </div>
+
                         <div>
                             <p><strong>Цена:</strong> {product.price} ₽</p>
                         </div>
+
                         <div>
                             <p><strong>Категория ID:</strong> {product.categoryId}</p>
                         </div>
+
                         <div>
                             <p><strong>Категория ID:</strong> {product.categoryId}</p>
                         </div>
+
                         <div>
                             <p><strong>Количество покупок:</strong> {product.purchaseCount}</p>
                         </div>
+
                         <div>
                             <p><strong>Частота покупок:</strong> {product.purchaseFrequency}</p>
                         </div>
+
                         <div>
                         <p><strong>Среднее количество заказов:</strong> {product.averageOrderValue}</p>
                         </div>
+                        
                     </div>
 
                     <div>

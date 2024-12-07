@@ -7,12 +7,31 @@ import {Link} from "react-router-dom"
 const ProductItemComponent = ({product}) => {
 
     return (
-        <div className="product-card">
+        <div 
+            className="product-card"
+            stype={{display: 'grid',
+                    gridTemplateColumns: 'repeat(5, 1fr)', /* 5 колонок по умолчанию */
+                    gap: '20px'}}>
             <Link to={`/product/${product.id}`}>
-                <h2>{product.name}</h2>
-                <p>{product.id}</p>
-                <p>{product.description}</p>
-                <p>Price: ${product.price}</p>
+                <div>
+                    <img  
+                        src={`https://localhost:7299/uploads/${product.imageSrcs[0]}`}
+                        alt={`Image {}`}
+                        width="100px"
+                    />
+                </div>
+                <div>
+                    <h2>{product.name}</h2>
+                </div>
+                <div>
+                    <p>{product.id}</p>
+                </div>
+                <div>
+                    <p>{product.description}</p>
+                </div>
+                <div>
+                    <p>Price: ${product.price}</p>
+                </div>
             </Link>
         </div>
     );

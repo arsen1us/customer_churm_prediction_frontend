@@ -275,25 +275,22 @@ const ProductListComponent = () => {
                 
                 <div>
                     <ul>
+                        <div
+                            style={{ 
+                                display: 'grid', 
+                                gridTemplateColumns: 
+                                'repeat(auto-fill, minmax(200px, 1fr))', 
+                                gap: '20px' }}>
                         {entityList.map((entity, index) => {
                             return (
                                 <li key={index}>
                                     {entity.name && (
                                         <ProductItemComponent product={entity}/>
                                     )}
-                                    {entity.title && (
-                                        <div>
-                                            <div>
-                                                <p>{entity.title}</p>
-                                            </div>
-                                            <div>
-                                                <p>{entity.content}</p>
-                                            </div>
-                                        </div>
-                                    )}
                                 </li>
                             );
                         })}
+                        </div>
                     </ul>
                 </div>
 
