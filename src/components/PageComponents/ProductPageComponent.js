@@ -11,6 +11,7 @@ const ProductPageComponent = () => {
 
     const {productId} = useParams();
     const [product, setProduct] = useState(null);
+    const [company, setCompany] = useState(null);
 
     const [productCount, setProductCount] = useState(0);
 
@@ -109,10 +110,54 @@ const ProductPageComponent = () => {
         }
     }
 
+    /// <summary>
+    /// Получить компанию по id
+    /// </summary>
+    const GetCompanyByProductIdAsync = async () => {
+        try{
+                const response = await axios.get(`https://localhost:7299/api/company/product/${productId}`, {
+                    headers:{
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                });
+    
+                if(response && response.status === 200) {
+                    if(response.data.company) {
+                        setCompany(response.data.company);
+                    }
+                }
+        }
+        catch (error){
+
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await UpdateToken();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
+        }
+    }
+
     /// summary
     /// Заказать товар
     /// summary
-    
     // Цена товара 
     // Количество товара => цена товара 
     // Создать и отправить запрос на сервак => отобразить инфу о заказе на странице компании (послать уведомление о том, что заказали продукт)
@@ -337,6 +382,8 @@ const ProductPageComponent = () => {
             GetProductByIdAsync(productId);
             // получить список отзывов на продукт
             LoadReviewsForProduct();
+            // получить 
+            GetCompanyByProductIdAsync();
         }
     }, [productId])
 
@@ -420,6 +467,50 @@ const ProductPageComponent = () => {
                 <p>Загрузка продукта...</p>
             )}
             <div>
+
+                <div>
+                    {company ? (
+                        <>
+                            <Link to={`/company/${company.id}`}>
+                                <div>
+                                    {company.imageSrcs ? (
+                                        <>
+                                        {company.imageSrcs.map((src, index) => (
+                                            <div>
+                                                <img 
+                                                    key={index} 
+                                                    src={`https://localhost:7299/uploads/${src}`}
+                                                    alt={`Image ${index}`}
+                                                    width="50px"
+                                                    style={{
+                                                        borderRadius: "50%", // Делает изображение круглым
+                                                        width: "50px", // Задаём ширину
+                                                        height: "50px", // Задаём высоту (должна быть равна ширине для круга)
+                                                        objectFit: "cover", // Обрезает изображение, чтобы не искажалось
+                                                    }}
+                                                />
+                                            </div>
+                                        ))}
+                                        </>
+                                    ) : (
+                                        <>
+                                            Не удалось загрузить изображение 
+                                        </>
+                                    )}
+                                </div>
+
+                                <div>
+                                    Company name: {company.name}
+                                </div>
+                            </Link>
+                        </>
+                    ) : (
+                        <>
+                            Не удалось загрузить информацию о компании
+                        </>
+                    )}
+                </div>
+
                 <div>
                     <div>
                         <p>Отзывы на продукт</p> 

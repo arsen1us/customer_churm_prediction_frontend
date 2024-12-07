@@ -15,7 +15,7 @@ const AddCompanyComponent = () => {
     /// </summary>
     const UpdateToken = async () => {
         try{
-            const response = await axios.get("https://localhost:7777/api/token/update", {
+            const response = await axios.get("https://localhost:7299/api/token/update", {
                 headers:{
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
@@ -66,12 +66,17 @@ const AddCompanyComponent = () => {
                 const decodedToken = jwtDecode(token);
                 // id - пользователя
                 if(decodedToken.Id){
+                    const formData = new FormData();
 
-                    const response = await axios.post("https://localhost:7299/api/company", {
-                       name: companyName,
-                       description: companyDescription,
-                       userId: decodedToken.Id
-                    }, {
+                    for (let i = 0; i < selectedFiles.length; i++) {
+                        formData.append('images', selectedFiles[i]);
+                    }
+        
+                    formData.append("name", companyName);
+                    formData.append("description", companyDescription);
+                    formData.append("userId", decodedToken.Id);
+
+                    const response = await axios.post("https://localhost:7299/api/company", formData, {
                         headers:{
                             "Authorization": "Bearer " + localStorage.getItem("token")
                         }
@@ -114,6 +119,17 @@ const AddCompanyComponent = () => {
             }
         }
     }
+
+    // =====================================================================
+
+    const [selectedFiles, setSelectedFiles] = useState(null);
+  
+    const handleFileChange = (event) => {
+        setSelectedFiles(event.target.files); // Сохраняем все выбранные файлы
+    };
+
+    // =====================================================================
+
     return (
         <div>
             <div>
@@ -122,6 +138,18 @@ const AddCompanyComponent = () => {
                 </div>
                 <div>
                     <form method="post" onSubmit={AddCompanyAsync}>
+
+                        <div>
+                            <h2>Загрузить аватарку (для нескольких)</h2>
+                            <input 
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={handleFileChange} 
+                                required
+                                />
+                        </div>
+
                         <div>
                             <label>Введите название</label>
                             <input 

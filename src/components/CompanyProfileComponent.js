@@ -262,64 +262,98 @@ const CompanyProfileComponent = () => {
     return (
         <div>
             <div>
-            Страница компании (будет отображаться обычная страница если роль пользователя 
-            - обычный юзер или авторизированный пользоавтель, или страница админа компании, если пользователь Имеет роль админа)
-            </div>
-            <div>
-                <div>
-                    <div>
-                        <Link to={`/company-settings/${companyId}`}>Настройки компании</Link>
-                    </div>
-                    <div>
-                        <h3>Управление рекламой</h3>
-                    </div>
-                    <div>
-                        <Link to={`/promotion/${companyId}`}>
-                            Перейти к настройке рекламы
-                        </Link>
-                    </div>
-                    <div>
-                        <Link to={`/coupon/${companyId}`}>
-                            Перейти к настройке купонов
-                        </Link>
-                    </div>
-                </div>
-                <div>
-                    <div>
-                        <h3>Список заказов</h3>
-                    </div>
-                    <div>
-                        {orderList.length > 0 ? (
-                            orderList.map((order, index) => (
-                                <OrderItemComponent key={index} order={order}/>
-                            ))
-                        ) : (
-                            <>
-                                <p>Заказов в данный момент нет</p>
-                            </>
-                        )}
-                    </div>
-                </div>
-                <div>
-                    <div>
-                        <h3>Список продуктов</h3>
-                    </div>
-                    <div>
+                {company ? (
+                    <>
                         <div>
-                            <Link to="/addproduct">Добавить продукт</Link>
+                            <div>
+                                <p>Название: {company.name}</p>
+                            </div>
+
+                            <div>
+                                <p>Описание: {company.description}</p>
+                            </div>
+                            <div>
+                                {company.imageSrcs ? (
+                                    <>
+                                        {company.imageSrcs.map((src, index) => (
+                                            <div>
+                                                <img 
+                                                    key={index} 
+                                                    src={`https://localhost:7299/uploads/${src}`}
+                                                    alt={`Image ${index}`}
+                                                    width="200px"
+                                                />
+                                            </div>
+                                        ))}
+                                    </>
+                                ) : (
+                                    <>
+
+                                    </>)}
+                            </div>
                         </div>
-                        <ul>
-                            {productList.map((product, index) => (
-                                <li key={index}>
-                                    <div>
-                                        <ProductItemComponent product={product}/>
-                                    </div>
-                                </li>
-                            ))
-                            }
-                        </ul>
-                    </div>
-                </div>
+
+                        <div>
+                            <div>
+                                <Link to={`/company-settings/${companyId}`}>Настройки компании</Link>
+                            </div>
+                            <div>
+                                <h3>Управление рекламой</h3>
+                            </div>
+                            <div>
+                                <Link to={`/promotion/${companyId}`}>
+                                    Перейти к настройке рекламы
+                                </Link>
+                            </div>
+                            <div>
+                                <Link to={`/coupon/${companyId}`}>
+                                    Перейти к настройке купонов
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div>
+                                <h3>Список заказов</h3>
+                            </div>
+                            <div>
+                                {orderList.length > 0 ? (
+                                    orderList.map((order, index) => (
+                                        <OrderItemComponent key={index} order={order}/>
+                                    ))
+                                ) : (
+                                    <>
+                                        <p>Заказов в данный момент нет</p>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+
+                        <div>
+                            <div>
+                                <h3>Список продуктов</h3>
+                            </div>
+                            <div>
+                                <div>
+                                    <Link to="/addproduct">Добавить продукт</Link>
+                                </div>
+                                <ul>
+                                    {productList.map((product, index) => (
+                                        <li key={index}>
+                                            <div>
+                                                <ProductItemComponent product={product}/>
+                                            </div>
+                                        </li>
+                                    ))
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                    </>
+                )}
             </div>
         </div>
     );

@@ -189,23 +189,30 @@ const Header = () => {
                             {user ? (
                                 <>
                                     <Link to="/profile">
-                                        {user.imageSrcs.map((src, index) => (
-                                            <div>
-                                                <img 
-                                                    key={index} 
-                                                    src={`https://localhost:7299/uploads/${src}`}
-                                                    alt={`Image ${index}`}
-                                                    width="50px"
-                                                    style={{
-                                                        borderRadius: "50%", // Делает изображение круглым
-                                                        width: "50px", // Задаём ширину
-                                                        height: "50px", // Задаём высоту (должна быть равна ширине для круга)
-                                                        objectFit: "cover", // Обрезает изображение, чтобы не искажалось
-                                                    }}
-                                                />
-                                            </div>
-                                        ))}
-                                        {user.firstName} {user.lastName}
+                                    {user.imageSrcs ? (
+                                        <>
+                                            {user.imageSrcs.map((src, index) => (
+                                                <div>
+                                                    <img 
+                                                        key={index} 
+                                                        src={`https://localhost:7299/uploads/${src}`}
+                                                        alt={`Image ${index}`}
+                                                        width="50px"
+                                                        style={{
+                                                            borderRadius: "50%", // Делает изображение круглым
+                                                            width: "50px", // Задаём ширину
+                                                            height: "50px", // Задаём высоту (должна быть равна ширине для круга)
+                                                            objectFit: "cover", // Обрезает изображение, чтобы не искажалось
+                                                        }}
+                                                    />
+                                                </div>
+                                            ))}
+                                        </>
+                                    ) : (
+                                        <>
+                                        </>
+                                    )}
+                                    {user.firstName} {user.lastName}
                                     </Link>
                                 </>
                             ) : (
