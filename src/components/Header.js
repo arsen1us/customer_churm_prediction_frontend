@@ -4,6 +4,8 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+import NotificationSystem from "./Notification";
+
 const Header = () => {
 
     const navigate = useNavigate();
@@ -251,6 +253,11 @@ const Header = () => {
                         </li>
                     </>
                     )}
+                    
+                    <li>
+                        <p>Система уведомлений</p>
+                        <NotificationSystem/>
+                    </li>
                 </ul>
             </nav>
         </div>
