@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 const HandlePromotionComponent = () => {
 
     const {companyId} = useParams();
+    
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [imageUrl, setImageUrl] = useState("");
@@ -24,7 +25,7 @@ const HandlePromotionComponent = () => {
     /// summary
     const UpdateToken = async () => {
         try{
-            const response = await axios.get("https://localhost:7777/api/token/update", {
+            const response = await axios.get("https://localhost:7299/api/token/update", {
                 headers:{
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }

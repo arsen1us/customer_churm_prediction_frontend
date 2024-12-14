@@ -58,36 +58,37 @@ const RegisterForm = () => {
                 Форма регистрации
             </div>
             <form method="post" onSubmit={HandleSubmit}>
+                
                 <div>
-
+                    <label>FirstName</label>
+                    <input 
+                        type="text"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        placeholder="First name"
+                    />
                 </div>
-                <label>FirstName</label>
-                <input 
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="First name"
-                />
+                
                 <div>
+                    <label>LastName</label>
+                    <input 
+                        type="text"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        placeholder="Second name"
+                    />    
+                </div>
+                
+                <div>
+                    <label>Email</label>
+                    <input 
+                        type="text"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Email"
+                    />
+                </div>
                     
-                </div>
-                <label>LastName</label>
-                <input 
-                    type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    placeholder="Second name"
-                />
-                <div>
-                    
-                </div>
-                <label>Email</label>
-                <input 
-                    type="text"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Email"
-                />
                 <div>
                     <label>Password</label>
                     <input 

@@ -24,6 +24,7 @@ const NotificationSystem = () => {
 
                 // Подписка на колбэки с хаба сигналр
                 connection.on("ReceiveNotification", (message) => {
+                    console.log("Сообщение получено: " + message)
                     setNotificationList((prev) => [...prev, message]);
                 });
             })

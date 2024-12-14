@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect, useRef} from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
@@ -173,9 +173,185 @@ const Header = () => {
 
     // Временное решение (как обычно) =======================================================
 
+
+    // Отслеживание действий пользователя ===================================================
+
+
+    const startSendingData = () => {
+        // Если никакая вкладка не отправляет информацию о сессии
+        if(!localStorage.getItem("sendingData")){
+            localStorage.setItem("sendingData", true);
+
+            setInterval(UpdateUserSession, 60000);
+        }
+    }
+
+    /// <summary>
+    /// Обновить информацию о сессии пользователя
+    /// <summary>
+    const UpdateUserSession = async () => {
+        try{
+            const token = localStorage.getItem("token");
+            if(token){
+                const decodedToken = jwtDecode(token);
+                if(decodedToken){
+                    if(decodedToken.Id){
+                        const response = await axios.put(`https://localhost:7299/api/session/${decodedToken.Id}`, {
+                            userId:decodedToken.id,
+                            sessionTimeStart: new Date().toISOString()
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer "+ localStorage.getItem("token")
+                            }
+                        });
+
+                        if(response && response.status === 200){
+                            console.log("session updated");
+                        }
+                    }
+                }
+            }
+        }
+        catch (error){
+
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await UpdateToken();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 405:
+                        alert("Ошибка 405. Method Not Allowed (Не могу пока это починить)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Создать сессию
+    /// </summary>
+    const CreateUserSessionAsync = async () => {
+        try{
+            console.log("user data updated")
+            const token = localStorage.getItem("token");
+            if(token){
+                const decodedToken = jwtDecode(token);
+                if(decodedToken){
+                    if(decodedToken.Id){
+                        const response = await axios.post(`https://localhost:7299/api/session`, {
+                            userId:decodedToken.id,
+                            sessionTimeStart: new Date().toISOString()
+                        }, {
+                            headers: {
+                                "Authorization": "Bearer "+ localStorage.getItem("token")
+                            }
+                        });
+
+                        if(response && response.status === 200){
+                            console.log("session created");
+                            startSendingData();
+                        }
+                    }
+                }
+            }
+        }
+        catch (error){
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await UpdateToken();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 405:
+                        alert("Ошибка 405. Method Not Allowed (Не могу пока это починить)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
+        }
+    }
+
+
+    const timeoutId = useRef(null);
+
+    useEffect(() => {
+        const handleMouseMove = () => {
+            if (timeoutId.current) {
+                clearTimeout(timeoutId.current);
+            }
+
+            timeoutId.current = setTimeout(() => {
+                console.log("mousemove after 3 seconds delay");
+            }, 3000);
+        };
+
+        const handleClick = () => {
+            if (timeoutId.current) {
+                clearTimeout(timeoutId.current);
+            }
+
+            timeoutId.current = setTimeout(() => {
+                console.log("click after 3 seconds delay");
+            }, 3000);
+        };
+
+        window.addEventListener("mousemove", handleMouseMove);
+        window.addEventListener("click", handleClick);
+
+        return () => {
+            window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("click", handleClick);
+
+            if (timeoutId.current) {
+                clearTimeout(timeoutId.current);
+            }
+        };
+    }, []);
+
+    // Удалить переменную из localStorage, отвечающую за контроль сессии
+    window.addEventListener("beforeunload", () => {
+        localStorage.removeItem("sendingData");
+    })
+
+
+    // Отслеживание действий пользователя ===================================================
+
     useEffect(() => {
         CheckToken();
         GetUserInfo();
+
+        // Начать отправку данных для сессии
+        CreateUserSessionAsync();
     }, [])
 
     return(

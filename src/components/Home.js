@@ -6,7 +6,6 @@ import Select from "react-select/base";
 import HandleProductComponent from "./HandleComponents/HandleProductComponent";
 import ProductListComponent from "./ListComponents/ProductListComponent";
 import PromotionComponent from "./PromotionComponent";
-import NotificationSystem from "./Notification";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Dropdown } from 'react-bootstrap';
