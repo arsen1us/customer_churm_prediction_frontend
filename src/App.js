@@ -36,6 +36,10 @@ import AddCouponComponent from './components/AddCouponComponent';
 
 import CartComponent from './components/CartComponent';
 
+import ChurnPrediction from './components/ChurnPredictionComponent';
+
+import NotificationSystem from './components/Notification';
+
 function App() {
   return (
     <div className="App">
@@ -78,10 +82,15 @@ function App() {
           <Route path="handle-company" element={<HandleCompanyComponent/>}/>
 
           <Route path="/cart" element={<CartComponent/>}/>
+
+          <Route path="/churn-prediction" element={<ChurnPrediction/>}/>
+          
+          <Route path="/notifications" element={<NotificationSystem/>}/>
+
         </Routes>
       </Router>
       <footer>
-          <Footer/>
+          
         </footer>
     </div>
   );

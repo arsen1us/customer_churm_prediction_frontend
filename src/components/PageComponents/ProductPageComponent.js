@@ -380,6 +380,60 @@ const ProductPageComponent = () => {
         }
     }
 
+
+    /// <summary>
+    /// Добавить действие Добавить в корзину
+    /// </summary>
+    const AddActionAsync = async () => {
+        try{
+            const token = localStorage.getItem("token");
+            if(token) {
+                const decodedToken = jwtDecode(token);
+
+                if(decodedToken.Id){
+                    const response = await axios.get(`https://localhost:7299/api/user-action/add-to-cart`,{
+                        userId: decodedToken.Id,
+                        productId: productId
+                    }, {
+                        headers: {
+                            "Authorization": "Bearer " + localStorage.getItem("token")
+                        }
+                    });
+                    if(response && response.status === 200){
+                        if(response.data && response.data.isSuccess === true)
+                            alert("Действие Добавить в корзину было успешно добавлено")
+                    }
+                }
+            }
+        }
+        catch (error){
+
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await UpdateToken();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Произошла ошибка во время получения списка отзывов. Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!" + error);
+            }
+        }
+    }
+
     useEffect(() => {
         if(productId){
             // получить инфу о продукте

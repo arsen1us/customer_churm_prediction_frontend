@@ -5,6 +5,8 @@ import { jwtDecode } from "jwt-decode";
 import ProductItemComponent from "./ListItemComponents/ProductItemComponent";
 import OrderItemComponent from "./ListItemComponents/OrderItemComponent";
 
+import "../CompanyProfile.css"
+
 // Надо откуда-то достать id компании
 
 const CompanyProfileComponent = () => {
@@ -261,98 +263,82 @@ const CompanyProfileComponent = () => {
 
     return (
         <div>
-            <div>
+            <div className="company-container">
                 {company ? (
                     <>
-                        <div>
-                            <div>
-                                <p>Название: {company.name}</p>
-                            </div>
+                        <div className="company-left">
+                            {/* Левая часть: информация и настройки */}
+                            <div className="company-info">
 
-                            <div>
-                                <p>Описание: {company.description}</p>
-                            </div>
-                            <div>
-                                {company.imageSrcs ? (
-                                    <>
-                                        {company.imageSrcs.map((src, index) => (
-                                            <div>
-                                                <img 
-                                                    key={index} 
-                                                    src={`https://localhost:7299/uploads/${src}`}
-                                                    alt={`Image ${index}`}
-                                                    width="200px"
-                                                />
-                                            </div>
-                                        ))}
-                                    </>
-                                ) : (
-                                    <>
+                                <div>
+                                    {company.imageSrcs && company.imageSrcs.map((src, index) => (
+                                        <div key={index} className="company-avatar">
+                                            <img 
+                                                src={`https://localhost:7299/uploads/${src}`}
+                                                alt={`Image ${index}`}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
 
-                                    </>)}
-                            </div>
-                        </div>
+                                <div>
+                                    <h4>{company.name}</h4>
+                                </div>
 
-                        <div>
-                            <div>
-                                <Link to={`/company-settings/${companyId}`}>Настройки компании</Link>
+                                <div>
+                                    <p>{company.description}</p>
+                                </div>
                             </div>
-                            <div>
+                                
+                            <div className="company-settings">
+                                <h3>Настройки компании</h3>
+                                <Link to={`/company-settings/${companyId}`}>Перейти к настройкам</Link>
                                 <h3>Управление рекламой</h3>
-                            </div>
-                            <div>
-                                <Link to={`/promotion/${companyId}`}>
-                                    Перейти к настройке рекламы
-                                </Link>
-                            </div>
-                            <div>
-                                <Link to={`/coupon/${companyId}`}>
-                                    Перейти к настройке купонов
-                                </Link>
+                                <Link to={`/promotion/${companyId}`}>Перейти к настройке рекламы</Link>
+                                <h3>Управление купонами</h3>
+                                <Link to={`/coupon/${companyId}`}>Перейти к настройке купонов</Link>
                             </div>
                         </div>
-
-                        <div>
-                            <div>
+                                
+                        <div className="company-right">
+                            {/* Правая часть: заказы и продукты */}
+                            <div className="company-orders">
                                 <h3>Список заказов</h3>
-                            </div>
-                            <div>
                                 {orderList.length > 0 ? (
                                     orderList.map((order, index) => (
-                                        <OrderItemComponent key={index} order={order}/>
+                                        <OrderItemComponent key={index} order={order} />
                                     ))
                                 ) : (
-                                    <>
-                                        <p>Заказов в данный момент нет</p>
-                                    </>
+                                    <p>Заказов в данный момент нет</p>
                                 )}
                             </div>
-                        </div>
-
-                        <div>
-                            <div>
+                            
+                            <div className="company-products">
                                 <h3>Список продуктов</h3>
-                            </div>
-                            <div>
-                                <div>
-                                    <Link to="/addproduct">Добавить продукт</Link>
-                                </div>
+                                <Link to="/addproduct">Добавить продукт</Link>
                                 <ul>
-                                    {productList.map((product, index) => (
-                                        <li key={index}>
-                                            <div>
-                                                <ProductItemComponent product={product}/>
-                                            </div>
-                                        </li>
-                                    ))
-                                    }
-                                </ul>
+                        <div
+                            style={{ 
+                                display: 'grid', 
+                                gridTemplateColumns: 
+                                'repeat(auto-fill, minmax(200px, 1fr))', 
+                                gap: '20px', margin: '20px 30px 0px 0px' }}>
+                            {productList.map((product, index) => {
+                                return (
+                                    <li key={index}>
+                                        {product.name && (
+                                            <ProductItemComponent product={product}/>
+                                        )}
+                                    </li>
+                                );
+                        })}
+                        </div>
+                    </ul>
                             </div>
                         </div>
                     </>
                 ) : (
-                    <>
-                    </>
+                    <p>Информация о компании не найдена</p>
                 )}
             </div>
         </div>

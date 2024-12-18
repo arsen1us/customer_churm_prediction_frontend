@@ -1,0 +1,68 @@
+/* Общий контейнер навигации */
+.header-nav {
+  background-color: #fff;
+  border-bottom: 1px solid #eaeaea;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between; /* Разделение на левую и правую стороны */
+  align-items: center;
+  font-family: Arial, sans-serif;
+}
+
+/* Левый блок навигации */
+.nav-links-left {
+  display: flex;
+  gap: 20px; /* Отступ между элементами */
+  align-items: center;
+}
+
+/* Правый блок навигации */
+.nav-links-right {
+  display: flex;
+  gap: 20px; /* Отступ между элементами */
+  align-items: center;
+}
+
+/* Стили для ссылок */
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #007bff;
+}
+
+/* Стили иконок */
+.nav-links img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.nav-links img:hover {
+  transform: scale(1.1);
+}
+
+/* Профиль пользователя */
+.profile-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}

@@ -1,0 +1,59 @@
+.profile-container {
+    display: flex; /* Flexbox для размещения блоков рядом */
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px; /* Отступ между колонками */
+    padding: 20px;
+  }
+  
+  .profile-info {
+    flex: 1; /* Левая часть занимает 50% пространства */
+    max-width: 300px;
+    text-align: center;
+  }
+  
+  .avatar-container {
+    margin-bottom: 15px;
+  }
+  
+  .avatar-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; /* Делаем изображение круглым */
+    object-fit: cover; /* Заполняет контейнер без искажений */
+    border: 2px solid #ccc; /* Рамка вокруг аватарки */
+  }
+  
+  .edit-link {
+    display: inline-block;
+    margin-top: 10px;
+    text-decoration: none;
+    color: #007bff;
+  }
+  
+  .logout-button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .logout-button:hover {
+    background-color: #c82333;
+  }
+  
+  .order-list {
+    flex: 2; /* Правая часть занимает 50% пространства */
+  }
+  
+  .order-list h4 {
+    margin-bottom: 10px;
+  }
+  
+  .order-list ul {
+    list-style: none; /* Убираем маркеры у списка */
+    padding: 0;
+  }

@@ -1,0 +1,21 @@
+.search-container {
+    display: flex;
+    justify-content: flex-end; /* Прилипает input к правому краю */
+    margin: 20px 30px 0px 0px ; /* Отступ сверху и снизу */
+}
+
+.search-input {
+    width: 300px; /* Ширина input */
+    height: 40px; /* Высота input */
+    padding: 0 15px; /* Внутренние отступы */
+    font-size: 16px;
+    border-radius: 20px; /* Округлые углы */
+    border: 1px solid #ccc;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+}

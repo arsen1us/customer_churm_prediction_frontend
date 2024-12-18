@@ -2,37 +2,41 @@ import React, {useState, useEffect} from "react";
 import axios from "axios";
 import {Link} from "react-router-dom"
 
+import "../../ProductCard.css"
+import "../../Search.css"
 
 // Компонент для отображения элемента в списке продуктов
 const ProductItemComponent = ({product}) => {
 
     return (
-        <div 
-            className="product-card"
-            stype={{display: 'grid',
-                    gridTemplateColumns: 'repeat(5, 1fr)', /* 5 колонок по умолчанию */
-                    gap: '20px'}}>
-            <Link to={`/product/${product.id}`}>
-                <div>
-                    <img  
-                        src={`https://localhost:7299/uploads/${product.imageSrcs[0]}`}
-                        alt={`Image {}`}
-                        width="100px"
+        <div>
+            <div className="product-card">
+                <Link to={`/product/${product.id}`} className="product-link">
+                  <div className="product-image">
+                    <img
+                      src={`https://localhost:7299/uploads/${product.imageSrcs[0]}`}
+                      alt={product.name}
                     />
-                </div>
-                <div>
-                    <h2>{product.name}</h2>
-                </div>
-                <div>
-                    <p>{product.id}</p>
-                </div>
-                <div>
-                    <p>{product.description}</p>
-                </div>
-                <div>
-                    <p>Price: ${product.price}</p>
-                </div>
-            </Link>
+                    {product.isSale && <span className="sale-badge">Распродажа</span>}
+                  </div>
+
+                  <div className="product-details">
+                    <h2 className="product-name">{product.name}</h2>
+                    <div className="product-pricing">
+                      <span className="current-price">{product.price} ₽</span>
+                      {product.oldPrice && (
+                        <span className="old-price">{product.oldPrice} ₽</span>
+                      )}
+                      {product.discount && (
+                        <span className="discount">-{product.discount}%</span>
+                      )}
+                    </div>
+                    <div className="product-rating">
+                      ⭐ {product.rating} <span>({product.reviewsCount} отзывов)</span>
+                    </div>
+                  </div>
+                </Link>
+            </div> 
         </div>
     );
 }

@@ -258,20 +258,15 @@ const ProductListComponent = () => {
     return (
         <div>
             <div>
-                <div>
-                    <h3>
-                        Список Продуктов
-                    </h3>
-                </div>
-
-                <div>
-                    <input
-                        type="text"
-                        value={input}
-                        placeholder="Search for products"
-                        onChange={(e) => setInput(e.target.value)}
-                    />
-                </div>
+            <div className="search-container">
+                <input
+                    type="text"
+                    value={input}
+                    placeholder="Найти продукт"
+                    onChange={(e) => setInput(e.target.value)}
+                    className="search-input"
+                />
+            </div>
                 
                 <div>
                     <ul>
@@ -280,7 +275,7 @@ const ProductListComponent = () => {
                                 display: 'grid', 
                                 gridTemplateColumns: 
                                 'repeat(auto-fill, minmax(200px, 1fr))', 
-                                gap: '20px' }}>
+                                gap: '20px', margin: '20px 30px 0px 0px' }}>
                         {entityList.map((entity, index) => {
                             return (
                                 <li key={index}>
@@ -293,13 +288,6 @@ const ProductListComponent = () => {
                         </div>
                     </ul>
                 </div>
-
-                <div>
-                    <button onClick={(async () => await LoadProductAsync())} >
-                        Загрузить ещё
-                    </button>
-                </div>
-
             </div>
         </div>
     )

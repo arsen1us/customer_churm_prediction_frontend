@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 
 import NotificationSystem from "./Notification";
 
+import "../Header.css"
+
 const Header = () => {
 
     const navigate = useNavigate();
@@ -197,7 +199,7 @@ const Header = () => {
                 if(decodedToken){
                     if(decodedToken.Id){
                         const response = await axios.put(`https://localhost:7299/api/session/${decodedToken.Id}`, {
-                            userId:decodedToken.id,
+                            userId:decodedToken.Id,
                             sessionTimeStart: new Date().toISOString()
                         }, {
                             headers: {
@@ -247,16 +249,16 @@ const Header = () => {
     /// Создать сессию
     /// </summary>
     const CreateUserSessionAsync = async () => {
+
         try{
-            console.log("user data updated")
             const token = localStorage.getItem("token");
             if(token){
                 const decodedToken = jwtDecode(token);
                 if(decodedToken){
                     if(decodedToken.Id){
-                        const response = await axios.post(`https://localhost:7299/api/session`, {
-                            userId:decodedToken.id,
-                            sessionTimeStart: new Date().toISOString()
+                        const response = await axios.post("https://localhost:7299/api/session", {
+                            userId:decodedToken.Id,
+                            time: "2024-12-14T12:00:00Z" // new Date().toISOString(),
                         }, {
                             headers: {
                                 "Authorization": "Bearer "+ localStorage.getItem("token")
@@ -264,7 +266,7 @@ const Header = () => {
                         });
 
                         if(response && response.status === 200){
-                            console.log("session created");
+                            alert("session successfully created");
                             startSendingData();
                         }
                     }
@@ -356,86 +358,75 @@ const Header = () => {
 
     return(
         <div>
-            <nav>
-                <ul className="nav-links">
-                    <li>
-                        <Link to="/">Главная</Link>
-                    </li>
+            <nav className="header-nav">
+  {/* Левая часть */}
+  <ul className="nav-links nav-links-left">
 
-                    {userId ? (
-                        <li>
-                            {user ? (
-                                <>
-                                    <Link to="/profile">
-                                    {user.imageSrcs ? (
-                                        <>
-                                            {user.imageSrcs.map((src, index) => (
-                                                <div>
-                                                    <img 
-                                                        key={index} 
-                                                        src={`https://localhost:7299/uploads/${src}`}
-                                                        alt={`Image ${index}`}
-                                                        width="50px"
-                                                        style={{
-                                                            borderRadius: "50%", // Делает изображение круглым
-                                                            width: "50px", // Задаём ширину
-                                                            height: "50px", // Задаём высоту (должна быть равна ширине для круга)
-                                                            objectFit: "cover", // Обрезает изображение, чтобы не искажалось
-                                                        }}
-                                                    />
-                                                </div>
-                                            ))}
-                                        </>
-                                    ) : (
-                                        <>
-                                        </>
-                                    )}
-                                    {user.firstName} {user.lastName}
-                                    </Link>
-                                </>
-                            ) : (
-                                <>
-                                    <Link to="/profile">Профиль</Link>
-                                </>
-                            )}
-                        </li>
-                    ) : (
-                        <>
-                            <li>
-                                <Link to="/reg">Зарегистрироваться</Link>
-                            </li>
+    <li>
+      <Link to="/">Главная</Link>
+    </li>
 
-                            <li>
-                                <Link to="/auth">Войти</Link>
-                            </li>
-                        </>
-                    )}
-                    <li>
-                        <Link to="/category">Категории</Link>
-                    </li>
-                    <li>
-                        <Link to="/cart">Корзина</Link>
-                    </li>
-                    {companyId ? (
-                        <>
-                            <li>
-                                <Link to="/company-profile">Профиль компании</Link>
-                            </li>
-                        </>
-                    ) : (
-                    <>
-                        <li>
-                            <Link to="/company-add">Стать продавцом</Link>
-                        </li>
-                    </>
-                    )}
-                    
-                    <li>
-                        <p>Система уведомлений</p>
-                        <NotificationSystem/>
-                    </li>
-                </ul>
-            </nav>
+    <li>
+      <Link to="/category">Категории</Link>
+    </li>
+
+    <li>
+      <Link to="/churn-prediction">Управление пользователями</Link>
+    </li>
+  </ul>
+
+  {/* Правая часть */}
+  <ul className="nav-links nav-links-right">
+
+    {companyId ? (
+        <li>
+          <Link to="/company-profile">Профиль компании</Link>
+        </li>
+    ) : (
+        <li>
+          <Link to="/company-add">Стать продавцом</Link>
+        </li>
+    )}
+
+    <li>
+      <Link to="/notifications">
+        <img src="https://localhost:7299/icons/notification.png" alt="Уведомления" />
+      </Link>
+    </li>
+    <li>
+      <Link to="/cart">
+        <img src="https://localhost:7299/icons/cart.png" alt="Корзина" />
+      </Link>
+    </li>
+    {userId ? (
+      <li className="profile-link">
+        <Link to="/profile">
+          {user && user.imageSrcs ? (
+            <img
+              src={`https://localhost:7299/uploads/${user.imageSrcs[0]}`}
+              alt="User Avatar"
+              className="profile-avatar"
+            />
+          ) : (
+            <span className="default-avatar">👤</span>
+          )}
+          <span className="user-name">
+            {user?.firstName} {user?.lastName}
+          </span>
+        </Link>
+      </li>
+    ) : (
+      <>
+        <li>
+          <Link to="/reg">Регистрация</Link>
+        </li>
+        <li>
+          <Link to="/auth">Вход</Link>
+        </li>
+      </>
+    )}
+  </ul>
+</nav>
         </div>
     );
 };

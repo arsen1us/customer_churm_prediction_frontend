@@ -42,9 +42,6 @@ const Home = () => {
     return (
         <div>
             <div>
-                <h3>Главная страница</h3>
-            </div>
-            <div>
                 <ProductListComponent/>
             </div>
         </div>

@@ -3,6 +3,8 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import OrderItemComponent from "./ListItemComponents/OrderItemComponent";
 import { Link } from "react-router-dom";
+
+import "../Profile.css"
 const Profile = () => {
 
     const [user, setUser] = useState(null);
@@ -168,62 +170,57 @@ const Profile = () => {
 
     return (
         <div>
-            <div>
+            <div className="profile-container">
+              {/* Левая часть: Информация о пользователе */}
+              <div className="profile-info">
                 {user ? (
-                    <>
-                        <div>
-                            {user.imageSrcs.map((src, index) => (
-                                <div>
-                                    <img 
-                                        key={index} 
-                                        src={`https://localhost:7299/uploads/${src}`}
-                                        alt={`Image ${index}`}
-                                        width="200px"
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                        <h2>User information</h2>
-                        <div>
-                            
-                        </div>
-                        <p>FirstName: {user.firstName}</p>
-                        <div>
-                            
-                        </div>
-                        <p>LastName: {user.lastName}</p>
-                        <div>
-                            
-                        </div>
-                        <p>Email: {user.email}</p>
-                        <div>
-                            <Link to="/edit-profile">Редактировать</Link>
-                        </div>
-                        <div>
-                            <button onClick={LogOut}>Выйти</button>
-                        </div>
-                    </>
+                  <>
+                    {/* Аватар пользователя */}
+                    <div className="avatar-container">
+                      {user.imageSrcs.length > 0 ? (
+                        <img
+                          src={`https://localhost:7299/uploads/${user.imageSrcs[0]}`}
+                          alt="User Avatar"
+                          className="avatar-img"
+                        />
+                      ) : (
+                        <span className="default-avatar">👤</span>
+                      )}
+                    </div>
+                  
+                    {/* Имя пользователя */}
+                    <h4>{user.firstName} {user.lastName}</h4>
+                  
+                    {/* Ссылка на редактирование */}
+                    <div>
+                      <Link to="/edit-profile" className="edit-link">Редактировать</Link>
+                    </div>
+                  
+                    {/* Кнопка выхода */}
+                    <div>
+                      <button onClick={LogOut} className="logout-button">Выйти</button>
+                    </div>
+                  </>
                 ) : (
-                    <>
-                    Не удалось получить информацию о пользователе
-                    </>
+                  <p>Не удалось получить информацию о пользователе</p>
                 )}
-            </div>
-            <div>
+              </div>
+            
+              {/* Правая часть: Список заказов */}
+              <div className="order-list">
+                <h4>Список заказов</h4>
                 <ul>
-                    {orderList.length > 0 ? (
-                        <>
-                        {orderList.map((order, index) => (
-                            <OrderItemComponent order={order}/>
-                        ))}
-                        </>
-                    ) : (
-                    <>
-                        Делайте заказы
-                    </>
-                    )}
+                  {orderList.length > 0 ? (
+                    orderList.map((order, index) => (
+                      <OrderItemComponent key={index} order={order} />
+                    ))
+                  ) : (
+                    <p>Заказы отсутствуют</p>
+                  )}
                 </ul>
+              </div>
             </div>
+
         </div>
     );
 }
