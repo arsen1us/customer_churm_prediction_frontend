@@ -327,7 +327,9 @@ const Header = () => {
             }, 3000);
         };
 
+        // Добавление слушателя на движение мышки
         window.addEventListener("mousemove", handleMouseMove);
+        // Добавление слушателя на клик мышки
         window.addEventListener("click", handleClick);
 
         return () => {

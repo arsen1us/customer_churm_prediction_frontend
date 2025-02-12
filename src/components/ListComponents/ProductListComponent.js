@@ -77,7 +77,8 @@ const ProductListComponent = () => {
     ///summary
     const FetchProductsAsync = async () => {
         try{
-            const response = await axios.get(`https://localhost:7299/api/product/${pageNumber}/${pageSize}`, {
+            // fixme исопльзовался данный запрос: `https://localhost:7299/api/product/${pageNumber}/${pageSize}`
+            const response = await axios.get(`https://localhost:7299/api/product`, {
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
