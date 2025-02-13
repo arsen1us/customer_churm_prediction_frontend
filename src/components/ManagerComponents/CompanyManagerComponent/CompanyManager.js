@@ -23,7 +23,7 @@ const CompanyManager = () => {
 
     const [companyList, setCompanyList] = useState([]);
     // Метод для обновления токена
-    const {refreshToken} = useContext(AuthContext);
+    const {token, refreshToken} = useContext(AuthContext);
 
     /// summary
     /// Получить список компаний
@@ -32,7 +32,7 @@ const CompanyManager = () => {
         try{
             const response = await axios.get("https://localhost:7299/api/company", {
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
 
@@ -71,7 +71,7 @@ const CompanyManager = () => {
                 ownerIds: ownerIds
             }, {
                 headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
+                "Authorization": "Bearer " + token
             }
             });
 
@@ -110,7 +110,7 @@ const CompanyManager = () => {
                 ownerIds: updateOwnerIds
             }, {
             headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
+                "Authorization": "Bearer " + token
             }
             });
 
@@ -148,7 +148,7 @@ const CompanyManager = () => {
                 ownerIds: updateOwnerIds
             }, {
             headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
+                "Authorization": "Bearer " + token
             }
             });
             if(response.status && response.status === 200)

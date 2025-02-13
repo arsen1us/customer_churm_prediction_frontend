@@ -25,7 +25,7 @@ const ProductManager = () => {
     const [companyId, setCompanyId] = useState("67431437a422c6e797c334de");
 
     // Метод для обновления токена
-    const {refreshToken} = useContext(AuthContext);
+    const {token, refreshToken} = useContext(AuthContext);
 
     // Получить список категорий 
     const GetProductListAsync = async () => {
@@ -61,7 +61,7 @@ const ProductManager = () => {
                 companyId: companyId
             }, {
                 headers: {
-                    "Authorization": "Bearer" + localStorage.getItem("token")
+                    "Authorization": "Bearer" + token
                 }
             });
 
@@ -97,7 +97,7 @@ const ProductManager = () => {
                 // price: price
                 },{
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
             if(response.status === 200)
@@ -127,7 +127,7 @@ const ProductManager = () => {
         try{
             const response = await axios.delete(`https://localhost:7299/api/product/${productId}`, {
                 headers:{
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
             if(response.status === 200) {

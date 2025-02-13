@@ -13,38 +13,31 @@ const CartPage = () => {
     const [productList, setProductList] = useState([]);
 
     // Метод для обновления токена
-    const {refreshToken} = useContext(AuthContext);
+    const {user, token, refreshToken} = useContext(AuthContext);
 
     /// <summary>
     /// Получить корзину
     /// </summary>
     const GetCartAsync = async () => {
-        try{
-            const token = localStorage.getItem("token");
-            if(token) {
-                const decodedToken = jwtDecode(token);
-
-                if(decodedToken.Id){
-                    const response = await axios.get(`https://localhost:7299/api/cart/${decodedToken.Id}`, {
-                        headers:{
-                            "Authorization": "Bearer " + localStorage.getItem("token")
-                        }
-                    });
-
-                    if(response && response.status === 200){
-                        if(response.data && response.data.productList){
-                            setProductList(response.data.productList);
-
-                            setCartItems(response.data.productList.map(product => ({
-                                product,
-                                quantity: 0,
-                                isSelected: false
-                            })));
-                        }
-                    }
+        try{ 
+            const response = await axios.get(`https://localhost:7299/api/cart/${user.id}`, {
+                headers:{
+                    "Authorization": "Bearer " + token
+                }
+            })
+            if(response && response.status === 200){
+                if(response.data && response.data.productList){
+                    setProductList(response.data.productList)
+                    setCartItems(response.data.productList.map(product => ({
+                        product,
+                        quantity: 0,
+                        isSelected: false
+                    })));
                 }
             }
         }
+            
+        
         catch (error){
 
             if(error.response){
@@ -87,35 +80,27 @@ const CartPage = () => {
     const OrderProductAsync = async (e) => {
         e.preventDefault();
         try{
-            const token = localStorage.getItem("token");
-            if(token) {
-                const decodedToken = jwtDecode(token);
+            // Данные для тела запроса
+            const orderList = cartItems.map((item) => ({
+                productId: item.product.id,
+                quantity: item.quantity
+            }));
 
-                if(decodedToken.Id){
-                    // Данные для тела запроса
-                    const orderList = cartItems.map((item) => ({
-                        productId: item.product.id,
-                        quantity: item.quantity
-                    }));
+            const response = await axios.post("https://localhost:7299/api/order", {
+                userId: user.id,
+                orderList: orderList
+            }, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
 
-                    const response = await axios.post("https://localhost:7299/api/order", {
-                        userId: decodedToken.Id,
-                        orderList: orderList
-                    }, {
-                        headers: {
-                            "Authorization": "Bearer " + localStorage.getItem("token")
-                        }
-                    });
-                    
-                    if(response && response.status === 200)
-                    {
-                        // обработать успешное создание заказа
-                        if(response.data && response.data.orderStatus) {
-                            // setOrderStatus(response.data.orderStatus)
-                            alert(`Заказ успешно создан. Статус заказа - ${response.data.orderStatus}`)
-                        }
-                    }
-
+            if(response && response.status === 200)
+            {
+                // обработать успешное создание заказа
+                if(response.data && response.data.orderStatus) {
+                    // setOrderStatus(response.data.orderStatus)
+                    alert(`Заказ успешно создан. Статус заказа - ${response.data.orderStatus}`)
                 }
             }
         }

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { AuthContext } from "../../AuthProvider"
 import axios from "axios";
 
 const RegisterForm = () => {
@@ -9,47 +10,12 @@ const RegisterForm = () => {
     const [password, setPassword] = useState("");
     const [submitPassword, setSubmitPassword] = useState("");
 
+    // Метод для обновления токена
+    const {register} = useContext(AuthContext);
+
     const HandleSubmit = async (e) => {
         e.preventDefault();
-        try{
-            var response = await axios.post("https://localhost:7299/api/user/reg", 
-                {
-                    firstName: firstName,
-                    lastName: lastName,
-                    email: email,
-                    password: password,
-                 });
-            if(response.status === 200)
-            {
-                const authToken = response.data.token;
-
-                const token = authToken.replace("Bearer", "")
-                localStorage.setItem("token", token)
-            }
-        }
-        catch (error){
-
-            if(error.response){
-                const status = error.response.status;
-
-                switch(status) {
-                    case 400:
-                        alert("Ошибка 400. Скорее всего не верно переданы данные в теле запроса!")
-                        break;
-                    case 404:
-                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
-                        break;
-                    case 500:
-                        alert("Произошла ошибка сервера!")
-                        break;
-                    default:
-                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
-                }
-            }
-            else {
-                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
-            }
-        }
+        await register(firstName, lastName, email, password);
     }
 
     return(

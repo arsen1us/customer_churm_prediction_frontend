@@ -15,16 +15,15 @@ import {AuthContext} from "../../AuthProvider"
 const Header = () => {
 
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);
     const [productIds, setProductIds] = useState([]);
     // Подлючение пользователя 
     const [connection, setConnection] = useState(null);
     // Список уведомлений
     const [notificationList, setNotificationList] = useState([]);
     const [notificationsCount, setNotificationsCount] = useState(5);
-
+    const [companyId, setCompanyId] = useState("");
     // Метод для обновления токена
-    const {refreshToken} = useContext(AuthContext);
+    const {user, token, refreshToken} = useContext(AuthContext);
 
     // Управление popup ===================================
     
@@ -33,63 +32,23 @@ const Header = () => {
         const closePopup = () => setIsPopupOpen(false);
     
     // Управление popup ===================================
-    
-    /// <summary>
-    /// Проверить валидность токена
-    /// <summary>
-    const CheckToken = async () => {
-        try{
-            const response = await axios.get("https://localhost:7299/api/token/check", {
-                headers:{
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-        }
-        catch (error){
-
-            if(error.response){
-                const status = error.response.status;
-
-                switch(status) {
-                    case 401:
-                        console.log("Check token method - 401 not authorized")
-                        await refreshToken();
-                        break;
-                    case 403:
-                        alert("У вас недостаточно прав для доступа к ресурсу!")
-                        break;
-                    case 404:
-                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
-                        break;
-                    case 500:
-                        alert("Произошла ошибка сервера!")
-                        break;
-                    default:
-                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
-                }
-            }
-            else {
-                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
-            }
-        }
-    }
 
     /// <summary>
     /// Установить соединение с хабом SignalR 
     /// </summary>
     useEffect(() => {
-        const token = localStorage.getItem("token");
         if(token){
+
             const decodedToken = jwtDecode(token);
+            if(decodedToken.CompanyId){
+                setCompanyId(decodedToken.CompanyId);
+            }
+
             if(decodedToken){
                 if(decodedToken.Id){
                     const newConnection = new HubConnectionBuilder()
                     .withUrl("https://localhost:7299/notification-hub", {
-                        accessTokenFactory: () => {
-                            const token = localStorage.getItem("token");
-                            // console.log(token);
-                            return token;
-                        } 
+                        accessTokenFactory: token
                     })
                     .withAutomaticReconnect() // автоматическое переподключение
                     .configureLogging(LogLevel.Information) // логирование
@@ -127,82 +86,6 @@ const Header = () => {
             };
         }
     }, [connection]);
-    /// summary
-    /// Получить информацию о пользователе
-    /// summary
-    const GetUserInfo = async () => {
-        try{
-            const token = localStorage.getItem("token");
-            if(token){
-                const decodedToken = jwtDecode(token);
-                if(decodedToken){
-                    if(decodedToken.Id)
-                    {
-                        const response = await axios.get(`https://localhost:7299/api/user/${decodedToken.Id}`,
-                        {
-                            headers: {
-                                "Authorization": "Bearer "+ localStorage.getItem("token")
-                            }
-                        });
-
-                        if(response && response.status === 200){
-                            if(response.data && response.data.user)
-                            setUser(response.data.user);
-                        }
-                    }
-                }
-            }
-        }
-        catch (error){
-
-            if(error.response){
-                const status = error.response.status;
-
-                switch(status) {
-                    case 401:
-                        await refreshToken();
-                        break;
-                    case 403:
-                        alert("У вас недостаточно прав для доступа к ресурсу!")
-                        break;
-                    case 404:
-                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
-                        break;
-                    case 405:
-                        alert("Ошибка 405. Method Not Allowed (Не могу пока это починить)!")
-                        break;
-                    case 500:
-                        alert("Произошла ошибка сервера!")
-                        break;
-                    default:
-                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
-                }
-            }
-            else {
-                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
-            }
-        }
-    }
-
-    // Временное решение (как обычно) =======================================================
-
-    let userId = null;
-    let companyId = null;
-
-    const token = localStorage.getItem("token");
-
-    if(token) {
-        const decodedToken = jwtDecode(token);
-        if(decodedToken.Id){
-            userId = decodedToken.Id;
-        }
-        if(decodedToken.CompanyId){
-            companyId = decodedToken.CompanyId;
-        }
-    }
-
-    // Временное решение (как обычно) =======================================================
-
 
     // Отслеживание действий пользователя ===================================================
 
@@ -221,25 +104,16 @@ const Header = () => {
     /// <summary>
     const UpdateUserSession = async () => {
         try{
-            const token = localStorage.getItem("token");
-            if(token){
-                const decodedToken = jwtDecode(token);
-                if(decodedToken){
-                    if(decodedToken.Id){
-                        const response = await axios.put(`https://localhost:7299/api/session/${decodedToken.Id}`, {
-                            userId:decodedToken.Id,
-                            // sessionTimeStart: new Date().toISOString()
-                        }, {
-                            headers: {
-                                "Authorization": "Bearer "+ localStorage.getItem("token")
-                            }
-                        });
-
-                        if(response && response.status === 200){
-                            console.log("session updated");
-                        }
-                    }
+            const response = await axios.put(`https://localhost:7299/api/session/${user.id}`, {
+                userId: user.id,
+                // sessionTimeStart: new Date().toISOString()
+            }, {
+                headers: {
+                    "Authorization": "Bearer "+ token
                 }
+            });
+            if(response && response.status === 200){
+                console.log("session updated");
             }
         }
         catch (error){
@@ -277,28 +151,19 @@ const Header = () => {
     /// Создать сессию
     /// </summary>
     const CreateUserSessionAsync = async () => {
-
         try{
-            const token = localStorage.getItem("token");
-            if(token){
-                const decodedToken = jwtDecode(token);
-                if(decodedToken){
-                    if(decodedToken.Id){
-                        const response = await axios.post("https://localhost:7299/api/session", {
-                            userId:decodedToken.Id,
-                            // time: new Date().toISOString(),
-                        }, {
-                            headers: {
-                                "Authorization": "Bearer "+ localStorage.getItem("token")
-                            }
-                        });
-
-                        if(response && response.status === 200){
-                            alert("session successfully created");
-                            startSendingData();
-                        }
-                    }
+            const response = await axios.post("https://localhost:7299/api/session", {
+                userId:user.id,
+                // time: new Date().toISOString(),
+            }, {
+                headers: {
+                    "Authorization": "Bearer "+ token
                 }
+            });
+
+            if(response && response.status === 200){
+                alert("session successfully created");
+                startSendingData();
             }
         }
         catch (error){
@@ -379,9 +244,6 @@ const Header = () => {
     // Отслеживание действий пользователя ===================================================
 
     useEffect(() => {
-        CheckToken();
-        GetUserInfo();
-
         // Начать отправку данных для сессии
         CreateUserSessionAsync();
     }, [])
@@ -473,7 +335,7 @@ const Header = () => {
         <img src="https://localhost:7299/icons/cart.png" alt="Корзина" />
       </Link>
     </li>
-    {userId ? (
+    {user?.id ? (
       <li className="profile-link">
         <Link to="/profile">
           {user && user.imageSrcs ? (

@@ -1,8 +1,9 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
 import { Link, Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../../AuthProvider"
 
 const CompanyAddForm = () => {
 
@@ -10,48 +11,8 @@ const CompanyAddForm = () => {
     const [companyDescription, setCompanyDescription] = useState("");
 
     const navigate = useNavigate();
-    /// <summary>
-    /// Обновить токен
-    /// </summary>
-    const UpdateToken = async () => {
-        try{
-            const response = await axios.get("https://localhost:7299/api/token/update", {
-                headers:{
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
 
-            if(response.status === 200)
-            {
-                const authToken = response.data.token;
-                if(authToken)
-                {
-                    const token = authToken.replace("Bearer");
-                    localStorage.setItem(token);
-                }
-            }
-        }
-        catch (error){
-
-            if(error.response){
-                const status = error.response.status;
-
-                switch(status) {
-                    case 404:
-                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
-                        break;
-                    case 500:
-                        alert("Произошла ошибка сервера!")
-                        break;
-                    default:
-                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
-                }
-            }
-            else {
-                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
-            }
-        }
-    }
+    const {user, token, refreshToken} = useContext(AuthContext);
 
     /// <summary>
     /// Добавить компанию
@@ -59,36 +20,24 @@ const CompanyAddForm = () => {
     const AddCompanyAsync = async (e) => {
         e.preventDefault();
         try{
-            const token = localStorage.getItem("token");
+            const formData = new FormData()
 
-            if(token){
-                // декодирование токена
-                const decodedToken = jwtDecode(token);
-                // id - пользователя
-                if(decodedToken.Id){
-                    const formData = new FormData();
+            for (let i = 0; i < selectedFiles.length; i++) {
+                formData.append('images', selectedFiles[i]);
+            }
 
-                    for (let i = 0; i < selectedFiles.length; i++) {
-                        formData.append('images', selectedFiles[i]);
-                    }
-        
-                    formData.append("name", companyName);
-                    formData.append("description", companyDescription);
-                    formData.append("userId", decodedToken.Id);
-
-                    const response = await axios.post("https://localhost:7299/api/company", formData, {
-                        headers:{
-                            "Authorization": "Bearer " + localStorage.getItem("token")
-                        }
-                    });
-    
-                    if(response.status && response.status === 200) {
-                       if(response.data && response.data.company) {
-                            navigate(`/company-profile/${response.data.company.id}`)
-                           
-                       }
-                    }
+            formData.append("name", companyName);
+            formData.append("description", companyDescription);
+            formData.append("userId", user.id)
+            const response = await axios.post("https://localhost:7299/api/company", formData, {
+                headers:{
+                    "Authorization": "Bearer " + token
                 }
+            });
+            if(response.status && response.status === 200) {
+               if(response.data && response.data.company) {
+                    navigate(`/company-profile/${response.data.company.id}`)
+               }
             }
         }
         catch (error){
@@ -98,7 +47,7 @@ const CompanyAddForm = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         await AddCompanyAsync();
                         break;
                     case 403:

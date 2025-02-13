@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 
 import { jwtDecode } from "jwt-decode";
@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "react-datepicker/dist/react-datepicker.css";
 import { Dropdown, Button } from 'react-bootstrap';
 import DatePicker from "react-datepicker";
+import { AuthContext } from "../../../AuthProvider"
 
 const CouponAddForm = () => {
 
@@ -32,56 +33,20 @@ const CouponAddForm = () => {
     const [company, setCompany] = useState(null);
 
     const [searchText, setSearchText] = useState("");
-
-    /// summary
-    /// Обновить токен
-    /// summary
-    const UpdateToken = async () => {
-        try{
-            const response = await axios.get("https://localhost:7299/api/token/update", {
-                headers:{
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-
-            if(response.status === 200)
-            {
-                const authToken = response.data.token;
-                if(authToken)
-                {
-                    const token = authToken.replace("Bearer");
-                    localStorage.setItem(token);
-                }
-            }
-        }
-        catch(error)
-        {
-            // Внутрянняя ошибка сервера (Internal server error)
-            if(error.response && error.response.status === 500)
-                console.log(error);
-
-            // Not Found
-            else if(error.response && error.response.status === 404)
-                console.log(error);
-
-            else
-                console.log(error);
-        }
-    }
+    const {user, token, refreshToken} = useContext(AuthContext);
 
     /// summary
     /// Получить компанию по id
     /// summary
     const GetCompanyByIdAsync = async () => {
         try{
-            const token = localStorage.getItem("token");
             if(token){
                 const decodedToken = jwtDecode(token);
                 if(decodedToken){
                     if(decodedToken.CompanyId){
                         const response = await axios.get(`https://localhost:7299/api/company/${decodedToken.CompanyId}`, {
                             headers:{
-                                "Authorization": "Bearer " + localStorage.getItem("token")
+                                "Authorization": "Bearer " + token
                             }
                         });
                     
@@ -100,7 +65,7 @@ const CouponAddForm = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")
@@ -127,13 +92,10 @@ const CouponAddForm = () => {
     const AddCouponAsync = async (e) => {
         e.preventDefault();
         try{
-            const token = localStorage.getItem("token");
             if(token){
                 const decodedToken = jwtDecode(token);
                 if(decodedToken){
                     if(decodedToken.CompanyId){
-                        console.log(selectedStartDate);
-                        console.log(selectedEndDate);
                         const response = await axios.post("https://localhost:7299/api/coupon", {
                             key: key,
                             productIds: selectedProducts,  
@@ -142,7 +104,7 @@ const CouponAddForm = () => {
                             endDate: selectedEndDate.toISOString()
                         }, {
                             headers: {
-                                "Authorization": "Bearer " + localStorage.getItem("token")
+                                "Authorization": "Bearer " + token
                             }
                         });
                     
@@ -162,7 +124,7 @@ const CouponAddForm = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")
@@ -189,7 +151,6 @@ const CouponAddForm = () => {
     /// </summary>
     const GetProductListByCompanyIdAsync = async () => {
         try{
-            const token = localStorage.getItem("token");
             if(token){
                 const decodedToken = jwtDecode(token);
                 if(decodedToken){
@@ -197,7 +158,7 @@ const CouponAddForm = () => {
                     {
                         const response = await axios.get(`https://localhost:7299/api/product/company/${decodedToken.CompanyId}`, {
                             headers: {
-                                "Authorization": "Bearer " + localStorage.getItem("token")
+                                "Authorization": "Bearer " + token
                             }
                         });
             
@@ -217,7 +178,7 @@ const CouponAddForm = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         await GetCompanyByIdAsync();
                         break;
                     case 403:
@@ -239,15 +200,10 @@ const CouponAddForm = () => {
         }
     }
 
-    const ConsoleLog = () => {
-        console.log(123);
-    }
 
     useEffect(() => {
-        
-            GetCompanyByIdAsync();
-            GetProductListByCompanyIdAsync();
-        
+        GetCompanyByIdAsync();
+        GetProductListByCompanyIdAsync();
     }, [])
 
     const handleSelect = (id) => {

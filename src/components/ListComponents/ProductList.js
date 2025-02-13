@@ -12,7 +12,7 @@ import ProductItem from "../ListItemComponents/ProductItemComponent/ProductItem"
 const ProductList = () => {
 
     // Метод для обновления токена
-    const {refreshToken} = useContext(AuthContext);
+    const {user,token, refreshToken} = useContext(AuthContext);
 
     const {categoryId} = useParams();
     const [productList, setProductList] = useState([]);
@@ -48,7 +48,7 @@ const ProductList = () => {
             // fixme исопльзовался данный запрос: `https://localhost:7299/api/product/${pageNumber}/${pageSize}`
             const response = await axios.get(`https://localhost:7299/api/product`, {
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
 
@@ -82,7 +82,7 @@ const ProductList = () => {
         try{
             const response = await axios.get("https://localhost:7299/api/promotion/first", {
                 headers:{
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
 
@@ -112,7 +112,7 @@ const ProductList = () => {
         try{
             const response = await axios.get(`https://localhost:7299/api/product/category/${categoryId}`, {
                 headers: {
-                    "Authorization": "Bearer" + localStorage.getItem("token")
+                    "Authorization": "Bearer" + token
                 }
             });
             
@@ -191,7 +191,7 @@ const ProductList = () => {
             try {
                 const response = await axios.get(`https://localhost:7299/api/product/search/${input}`, {
                     headers: {
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Authorization": "Bearer " + token
                     }
                 });
 

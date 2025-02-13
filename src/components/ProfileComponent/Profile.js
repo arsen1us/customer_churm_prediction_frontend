@@ -8,70 +8,9 @@ import "./Profile.css"
 
 const Profile = () => {
 
-    const [user, setUser] = useState(null);
-    // Заменил на decodedToken.Id, так как userId обновляется async и не успевает обновиться
-    // const[userId, setUserId] = useState("");
-
     const [orderList, setOrderList] = useState([]);
     // Метод для обновления токена
-    const {refreshToken} = useContext(AuthContext);
-
-    /// summary
-    /// Получить информацию о пользователе
-    /// summary
-    const GetUserInfo = async () => {
-        try{
-            const token = localStorage.getItem("token");
-            if(token){
-                const decodedToken = jwtDecode(token);
-                if(decodedToken){
-                    if(decodedToken.Id)
-                    {
-                        const response = await axios.get(`https://localhost:7299/api/user/${decodedToken.Id}`,
-                        {
-                            headers: {
-                                "Authorization": "Bearer "+ localStorage.getItem("token")
-                            }
-                        });
-
-                        if(response && response.status === 200){
-                            if(response.data && response.data.user)
-                            setUser(response.data.user);
-                        }
-                    }
-                }
-            }
-        }
-        catch (error){
-
-            if(error.response){
-                const status = error.response.status;
-
-                switch(status) {
-                    case 401:
-                        await refreshToken();
-                        break;
-                    case 403:
-                        alert("У вас недостаточно прав для доступа к ресурсу!")
-                        break;
-                    case 404:
-                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
-                        break;
-                    case 405:
-                        alert("Ошибка 405. Method Not Allowed (Не могу пока это починить)!")
-                        break;
-                    case 500:
-                        alert("Произошла ошибка сервера!")
-                        break;
-                    default:
-                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
-                }
-            }
-            else {
-                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
-            }
-        }
-    }
+    const {user, token, refreshToken, logout} = useContext(AuthContext);
 
     // Скорее всего надо делать fetch для получения списка самых последних заказов
     /// summary
@@ -79,23 +18,14 @@ const Profile = () => {
     /// summary
     const GetOrderListByUserIdAsync = async () => {
         try{
-            const token = localStorage.getItem("token");
-            if(token){
-                const decodedToken = jwtDecode(token);
-                if(decodedToken){
-                    if(decodedToken.Id)
-                    {
-                        const response = await axios.get(`https://localhost:7299/api/order/user/${decodedToken.Id}`, {
-                            headers: {
-                                "Authorization": "Bearer " + localStorage.getItem("token")
-                            }
-                        });
-                        if(response && response.status === 200){
-                            if(response.data.orderList){
-                                setOrderList(response.data.orderList);
-                            }
-                        }
-                    }
+            const response = await axios.get(`https://localhost:7299/api/order/user/${user.id}`, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+            if(response && response.status === 200){
+                if(response.data.orderList){
+                    setOrderList(response.data.orderList);
                 }
             }
         }
@@ -130,16 +60,7 @@ const Profile = () => {
         }
     }
 
-    /// <summary>
-    /// Выйти из аккаунта
-    /// </summary>
-    const LogOut = () => {
-        localStorage.removeItem("token");
-    }
-
     useEffect(() => {
-        GetUserInfo();
-
         GetOrderListByUserIdAsync();
     }, [])
 
@@ -173,7 +94,7 @@ const Profile = () => {
                   
                     {/* Кнопка выхода */}
                     <div>
-                      <button onClick={LogOut} className="logout-button">Выйти</button>
+                      <button onClick={logout} className="logout-button">Выйти</button>
                     </div>
                   </>
                 ) : (

@@ -21,7 +21,7 @@ const PromotionManager = () => {
     const [company, setCompany] = useState(null);
 
     // Метод для обновления токена
-    const {refreshToken} = useContext(AuthContext);
+    const {token, refreshToken} = useContext(AuthContext);
 
     /// summary
     /// Получить компанию по id
@@ -30,7 +30,7 @@ const PromotionManager = () => {
         try{
             const response = await axios.get(`https://localhost:7299/api/company/${companyId}`, {
                 headers:{
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
 
@@ -61,7 +61,7 @@ const PromotionManager = () => {
         try {
             const response = await axios.get(`https://localhost:7299/api/promotion/company/${companyId}`, {
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
             if(response.status === 200)
@@ -105,7 +105,7 @@ const PromotionManager = () => {
                 companyId: companyId
             }, {
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
             if(response.status === 200)
@@ -145,7 +145,7 @@ const PromotionManager = () => {
                 endDate: endDate
             }, {
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             })
 
@@ -184,7 +184,7 @@ const PromotionManager = () => {
         try{
             const response = await axios.delete(`https://localhost:7299/api/promotion/${promotionId}`, {
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
             if(response.status === 200) {

@@ -15,7 +15,7 @@ import "slick-carousel/slick/slick-theme.css";
 const ProductPage = () => {
 
     // Метод для обновления токена
-    const {refreshToken} = useContext(AuthContext);
+    const {user, token, refreshToken} = useContext(AuthContext);
     const {productId} = useParams();
     const [product, setProduct] = useState(null);
     const [company, setCompany] = useState(null);
@@ -35,7 +35,7 @@ const ProductPage = () => {
         try{
             const response = await axios.get(`https://localhost:7299/api/product/${productId}`, {
                 headers:{
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
 
@@ -81,7 +81,7 @@ const ProductPage = () => {
         try{
                 const response = await axios.get(`https://localhost:7299/api/company/product/${productId}`, {
                     headers:{
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Authorization": "Bearer " + token
                     }
                 });
     
@@ -129,32 +129,24 @@ const ProductPage = () => {
     const OrderProductAsync = async (e) => {
         e.preventDefault();
         try{
-            const token = localStorage.getItem("token");
-            if(token) {
-                const decodedToken = jwtDecode(token);
-
-                if(decodedToken.Id){
-                    const response = await axios.post("https://localhost:7299/api/order", {
-                        productId: product.id,
-                        productCount: productCount,
-                        companyId: product.companyId, //product.companyId,
-                        userId: decodedToken.Id,
-                        price: product.price
-                    }, {
-                        headers: {
-                            "Authorization": "Bearer " + localStorage.getItem("token")
-                        }
-                    });
-                    
-                    if(response && response.status === 200)
-                    {
-                        // обработать успешное создание заказа
-                        if(response.data && response.data.orderStatus) {
-                            setOrderStatus(response.data.orderStatus)
-                            alert(`Заказ успешно создан. Статус заказа - ${response.data.orderStatus}`)
-                        }
-                    }
-
+            const response = await axios.post("https://localhost:7299/api/order", {
+                productId: product.id,
+                productCount: productCount,
+                companyId: product.companyId, //product.companyId,
+                userId: user.id,
+                price: product.price
+            }, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+            
+            if(response && response.status === 200)
+            {
+                // обработать успешное создание заказа
+                if(response.data && response.data.orderStatus) {
+                    setOrderStatus(response.data.orderStatus)
+                    alert(`Заказ успешно создан. Статус заказа - ${response.data.orderStatus}`)
                 }
             }
         }
@@ -191,24 +183,17 @@ const ProductPage = () => {
     /// </summary>
     const AddProductToCartAsync = async () => {
         try{
-            const token = localStorage.getItem("token");
-            if(token) {
-                const decodedToken = jwtDecode(token);
-
-                if(decodedToken.Id){
-                    const response = await axios.post("https://localhost:7299/api/cart", {
-                        userId: decodedToken.Id,
-                        productId: productId
-                    }, {
-                        headers: {
-                            "Authorization": "Bearer " + localStorage.getItem("token")
-                        }
-                    });
-                    if(response && response.status === 200){
-                        if(response.data && response.data.cart){
-                            alert("Продукт успешно добавлен в корзину");
-                        }
-                    }
+            const response = await axios.post("https://localhost:7299/api/cart", {
+                userId: user.id,
+                productId: productId
+            }, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+            if(response && response.status === 200){
+                if(response.data && response.data.cart){
+                    alert("Продукт успешно добавлен в корзину");
                 }
             }
         }
@@ -246,28 +231,22 @@ const ProductPage = () => {
     const AddReviewForProduct = async (e) => {
         e.preventDefault();
         try{
-            const token = localStorage.getItem("token");
-            if(token) {
-                const decodedToken = jwtDecode(token);
-
-                if(decodedToken.Id){
-                    const response = await axios.post("https://localhost:7299/api/review", {
-                        userId: decodedToken.Id,
-                        productId: product.id,
-                        text: reviewText,
-                        grade: reviewGrade
-                    }, {
-                        headers: {
-                            "Authorization": "Bearer " + localStorage.getItem("token")
-                        }
-                    });
-
-                    if(response && response.status === 200){
-                        if(response.data && response.data.review)
-                            alert("Отзыв успешно добавлен!");
-                    }
+            const response = await axios.post("https://localhost:7299/api/review", {
+                userId: user.id,
+                productId: product.id,
+                text: reviewText,
+                grade: reviewGrade
+            }, {
+                headers: {
+                    "Authorization": "Bearer " + token
                 }
+            })
+            if(response && response.status === 200){
+                if(response.data && response.data.review)
+                    alert("Отзыв успешно добавлен!");
             }
+                
+            
         }
         catch (error){
 
@@ -304,7 +283,7 @@ const ProductPage = () => {
         try{
             const response = await axios.get(`https://localhost:7299/api/review/${productId}`, {
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
             if(response && response.status === 200){
@@ -346,24 +325,17 @@ const ProductPage = () => {
     /// </summary>
     const AddActionAsync = async () => {
         try{
-            const token = localStorage.getItem("token");
-            if(token) {
-                const decodedToken = jwtDecode(token);
-
-                if(decodedToken.Id){
-                    const response = await axios.get(`https://localhost:7299/api/user-action/add-to-cart`,{
-                        userId: decodedToken.Id,
-                        productId: productId
-                    }, {
-                        headers: {
-                            "Authorization": "Bearer " + localStorage.getItem("token")
-                        }
-                    });
-                    if(response && response.status === 200){
-                        if(response.data && response.data.isSuccess === true)
-                            alert("Действие Добавить в корзину было успешно добавлено")
-                    }
+            const response = await axios.get(`https://localhost:7299/api/user-action/add-to-cart`,{
+                userId: user.id,
+                productId: productId
+            }, {
+                headers: {
+                    "Authorization": "Bearer " + token
                 }
+            });
+            if(response && response.status === 200){
+                if(response.data && response.data.isSuccess === true)
+                    alert("Действие Добавить в корзину было успешно добавлено")
             }
         }
         catch (error){

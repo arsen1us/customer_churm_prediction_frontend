@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
 import { Link, Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -9,9 +9,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Dropdown } from 'react-bootstrap';
 
 import Popup from "../../PopupComponent/Popup";
+import { AuthContext } from "../../../AuthProvider"
 
 const ProductAddForm = () => {
 
+    const {user, token, refreshToken} = useContext(AuthContext);
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [categoryId, setCategoryId] = useState("");
@@ -24,56 +26,13 @@ const ProductAddForm = () => {
     const navigate = useNavigate();
 
     /// <summary>
-    /// Обновить токен
-    /// </summary>
-    const UpdateToken = async () => {
-        try{
-            const response = await axios.get("https://localhost:7299/api/token/update", {
-                headers:{
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-
-            if(response.status === 200)
-            {
-                const authToken = response.data.token;
-                if(authToken)
-                {
-                    const token = authToken.replace("Bearer");
-                    localStorage.setItem(token);
-                }
-            }
-        }
-        catch (error){
-
-            if(error.response){
-                const status = error.response.status;
-
-                switch(status) {
-                    case 404:
-                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
-                        break;
-                    case 500:
-                        alert("Произошла ошибка сервера!")
-                        break;
-                    default:
-                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
-                }
-            }
-            else {
-                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
-            }
-        }
-    }
-
-    /// <summary>
     /// Получить список категорий
     /// </summary>
     const GetCategoryListAsync = async () => {
         try{
             const response = await axios.get("https://localhost:7299/api/category", {
                 headers: {
-                    "Authorization": "Bearer" + localStorage.getItem("token")
+                    "Authorization": "Bearer" + token
                 }
             });
 
@@ -90,7 +49,7 @@ const ProductAddForm = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")
@@ -117,7 +76,6 @@ const ProductAddForm = () => {
     const AddProductAsync = async (e) => {
         e.preventDefault();
         try{
-            const token = localStorage.getItem("token");
             const decodedToken = jwtDecode(token);
     
             if (decodedToken.CompanyId) {
@@ -138,7 +96,7 @@ const ProductAddForm = () => {
                 const response = await axios.post("https://localhost:7299/api/product", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Authorization": "Bearer " + token
                     }
                 });
 
@@ -156,7 +114,7 @@ const ProductAddForm = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")

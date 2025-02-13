@@ -34,7 +34,7 @@ const CouponManager = () => {
     const [searchText, setSearchText] = useState("");
 
     // Метод для обновления токена
-    const {refreshToken} = useContext(AuthContext);
+    const {token, refreshToken} = useContext(AuthContext);
 
     /// summary
     /// Получить компанию по id
@@ -43,7 +43,7 @@ const CouponManager = () => {
         try{
             const response = await axios.get(`https://localhost:7299/api/company/${companyId}`, {
                 headers:{
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
 
@@ -87,7 +87,7 @@ const CouponManager = () => {
         try{
             const response = await axios.get(`https://localhost:7299/api/coupon/company/${companyId}`, {
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
 
@@ -137,7 +137,7 @@ const CouponManager = () => {
                 companyId: companyId
             }, {
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
 
@@ -187,7 +187,7 @@ const CouponManager = () => {
                 companyId: companyId
             }, {
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
             if(response && response.status === 200){
@@ -230,7 +230,7 @@ const CouponManager = () => {
         try{
             const response = await axios.delete(`https://localhost:7299/api/coupon/${couponId}`, {
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
             if(response && response.status === 200)
@@ -275,7 +275,6 @@ const CouponManager = () => {
     /// </summary>
     const GetProductListByCompanyIdAsync = async () => {
         try{
-            const token = localStorage.getItem("token");
             if(token){
                 const decodedToken = jwtDecode(token);
                 if(decodedToken){
@@ -283,7 +282,7 @@ const CouponManager = () => {
                     {
                         const response = await axios.get(`https://localhost:7299/api/product/company/${decodedToken.CompanyId}`, {
                             headers: {
-                                "Authorization": "Bearer " + localStorage.getItem("token")
+                                "Authorization": "Bearer " + token
                             }
                         });
             
@@ -323,10 +322,6 @@ const CouponManager = () => {
                 alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
             }
         }
-    }
-
-    const ConsoleLog = () => {
-        console.log(123);
     }
 
     useEffect(() => {

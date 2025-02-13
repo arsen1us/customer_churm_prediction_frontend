@@ -24,7 +24,7 @@ const CompanyProfile = () => {
     const [productList, setProductList] = useState([]);
 
     // Метод для обновления токена
-    const {refreshToken} = useContext(AuthContext);
+    const {token, refreshToken} = useContext(AuthContext);
 
     // Скорее всего надо делать fetch для получения списка самых посследних заказов
     /// <summary>
@@ -32,7 +32,6 @@ const CompanyProfile = () => {
     /// </summary>
     const GetOrderListByCompanyIdAsync = async () => {
         try{
-            const token = localStorage.getItem("token");
             if(token){
                 const decodedToken = jwtDecode(token);
                 if(decodedToken){
@@ -40,7 +39,7 @@ const CompanyProfile = () => {
                     {
                         const response = await axios.get(`https://localhost:7299/api/order/company/${decodedToken.CompanyId}`, {
                             headers: {
-                                "Authorization": "Bearer " + localStorage.getItem("token")
+                                "Authorization": "Bearer " + token
                             }
                         });
                         if(response && response.status === 200){
@@ -94,7 +93,6 @@ const CompanyProfile = () => {
     /// </summary>
     const GetProductListByCompanyIdAsync = async () => {
         try{
-            const token = localStorage.getItem("token");
             if(token){
                 const decodedToken = jwtDecode(token);
                 if(decodedToken){
@@ -102,7 +100,7 @@ const CompanyProfile = () => {
                     {
                         const response = await axios.get(`https://localhost:7299/api/product/company/${decodedToken.CompanyId}`, {
                             headers: {
-                                "Authorization": "Bearer " + localStorage.getItem("token")
+                                "Authorization": "Bearer " + token
                             }
                         });
             
@@ -149,7 +147,6 @@ const CompanyProfile = () => {
     /// </summary>
     const GetCompanyByIdAsync = async () => {
         try{
-            const token = localStorage.getItem("token");
             if(token){
                 const decodedToken = jwtDecode(token);
                 if(decodedToken){
@@ -157,7 +154,7 @@ const CompanyProfile = () => {
                     {
                         const response = await axios.get(`https://localhost:7299/api/company/${decodedToken.CompanyId}`, {
                             headers:{
-                                "Authorization": "Bearer " + localStorage.getItem("token")
+                                "Authorization": "Bearer " + token
                             }
                         });
             
@@ -200,7 +197,7 @@ const CompanyProfile = () => {
     }
 
     /// <summary>
-    /// Декодировать компанию из jwt-токена
+    /// Декодировать id компании из jwt-токена
     /// </summary>
     const GetCompanyIdFromToken = () => {
         const token = localStorage.getItem("token");
@@ -215,7 +212,6 @@ const CompanyProfile = () => {
     }
 
     useEffect(() => {
-        console.log(window.location.href);
         GetCompanyIdFromToken();
         GetCompanyByIdAsync();
         GetProductListByCompanyIdAsync();

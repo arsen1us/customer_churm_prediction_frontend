@@ -13,7 +13,7 @@ const Promotion = () => {
     const [promotion, setPromotion] = useState();
 
     // Метод для обновления токена
-    const {refreshToken} = useContext(AuthContext);
+    const {token, refreshToken} = useContext(AuthContext);
 
     // Получить таргетированную рекламу для пользователя
     const GetPromotionForCurrentUser = async () => {
@@ -44,7 +44,7 @@ const Promotion = () => {
         try{
             const response = await axios.get("https://localhost:7299/api/promotion/first", {
                 headers:{
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
 

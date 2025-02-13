@@ -10,7 +10,7 @@ const OrderPage = () => {
     const orderId = useParams();
     const [order, setOrder] = useState(null);
     // Метод для обновления токена
-    const {refreshToken} = useContext(AuthContext);
+    const {user, refreshToken} = useContext(AuthContext);
 
     // Переделать на запрос, чтобы сразу получить и информацию о заказе и о продукте
     /// <summary>

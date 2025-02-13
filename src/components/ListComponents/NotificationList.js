@@ -6,7 +6,7 @@ import {AuthContext} from "../../AuthProvider"
 const NotificationList = () => {
 
   // Метод для обновления токена
-  const {refreshToken} = useContext(AuthContext);
+  const {user, token, refreshToken} = useContext(AuthContext);
 
     const [notificationList, setNotificationList] = useState([
         { id: 1, message: "1 Product(ов) успешно создан(ы)!" },
@@ -37,26 +37,17 @@ const NotificationList = () => {
     /// </summary>
     const GetNotificationListByUserIdAsync = async () => {
         try{
-            const token = localStorage.getItem("token");
-            if(token){
-                const decodedToken = jwtDecode(token);
-                if(decodedToken){
-                    if(decodedToken.Id)
-                    {
-                        const response = await axios.get(`https://localhost:7299/api/notification/${decodedToken.Id}`, {
-                            headers: {
-                                "Authorization": "Bearer" + localStorage.getItem("token")
-                            }
-                        });
+          const response = await axios.get(`https://localhost:7299/api/notification/${user.id}`, {
+              headers: {
+                  "Authorization": "Bearer" + token
+              }
+          });
                     
-                        if(response && response.status === 200){
-                            if(response.data && response.data.notificationList){
-                                setNotificationList(response.data.notificationList);
-                            }
-                        }
-                    }
-                }
-            }
+          if(response && response.status === 200){
+              if(response.data && response.data.notificationList){
+                  setNotificationList(response.data.notificationList);
+              }
+          }  
         }
         catch (error){
 

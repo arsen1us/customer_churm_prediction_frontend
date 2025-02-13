@@ -13,7 +13,7 @@ const CompanyPage = () => {
     const [orderList, setOrderList] = useState([]);
     const [productList, setProductList] = useState([]);
     // Метод для обновления токена
-    const {refreshToken} = useContext(AuthContext);
+    const {token, refreshToken} = useContext(AuthContext);
 
     /// summary
     /// Получить компанию по id
@@ -22,7 +22,7 @@ const CompanyPage = () => {
         try{
             const response = await axios.get(`https://localhost:7299/api/company/${companyId}`, {
                 headers:{
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
 
@@ -49,7 +49,7 @@ const CompanyPage = () => {
         try{
             const response = await axios.get(`https://localhost:7299/api/order/company/${companyId}`, {
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
             if(response && response.status === 200){
@@ -80,7 +80,7 @@ const CompanyPage = () => {
         try{
             const response = await axios.get(`https://localhost:7299/api/product/company/${companyId}`, {
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
 

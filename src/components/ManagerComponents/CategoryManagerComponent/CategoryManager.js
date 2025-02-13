@@ -15,7 +15,7 @@ const CategoryManager = () => {
     const [isCategoryChanging, setIsCategoryChanging] = useState(false);
 
     // Метод для обновления токена
-    const {refreshToken} = useContext(AuthContext);
+    const {token, refreshToken} = useContext(AuthContext);
 
     // Получить список категорий 
     const GetCategoryListAsync = async () => {
@@ -47,7 +47,7 @@ const CategoryManager = () => {
                 name: categoryName
             }, {
                 headers: {
-                    "Authorization": "Bearer" + localStorage.getItem("token")
+                    "Authorization": "Bearer" + token
                 }
             });
 
@@ -80,7 +80,7 @@ const CategoryManager = () => {
                 name: updateCategoryName
                 },{
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
             if(response.status === 200)
@@ -110,7 +110,7 @@ const CategoryManager = () => {
         try{
             const response = await axios.delete(`https://localhost:7299/api/category/${categoryId}`, {
                 headers:{
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
             if(response.status === 200) {

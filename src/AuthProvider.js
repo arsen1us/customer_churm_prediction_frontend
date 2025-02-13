@@ -1,16 +1,239 @@
-import React, {createContext, useState} from "react";
+import React, {createContext, useEffect, useState} from "react";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({children}) => {
-    const [token, setToken] = useState(localStorage.getItem("token") || "");
 
+    // jwt-токен
+    const [token, setToken] = useState(localStorage.getItem("token") || "");
+    // пользователь
+    const [user, setUser] = useState(null);
+
+    ///<summary>
+    /// Аутентификация пользователя
+    ///</summary>
+    const login = async (email,password) => {
+        try{
+            var response = await axios.post("https://localhost:7299/api/user/auth", 
+                {
+                    email: email,
+                    password: password,
+                 });
+            if(response.status === 200)
+            {
+                const authToken = response.data.token;
+
+                const token = authToken.replace("Bearer", "")
+                localStorage.setItem("token", token)
+            }
+        }
+        catch (error){
+
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 400:
+                        alert("Ошибка 400. Скорее всего не верно переданы данные в теле запроса!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
+        }
+    };
+
+    ///<summary>
+    /// Выйти из аккаунта
+    ///</summary> 
+    const logout = () => {
+        setUser(null);
+        setToken("");
+        localStorage.removeItem("token");
+    }
+
+    ///<summary>
+    /// Регистрация пользователя
+    ///</summary>
+    const register = async (firstName, lastName, email, password) => {
+        try{
+            var response = await axios.post("https://localhost:7299/api/user/reg", 
+                {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    password: password,
+                 });
+            if(response.status === 200)
+            {
+                const authToken = response.data.token;
+
+                const token = authToken.replace("Bearer", "")
+                localStorage.setItem("token", token)
+            }
+        }
+        catch (error){
+
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 400:
+                        alert("Ошибка 400. Скорее всего не верно переданы данные в теле запроса!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
+        }
+    };
+
+    /// summary
+    /// Получить информацию о пользователе
+    /// summary
+    const getUser = async () => {
+        try{
+            if(token){
+                const decodedToken = jwtDecode(token);
+                if(decodedToken){
+                    if(decodedToken.Id)
+                    {
+                        const response = await axios.get(`https://localhost:7299/api/user/${decodedToken.Id}`,
+                        {
+                            headers: {
+                                "Authorization": "Bearer "+ token
+                            }
+                        });
+
+                        if(response && response.status === 200){
+                            if(response.data && response.data.user)
+                            setUser(response.data.user);
+                        }
+                    }
+                }
+            }
+        }
+        catch (error){
+
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await refreshToken();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 405:
+                        alert("Ошибка 405. Method Not Allowed (Не могу пока это починить)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
+        }
+    }
+
+    const updateUser = async (
+        firstName,
+        lastName,
+        email,
+        password,
+        selectedFiles) => {
+        try{
+            const formData = new FormData();
+            for (let i = 0; i < selectedFiles.length; i++) {
+                formData.append('images', selectedFiles[i]);
+            }
+
+            formData.append("firstName",firstName);
+            formData.append("lastName",lastName);
+            formData.append("email",email);
+            formData.append("password",password);
+
+                const response = await axios.put(`https://localhost:7299/api/user/${user.id}`, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        "Authorization": "Bearer " + token
+                    }
+                });
+
+                if (response.status && response.status === 200) {
+                    if (response.data.product) {
+                        alert("Информация о пользователе успешно обновлена")
+                    }
+                }
+        }
+        catch (error){
+
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await refreshToken();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 405:
+                        alert("Ошибка 405. Method Not Allowed (Не могу пока это починить)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
+        }
+    }
+
+
+    ///<summary>
+    /// Обновить jwt-токен
+    ///</summary>
     const refreshToken = async () => {
         try{
             const response = await axios.get("https://localhost:7299/api/token/update", {
                 headers:{
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + token
                 }
             });
 
@@ -50,8 +273,19 @@ export const AuthProvider = ({children}) => {
         }
     };
 
+    useEffect(() =>{
+        getUser();
+    }, [token]);
+
     return (
-        <AuthContext.Provider value={{token, setToken, refreshToken}}>
+        <AuthContext.Provider value={{
+            user, 
+            token, 
+            refreshToken,
+            login,
+            register,
+            logout,
+            updateUser}}>
             {children}
         </AuthContext.Provider>
     );
