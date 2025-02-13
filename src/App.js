@@ -1,44 +1,44 @@
 // import './App.css';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import Header from './components/Header';
-import RegisterForm from './components/RegisterForm';
-import AuthenticateForm from './components/AuthenticateForm';
+import Header from './components/HeaderComponent/Header';
+import RegisterForm from './components/RegisterFormComponent/RegisterForm';
+import AuthenticateForm from './components/AuthenticateFormComponent/AuthenticateForm';
 
-import Profile from './components/Profile';
-import EditProfile from './components/EditProfile';
+import Profile from './components/ProfileComponent/Profile';
+import ProfileEditForm from './components/FormComponents/Profile/ProfileEditForm';
 
-import CompanyProfileComponent from './components/CompanyProfileComponent';
-import Home from './components/Home';
-import CategoryListComponent from './components/ListComponents/CategoryListComponent';
-import Footer from './components/Footer';
+import CompanyProfile from './components/CompanyProfileComponent/CompanyProfile';
+import HomePage from './components/PageComponents/HomePage';
+import CategoryList from './components/ListComponents/CategoryList';
+import Footer from './components/FooterComponent/Footer'
 
-import ProductListComponent from './components/ListComponents/ProductListComponent';
+import ProductList from './components/ListComponents/ProductList';
 
 // Страницы
-import ProductPageComponent from './components/PageComponents/ProductPageComponent';
-import CompanyPageComponent from './components/PageComponents/CompanyPageComponent';
+import ProductPage from './components/PageComponents/ProductPage';
+import CompanyPage from './components/PageComponents/CompanyPage';
 
-import CompanySettingsComponent from './components/CompanySettingsComponent';
+import CompanySettings from './components/SettingsComponents/CompanySettingsComponent/CompanySettings';
 
-import ControlPanelComponent from './components/HandleComponents/ControlPanelComponent';
-import HandleCategoryComponent from './components/HandleComponents/HandleCategoryComponent';
-import HandleCouponComponent from './components/HandleComponents/HandleCouponComponent';
-import HandleProductComponent from './components/HandleComponents/HandleProductComponent';
-import HandlePromotionComponent from './components/HandleComponents/HandlePromotionComponent';
-import HandleReviewComponent from './components/HandleComponents/HandleReviewComponent';
-import HandleUserComponent from './components/HandleComponents/HandleUserComponent';
-import HandleCompanyComponent from './components/HandleComponents/HandleCompanyComponent';
-import AddCompanyComponent from './components/AddCompanyComponent';
+import ControlPanel from './components/ManagerComponents/ControlPanelComponent/ControlPanel';
+import CategoryManager from './components/ManagerComponents/CategoryManagerComponent/CategoryManager';
+import CouponManager from './components/ManagerComponents/CouponManagerComponent/CouponManager';
+import ProductManager from './components/ManagerComponents/ProductManagerComponent/ProductManager';
+import PromotionManager from './components/ManagerComponents/PromotionManagerComponent/PromotionManager';
+import ReviewManager from './components/ManagerComponents/ReviewManagerComponent/ReviewManager';
+import UserManager from './components/ManagerComponents/UserManagerComponent/UserManager';
+import CompanyManager from './components/ManagerComponents/CompanyManagerComponent/CompanyManager';
+import CompanyAddForm from './components/FormComponents/Company/CompanyAddForm';
 
-import AddProductComponent from './components/AddProductComponent';
-import AddCouponComponent from './components/AddCouponComponent';
+import ProductAddForm from './components/FormComponents/Product/ProductAddForm';
+import CouponAddForm from './components/FormComponents/Coupon/CouponAddForm';
 
-import CartComponent from './components/CartComponent';
+import CartPage from './components/PageComponents/CartPage';
 
-import ChurnPrediction from './components/ChurnPredictionComponent';
+import ChurnPredictionPage from './components/PageComponents/ChurnPredictionPageComponent/ChurnPredictionPage';
 
-import NotificationSystem from './components/Notification';
+import NotificationList from './components/ListComponents/NotificationList';
 
 function App() {
   return (
@@ -48,44 +48,44 @@ function App() {
         <Header/>
       </header>
         <Routes>
-          <Route path="/" element={<Home/>} />
+          <Route path="/" element={<HomePage/>} />
           <Route path="/reg" element={<RegisterForm/>}/>
           <Route path="/auth" element={<AuthenticateForm/>}/>
 
           <Route path="/profile" element={<Profile/>}/>
-          <Route path="/edit-profile" element={<EditProfile/>}/>
+          <Route path="/edit-profile" element={<ProfileEditForm/>}/>
 
-          <Route path="/company-profile" element={<CompanyProfileComponent/>}/>
-          <Route path="/company-profile/:companyId" element={<CompanyProfileComponent/>}/> 
+          <Route path="/company-profile" element={<CompanyProfile/>}/>
+          <Route path="/company-profile/:companyId" element={<CompanyProfile/>}/> 
 
-          <Route path="/category" exact element={<CategoryListComponent/>}/>
+          <Route path="/category" exact element={<CategoryList/>}/>
 
-          <Route path="/category/:categoryId" element={<ProductListComponent/>}/>
-          <Route path="/product/:productId" element={<ProductPageComponent/>}/>
-          <Route path="/company/:companyId" element={<CompanyPageComponent/>}/>
-          <Route path="/promotion/:companyId" element={<HandlePromotionComponent/>}/>
-          <Route path="/coupon/:companyId" element={<HandleCouponComponent/>}/>
+          <Route path="/category/:categoryId" element={<ProductList/>}/>
+          <Route path="/product/:productId" element={<ProductPage/>}/>
+          <Route path="/company/:companyId" element={<CompanyPage/>}/>
+          <Route path="/promotion/:companyId" element={<PromotionManager/>}/>
+          <Route path="/coupon/:companyId" element={<CouponManager/>}/>
           
-          <Route path="/company-settings/:companyId" element={<CompanySettingsComponent/>}/>
-          <Route path="/company-add" element={<AddCompanyComponent/>}/>
+          <Route path="/company-settings/:companyId" element={<CompanySettings/>}/>
+          <Route path="/company-add" element={<CompanyAddForm/>}/>
 
-          <Route path="/addproduct" element={<AddProductComponent/>}/>
-          <Route path="/addcoupon" element={<AddCouponComponent/>}/>
+          <Route path="/addproduct" element={<ProductAddForm/>}/>
+          <Route path="/addcoupon" element={<CouponAddForm/>}/>
 
-          <Route path="control-panel" element={<ControlPanelComponent/>}/>
-          <Route path="handle-category" element={<HandleCategoryComponent/>}/>
-          <Route path="handle-coupon" element={<HandleCouponComponent/>}/>
-          <Route path="handle-product" element={<HandleProductComponent/>}/>
-          <Route path="handle-promotion" element={<HandlePromotionComponent/>}/>
-          <Route path="handle-review" element={<HandleReviewComponent/>}/>
-          <Route path="handle-user" element={<HandleUserComponent/>}/>
-          <Route path="handle-company" element={<HandleCompanyComponent/>}/>
+          <Route path="control-panel" element={<ControlPanel/>}/>
+          <Route path="handle-category" element={<CategoryManager/>}/>
+          <Route path="handle-coupon" element={<CouponManager/>}/>
+          <Route path="handle-product" element={<ProductManager/>}/>
+          <Route path="handle-promotion" element={<PromotionManager/>}/>
+          <Route path="handle-review" element={<ReviewManager/>}/>
+          <Route path="handle-user" element={<UserManager/>}/>
+          <Route path="handle-company" element={<CompanyManager/>}/>
 
-          <Route path="/cart" element={<CartComponent/>}/>
+          <Route path="/cart" element={<CartPage/>}/>
 
-          <Route path="/churn-prediction" element={<ChurnPrediction/>}/>
+          <Route path="/churn-prediction" element={<ChurnPredictionPage/>}/>
           
-          <Route path="/notifications" element={<NotificationSystem/>}/>
+          <Route path="/notifications" element={<NotificationList/>}/>
 
         </Routes>
       </Router>
