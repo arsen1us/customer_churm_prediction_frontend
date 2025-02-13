@@ -1,8 +1,9 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import ProductItem from "../ListItemComponents/ProductItemComponent/ProductItem";
+import {AuthContext} from "../../AuthProvider"
 
 /// <summary>
 /// Компонент для отображения корзины пользователя
@@ -11,48 +12,8 @@ const CartPage = () => {
 
     const [productList, setProductList] = useState([]);
 
-    /// <summary>
-    /// Обновить токен
-    /// </summary>
-    const UpdateToken = async () => {
-        try{
-            const response = await axios.get("https://localhost:7299/api/token/update", {
-                headers:{
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-
-            if(response.status === 200)
-            {
-                const authToken = response.data.token;
-                if(authToken)
-                {
-                    const token = authToken.replace("Bearer");
-                    localStorage.setItem(token);
-                }
-            }
-        }
-        catch (error){
-
-            if(error.response){
-                const status = error.response.status;
-
-                switch(status) {
-                    case 404:
-                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
-                        break;
-                    case 500:
-                        alert("Произошла ошибка сервера!")
-                        break;
-                    default:
-                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
-                }
-            }
-            else {
-                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
-            }
-        }
-    }
+    // Метод для обновления токена
+    const {refreshToken} = useContext(AuthContext);
 
     /// <summary>
     /// Получить корзину
@@ -91,7 +52,7 @@ const CartPage = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")
@@ -165,7 +126,7 @@ const CartPage = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")

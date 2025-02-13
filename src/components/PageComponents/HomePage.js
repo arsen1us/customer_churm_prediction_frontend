@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import {AuthContext} from "../../AuthProvider"
+
 import CategoryManager from "../ManagerComponents/CategoryManagerComponent/CategoryManager";
 import CategoryList from "../ListComponents/CategoryList";
 import Select from "react-select/base";
@@ -13,6 +15,8 @@ import { Dropdown } from 'react-bootstrap';
 
 const HomePage = () => {
 
+  // Метод для обновления токена
+  const {refreshToken} = useContext(AuthContext);
   const options = [
     { value: 1, label: "Product 1" },
     { value: 2, label: "Product 2" },

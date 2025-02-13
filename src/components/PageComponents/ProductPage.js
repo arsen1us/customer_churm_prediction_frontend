@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
@@ -6,6 +6,7 @@ import { jwtDecode } from "jwt-decode";
 
 import Popup from "../PopupComponent/Popup";
 import ImageSlider from "../ImageSliderComponent/ImageSlider";
+import {AuthContext} from "../../AuthProvider"
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -13,6 +14,8 @@ import "slick-carousel/slick/slick-theme.css";
 // Компонент для отображения страницы с продуктом
 const ProductPage = () => {
 
+    // Метод для обновления токена
+    const {refreshToken} = useContext(AuthContext);
     const {productId} = useParams();
     const [product, setProduct] = useState(null);
     const [company, setCompany] = useState(null);
@@ -24,49 +27,6 @@ const ProductPage = () => {
 
     // Темплейт для отображения изображений (временное решение, думаю)
     const imageTemplate = "https://localhost:7299/uploads/";
-
-    ///summary
-    /// Обновить токен
-    ///summary
-    const UpdateToken = async () => {
-        try{
-            const response = await axios.get("https://localhost:7299/api/token/update", {
-                headers:{
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-
-            if(response.status === 200)
-            {
-                const authToken = response.data.token;
-                if(authToken)
-                {
-                    const token = authToken.replace("Bearer");
-                    localStorage.setItem(token);
-                }
-            }
-        }
-        catch (error){
-
-            if(error.response){
-                const status = error.response.status;
-
-                switch(status) {
-                    case 404:
-                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
-                        break;
-                    case 500:
-                        alert("Произошла ошибка сервера!")
-                        break;
-                    default:
-                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
-                }
-            }
-            else {
-                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
-            }
-        }
-    }
 
     /// summary
     /// Получить продукт по id
@@ -93,7 +53,7 @@ const ProductPage = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")
@@ -138,7 +98,7 @@ const ProductPage = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")
@@ -205,7 +165,7 @@ const ProductPage = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")
@@ -259,7 +219,7 @@ const ProductPage = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")
@@ -316,7 +276,7 @@ const ProductPage = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")
@@ -359,7 +319,7 @@ const ProductPage = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")
@@ -413,7 +373,7 @@ const ProductPage = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")

@@ -1,12 +1,16 @@
 // Список категорий, где каждая категория является ссылкой
 
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import {AuthContext} from "../../AuthProvider"
 
-const CategoryHrefListComponent = () => {
+const CategoryHrefList = () => {
     // Список категорий
     const [categoryList, setCategoryList] = useState([]);
+
+    // Метод для обновления токена
+    const {refreshToken} = useContext(AuthContext);
 
     // Обновить токен
     const UpdateToken = async () => {
@@ -60,7 +64,7 @@ const CategoryHrefListComponent = () => {
         {
             // Если токен истёк или не зарегистировался/вошёл
             if(error.response && error.response.status === 401)
-                await UpdateToken();
+                await refreshToken();
         }
     }
 
@@ -83,4 +87,4 @@ const CategoryHrefListComponent = () => {
     )
 }
 
-export default CategoryHrefListComponent
+export default CategoryHrefList

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 
 import ProductItem from "../../ListItemComponents/ProductItemComponent/ProductItem"; 
@@ -8,6 +8,7 @@ import { Link, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Dropdown, Button } from 'react-bootstrap';
+import {AuthContext} from "../../../AuthProvider"
 
 const CouponManager = () => {
 
@@ -32,41 +33,8 @@ const CouponManager = () => {
 
     const [searchText, setSearchText] = useState("");
 
-    /// summary
-    /// Обновить токен
-    /// summary
-    const UpdateToken = async () => {
-        try{
-            const response = await axios.get("https://localhost:7299/api/token/update", {
-                headers:{
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-
-            if(response.status === 200)
-            {
-                const authToken = response.data.token;
-                if(authToken)
-                {
-                    const token = authToken.replace("Bearer");
-                    localStorage.setItem(token);
-                }
-            }
-        }
-        catch(error)
-        {
-            // Внутрянняя ошибка сервера (Internal server error)
-            if(error.response && error.response.status === 500)
-                console.log(error);
-
-            // Not Found
-            else if(error.response && error.response.status === 404)
-                console.log(error);
-
-            else
-                console.log(error);
-        }
-    }
+    // Метод для обновления токена
+    const {refreshToken} = useContext(AuthContext);
 
     /// summary
     /// Получить компанию по id
@@ -91,7 +59,7 @@ const CouponManager = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")
@@ -135,7 +103,7 @@ const CouponManager = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")
@@ -186,7 +154,7 @@ const CouponManager = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")
@@ -234,7 +202,7 @@ const CouponManager = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")
@@ -280,7 +248,7 @@ const CouponManager = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")
@@ -335,7 +303,7 @@ const CouponManager = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         await GetCompanyByIdAsync();
                         break;
                     case 403:

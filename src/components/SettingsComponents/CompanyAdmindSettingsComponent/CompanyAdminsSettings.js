@@ -1,13 +1,16 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import {AuthContext} from "../../AuthProvider"
 
 /// <summary>
 /// Компонент для настройки администраторов компании
 /// </summary>
-const CompanyAdminsSettingsComponent = () => {
+const CompanyAdminsSettings = () => {
 
+    // Метод для обновления токена
+    const {refreshToken} = useContext(AuthContext);
     const {companyId} = useParams();
     const [userList, setUserList] = useState([]);
     // Роль пользователя
@@ -266,4 +269,4 @@ const CompanyAdminsSettingsComponent = () => {
     )
 }
 
-export default CompanyAdminsSettingsComponent;
+export default CompanyAdminsSettings;

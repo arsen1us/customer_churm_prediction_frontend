@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useContext} from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import OrderItem from "../ListItemComponents/OrderItem";
 import { Link } from "react-router-dom";
-
+import {AuthContext} from "../../AuthProvider"
 import "./Profile.css"
 
 const Profile = () => {
@@ -13,34 +13,8 @@ const Profile = () => {
     // const[userId, setUserId] = useState("");
 
     const [orderList, setOrderList] = useState([]);
-
-    /// summary
-    /// Обновить токен
-    /// summary
-    const UpdateToken = async () => {
-        try{
-            const response = await axios.get("https://localhost:7299/api/token/update", 
-                {
-                    headers: {
-                        "Authorization": `Bearer ${localStorage.getItem("token")}`
-                    }
-                });
-            if(response.status === 200)
-            {
-                const authToken = response.data.token;
-                if(authToken != null || authToken != undefined || authToken != "")
-                {
-                    const token = authToken.replace("Bearer", "");
-                    localStorage.removeItem("token");
-                    localStorage.setItem("token", token);
-                }
-            }
-        }
-        catch(error)
-        {
-            console.log(error);
-        }
-    }
+    // Метод для обновления токена
+    const {refreshToken} = useContext(AuthContext);
 
     /// summary
     /// Получить информацию о пользователе
@@ -75,7 +49,7 @@ const Profile = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")
@@ -132,7 +106,7 @@ const Profile = () => {
 
                 switch(status) {
                     case 401:
-                        await UpdateToken();
+                        await refreshToken();
                         break;
                     case 403:
                         alert("У вас недостаточно прав для доступа к ресурсу!")

@@ -1,6 +1,7 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
 import CategoryList from "./CategoryList";
+import {AuthContext} from "../../AuthProvider"
 
 // special for drop down
 import { useParams } from "react-router-dom";
@@ -9,6 +10,9 @@ import Promotion from "../PromotionComponent/Promotion";
 import ProductItem from "../ListItemComponents/ProductItemComponent/ProductItem";
 
 const ProductList = () => {
+
+    // Метод для обновления токена
+    const {refreshToken} = useContext(AuthContext);
 
     const {categoryId} = useParams();
     const [productList, setProductList] = useState([]);
@@ -24,42 +28,6 @@ const ProductList = () => {
 
     const [input, setInput] = useState("");
     const [debouncedInput, setDebouncedInput] = useState("");
-
-    ///summary
-    /// Обновить токен
-    ///summary
-    const UpdateToken = async () => {
-        try{
-            const response = await axios.get("https://localhost:7299/api/token/update", {
-                headers:{
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-
-            if(response.status === 200)
-            {
-                const authToken = response.data.token;
-                if(authToken)
-                {
-                    const token = authToken.replace("Bearer");
-                    localStorage.setItem(token);
-                }
-            }
-        }
-        catch(error)
-        {
-            // Внутрянняя ошибка сервера (Internal server error)
-            if(error.response && error.response.status === 500)
-                console.log(error);
-
-            // Not Found
-            else if(error.response && error.response.status === 404)
-                console.log(error);
-
-            else
-                console.log(error);
-        }
-    }
 
     ///summary
     /// Получить список из 15 продуктов и рекламу при нажатии на кнопку
@@ -95,7 +63,7 @@ const ProductList = () => {
         {
             // Если токен истёк или не зарегистировался/вошёл
             if(error.response && error.response.status === 401) {
-                await UpdateToken();
+                await refreshToken();
                 await FetchProductsAsync();
             }
 
@@ -131,7 +99,7 @@ const ProductList = () => {
             // Если действия токена истекло
             if(error.response && error.response.status === 401)
             {
-                await UpdateToken();
+                await refreshToken();
                 await GetPromotionAsync();
             }
         }
@@ -164,7 +132,7 @@ const ProductList = () => {
                 // Если токен истёк или не зарегистировался/вошёл
                 if(error.response && error.response.status === 401)
                 {
-                    await UpdateToken();
+                    await refreshToken();
                     await GetProductListByCategoryIdAsync();
                 }
             }
@@ -236,7 +204,7 @@ const ProductList = () => {
                 // Если действия токена истекло
                 if(error.response && error.response.status === 401)
                     {
-                        await UpdateToken();
+                        await refreshToken();
                         await SearchProductAsync();
                     }
                 // Внутрянняя ошибка сервера (Internal server error)
