@@ -1,6 +1,7 @@
-import React, {createContext, useEffect, useState} from "react";
+import React, {createContext, useEffect, useState, useRef} from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 export const AuthContext = createContext();
 
@@ -10,6 +11,10 @@ export const AuthProvider = ({children}) => {
     const [token, setToken] = useState(localStorage.getItem("token") || "");
     // пользователь
     const [user, setUser] = useState(null);
+    // подключение к SignalR
+    const [connection, setConnection] = useState(null);
+    // информация о сессии пользователя
+    const [session, setSession] = useState(null);
 
     ///<summary>
     /// Аутентификация пользователя
@@ -164,6 +169,9 @@ export const AuthProvider = ({children}) => {
         }
     }
 
+    ///<summary>
+    /// Обновить информацию о пользователе
+    ///</summary>
     const updateUser = async (
         firstName,
         lastName,
@@ -272,6 +280,218 @@ export const AuthProvider = ({children}) => {
             }
         }
     };
+
+    /// <summary>
+    /// Установить соединение с хабом SignalR 
+    /// </summary>
+    const connectToSignalR = async () => {
+        try{
+            const newConnection = new HubConnectionBuilder()
+                .withUrl("https://localhost:7299/notification-hub", {
+                    accessTokenFactory: token
+                })
+                .withAutomaticReconnect() // автоматическое переподключение
+                .configureLogging(LogLevel.Information) // логирование
+                .build();
+            
+            setConnection(newConnection);
+        }
+        catch(error){
+            alert(`Произошла ошибка при подключении к SignalR. Детали ошибки:` + error);
+        }
+    }
+
+    useEffect(() => {
+        connectToSignalR();
+    }, [token]);
+    
+    /// <summary>
+    /// Подписка на получение уведомлений
+    /// </summary>
+    useEffect(() => {
+        try{
+            if(connection){
+                connection.start()
+                .then(() => {
+    
+                    connection.on("ReceiveNotification", () => {
+                        
+                    });
+    
+                    connection.on("ReceivePersonalNotification", () => {
+                        
+                    });
+                })
+                .catch((error) => alert("Connection failed", error));
+    
+                return () => {
+                    if(connection){
+                        connection.stop();
+                    }
+                };
+            }
+        }
+        catch(error){
+            alert("Не удалось подписаться на получение уведомлений. Детали: " + error)
+        }
+    }, [connection]);
+
+    ///<summary>
+    /// Создать сессию
+    ///</summary>
+    const createSession = async () => {
+        try{
+            const response = await axios.post("https://localhost:7299/api/session", {
+                userId:user.id,
+                // time: new Date().toISOString(),
+            }, {
+                headers: {
+                    "Authorization": "Bearer "+ token
+                }
+            });
+
+            if(response && response.status === 200){
+                alert("session successfully created");
+                startSendingData();
+            }
+        }
+        catch (error){
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await refreshToken();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 405:
+                        alert("Ошибка 405. Method Not Allowed (Не могу пока это починить)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
+        }
+    }
+
+    ///<summary>
+    /// Обновить сессию
+    ///<summary>
+    const updateSession = async () => {
+        try{
+            const response = await axios.put(`https://localhost:7299/api/session/${user.id}`, {
+                userId: user.id,
+                // sessionTimeStart: new Date().toISOString()
+            }, {
+                headers: {
+                    "Authorization": "Bearer "+ token
+                }
+            });
+            if(response && response.status === 200){
+                console.log("session updated");
+            }
+        }
+        catch (error){
+
+            if(error.response){
+                const status = error.response.status;
+
+                switch(status) {
+                    case 401:
+                        await refreshToken();
+                        break;
+                    case 403:
+                        alert("У вас недостаточно прав для доступа к ресурсу!")
+                        break;
+                    case 404:
+                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
+                        break;
+                    case 405:
+                        alert("Ошибка 405. Method Not Allowed (Не могу пока это починить)!")
+                        break;
+                    case 500:
+                        alert("Произошла ошибка сервера!")
+                        break;
+                    default:
+                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
+                }
+            }
+            else {
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
+        }
+    }
+
+    const startSendingData = () => {
+        // Если никакая вкладка не отправляет информацию о сессии
+        if(!localStorage.getItem("sendingData")){
+            localStorage.setItem("sendingData", true);
+
+            setInterval(updateSession, 60000);
+        }
+    }
+
+    const timeoutId = useRef(null);
+    
+    useEffect(() => {
+        const handleMouseMove = () => {
+            if (timeoutId.current) {
+                clearTimeout(timeoutId.current);
+            }
+
+            timeoutId.current = setTimeout(() => {
+                console.log("mousemove after 3 seconds delay");
+            }, 3000);
+        };
+
+        const handleClick = () => {
+            if (timeoutId.current) {
+                clearTimeout(timeoutId.current);
+            }
+
+            timeoutId.current = setTimeout(() => {
+                console.log("click after 3 seconds delay");
+            }, 3000);
+        };
+
+        // Добавление слушателя на движение мышки
+        window.addEventListener("mousemove", handleMouseMove);
+        // Добавление слушателя на клик мышки
+        window.addEventListener("click", handleClick);
+
+        return () => {
+            window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("click", handleClick);
+
+            if (timeoutId.current) {
+                clearTimeout(timeoutId.current);
+            }
+        };
+    }, []);
+
+    // Удалить переменную из localStorage, отвечающую за контроль сессии
+    window.addEventListener("beforeunload", () => {
+        localStorage.removeItem("sendingData");
+    })
+
+
+    // Отслеживание действий пользователя ===================================================
+
+    useEffect(() => {
+        // Начать отправку данных для сессии
+        createSession();
+    }, [])
 
     useEffect(() =>{
         getUser();
