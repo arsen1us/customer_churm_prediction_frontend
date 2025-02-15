@@ -1,26 +1,19 @@
-// import './App.css';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
+
 import Header from './components/HeaderComponent/Header';
 import RegisterForm from './components/RegisterFormComponent/RegisterForm';
 import AuthenticateForm from './components/AuthenticateFormComponent/AuthenticateForm';
-
 import Profile from './components/ProfileComponent/Profile';
 import ProfileEditForm from './components/FormComponents/Profile/ProfileEditForm';
-
 import CompanyProfile from './components/CompanyProfileComponent/CompanyProfile';
 import HomePage from './components/PageComponents/HomePage';
 import CategoryList from './components/ListComponents/CategoryList';
 import Footer from './components/FooterComponent/Footer'
-
 import ProductList from './components/ListComponents/ProductList';
-
-// Страницы
 import ProductPage from './components/PageComponents/ProductPage';
 import CompanyPage from './components/PageComponents/CompanyPage';
-
 import CompanySettings from './components/SettingsComponents/CompanySettingsComponent/CompanySettings';
-
 import ControlPanel from './components/ManagerComponents/ControlPanelComponent/ControlPanel';
 import CategoryManager from './components/ManagerComponents/CategoryManagerComponent/CategoryManager';
 import CouponManager from './components/ManagerComponents/CouponManagerComponent/CouponManager';
@@ -30,14 +23,10 @@ import ReviewManager from './components/ManagerComponents/ReviewManagerComponent
 import UserManager from './components/ManagerComponents/UserManagerComponent/UserManager';
 import CompanyManager from './components/ManagerComponents/CompanyManagerComponent/CompanyManager';
 import CompanyAddForm from './components/FormComponents/Company/CompanyAddForm';
-
 import ProductAddForm from './components/FormComponents/Product/ProductAddForm';
 import CouponAddForm from './components/FormComponents/Coupon/CouponAddForm';
-
 import CartPage from './components/PageComponents/CartPage';
-
 import ChurnPredictionPage from './components/PageComponents/ChurnPredictionPageComponent/ChurnPredictionPage';
-
 import NotificationList from './components/ListComponents/NotificationList';
 import usePageTracking from './PageTracking';
 
