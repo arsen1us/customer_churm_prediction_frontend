@@ -39,11 +39,13 @@ import CartPage from './components/PageComponents/CartPage';
 import ChurnPredictionPage from './components/PageComponents/ChurnPredictionPageComponent/ChurnPredictionPage';
 
 import NotificationList from './components/ListComponents/NotificationList';
+import usePageTracking from './PageTracking';
 
 function App() {
+  usePageTracking();
+
   return (
     <div className="App">
-      <Router>
       <header className="App-header">
         <Header/>
       </header>
@@ -88,7 +90,6 @@ function App() {
           <Route path="/notifications" element={<NotificationList/>}/>
 
         </Routes>
-      </Router>
       <footer>
           
         </footer>

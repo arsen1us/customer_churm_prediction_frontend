@@ -42,17 +42,11 @@ const Header = () => {
 
               {/* Правая часть */}
               <ul className="nav-links nav-links-right">
-                
-                {companyId ? (
-                    <li>
+
+                <li>
                       <Link to="/company-profile">Профиль компании</Link>
-                    </li>
-                ) : (
-                    <li>
-                      <Link to="/company-add">Стать продавцом</Link>
-                    </li>
-                )}
-            
+                </li>
+
                 <li>
               
                 <div style={{ position: "relative", display: "inline-block" }}>
@@ -100,7 +94,7 @@ const Header = () => {
                         </div>
                     </Popup>
                 )}
-            
+
               
                 </li>
                 <li>
