@@ -23,7 +23,7 @@ const CompanyManager = () => {
 
     const [companyList, setCompanyList] = useState([]);
     // Метод для обновления токена
-    const {token, refreshToken} = useContext(AuthContext);
+    const {token, refreshToken, handleRequestError} = useContext(AuthContext);
 
     /// summary
     /// Получить список компаний
@@ -43,18 +43,7 @@ const CompanyManager = () => {
             }
         }
         catch (error) {
-            if(error.response && error.response.status === 401){
-                await refreshToken();
-                await GetCompanyListAsync();
-            }
-
-            else if(error.response && error.response.status === 500){
-                console.log("Ошибка сервера", error);
-            }
-
-            else{
-                console.log(error)
-            }
+            await handleRequestError(error);
         }
     }
 
@@ -82,19 +71,7 @@ const CompanyManager = () => {
             }
         }
         catch (error) {
-            
-            if(error.response && error.response.status === 401){
-                await refreshToken();
-                await AddCompanyAsync();
-            }
-
-            else if(error.response && error.response.status === 500){
-                console.log("Ошибка сервера", error);
-            }
-
-            else{
-                console.log(error)
-            }
+            await handleRequestError(error);
         }
     }
 
@@ -121,18 +98,7 @@ const CompanyManager = () => {
             }
         }
         catch (error) {
-            if(error.response && error.response.status === 401){
-                await refreshToken();
-                await UpdateCompanyAsync();
-            }
-
-            else if(error.response && error.response.status === 500){
-                console.log("Ошибка сервера", error);
-            }
-
-            else{
-                console.log(error)
-            }
+            await handleRequestError(error);
         }
     }
 
@@ -158,18 +124,7 @@ const CompanyManager = () => {
             }
         }
         catch (error) {
-            if(error.response && error.response.status === 401){
-                await refreshToken();
-                await DeleteCompanyAsync();
-            }
-
-            else if(error.response && error.response.status === 500){
-                console.log("Ошибка сервера", error);
-            }
-
-            else{
-                console.log(error)
-            }
+            await handleRequestError(error);
         }
     }
 

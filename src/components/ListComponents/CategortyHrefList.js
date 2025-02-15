@@ -10,7 +10,7 @@ const CategoryHrefList = () => {
     const [categoryList, setCategoryList] = useState([]);
 
     // Метод для обновления токена
-    const {refreshToken} = useContext(AuthContext);
+    const {refreshToken, handleRequestError} = useContext(AuthContext);
 
     // Обновить токен
     const UpdateToken = async () => {
@@ -31,18 +31,8 @@ const CategoryHrefList = () => {
                 }
             }
         }
-        catch(error)
-        {
-            // Внутрянняя ошибка сервера (Internal server error)
-            if(error.response && error.response.status === 500)
-                console.log(error);
-
-            // Not Found
-            else if(error.response && error.response.status === 404)
-                console.log(error);
-
-            else
-                console.log(error);
+        catch(error){
+            await handleRequestError(error);
         }
     }
 
@@ -60,11 +50,8 @@ const CategoryHrefList = () => {
                 }
             }
         }
-        catch(error)
-        {
-            // Если токен истёк или не зарегистировался/вошёл
-            if(error.response && error.response.status === 401)
-                await refreshToken();
+        catch(error){
+            await handleRequestError(error);
         }
     }
 

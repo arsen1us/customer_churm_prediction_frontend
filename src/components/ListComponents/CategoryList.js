@@ -8,7 +8,7 @@ const CategoryList = () => {
     const [categoryList, setCategoryList] = useState([]);
 
     // Метод для обновления токена
-    const {refreshToken} = useContext(AuthContext);
+    const {refreshToken, handleRequestError} = useContext(AuthContext);
 
     // Получить список категорий 
     const GetCategoryListAsync = async () => {
@@ -24,11 +24,8 @@ const CategoryList = () => {
                 }
             }
         }
-        catch(error)
-        {
-            // Если токен истёк или не зарегистировался/вошёл
-            if(error.response && error.response.status === 401)
-                await refreshToken();
+        catch(error){
+            await handleRequestError(error);
         }
     }
 

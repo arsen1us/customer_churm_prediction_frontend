@@ -1,9 +1,8 @@
 import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
-import ProductItem from "../ListItemComponents/ProductItemComponent/ProductItem";
 import {AuthContext} from "../../AuthProvider"
+import useTracking from "../../hooks/useTracking";
+import ProductItem from "../ListItemComponents/ProductItemComponent/ProductItem";
 
 /// <summary>
 /// Компонент для отображения корзины пользователя
@@ -11,14 +10,13 @@ import {AuthContext} from "../../AuthProvider"
 const CartPage = () => {
 
     const [productList, setProductList] = useState([]);
-
-    // Метод для обновления токена
-    const {user, token, refreshToken} = useContext(AuthContext);
+    const {user, token, refreshToken, handleRequestError} = useContext(AuthContext);
+    const {trackUserAction} = useTracking();
 
     /// <summary>
     /// Получить корзину
     /// </summary>
-    const GetCartAsync = async () => {
+    const getCartAsync = async () => {
         try{ 
             const response = await axios.get(`https://localhost:7299/api/cart/${user.id}`, {
                 headers:{
@@ -36,51 +34,17 @@ const CartPage = () => {
                 }
             }
         }
-            
-        
         catch (error){
-
-            if(error.response){
-                const status = error.response.status;
-
-                switch(status) {
-                    case 401:
-                        await refreshToken();
-                        break;
-                    case 403:
-                        alert("У вас недостаточно прав для доступа к ресурсу!")
-                        break;
-                    case 404:
-                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
-                        break;
-                    case 405:
-                        alert("Ошибка 405. Method Not Allowed (Не могу пока это починить)!")
-                        break;
-                    case 500:
-                        alert("Произошла ошибка сервера!")
-                        break;
-                    default:
-                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
-                }
-            }
-            else {
-                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
-            }
+            await handleRequestError(error);
         }
     }
 
     /// summary
     /// Заказать товар
     /// summary
-
-    // Цена товара 
-    // Количество товара => цена товара 
-    // Создать и отправить запрос на сервак => отобразить инфу о заказе на странице компании (послать уведомление о том, что заказали продукт)
-    // Списать кэш с баланса юзера 
-    const OrderProductAsync = async (e) => {
+    const orderProductAsync = async (e) => {
         e.preventDefault();
         try{
-            // Данные для тела запроса
             const orderList = cartItems.map((item) => ({
                 productId: item.product.id,
                 quantity: item.quantity
@@ -95,48 +59,24 @@ const CartPage = () => {
                 }
             });
 
-            if(response && response.status === 200)
-            {
-                // обработать успешное создание заказа
+            if(response && response.status === 200){
                 if(response.data && response.data.orderStatus) {
-                    // setOrderStatus(response.data.orderStatus)
                     alert(`Заказ успешно создан. Статус заказа - ${response.data.orderStatus}`)
+
+                    await trackUserAction("createOrder", {
+                        orderList: JSON.stringify(orderList)
+                    });
                 }
             }
         }
         catch (error){
-
-            if(error.response){
-                const status = error.response.status;
-
-                switch(status) {
-                    case 401:
-                        await refreshToken();
-                        break;
-                    case 403:
-                        alert("У вас недостаточно прав для доступа к ресурсу!")
-                        break;
-                    case 404:
-                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
-                        break;
-                    case 500:
-                        alert("Произошла ошибка сервера!")
-                        break;
-                    default:
-                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
-                }
-            }
-            else {
-                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
-            }
+            await handleRequestError(error);
         }
     }
 
     useEffect(() => {
-        GetCartAsync();
+        getCartAsync();
     }, [])
-
-    // Чекбоксы и отображение итоговой суммы заказа ==================================================
 
     /// <summary>
     /// Состояние для хранения выбранных продуктов и их количества
@@ -150,16 +90,11 @@ const CartPage = () => {
     );
 
     /// <summary>
-    // Итоговая сумма заказа
-    /// </summary>
-    const [totalPrice, setTotalPrice] = useState(0);
-
-    /// <summary>
     /// Обработчик для изменения количества продукта
     /// </summary>
     const handleQuantityChange = (index, value) => {
         const updatedCartItems = [...cartItems];
-        updatedCartItems[index].quantity = Math.max(0, value); // Количество не может быть отрицательным
+        updatedCartItems[index].quantity = Math.max(0, value);
         setCartItems(updatedCartItems);
     };
 
@@ -194,8 +129,6 @@ const CartPage = () => {
             return total;
         }, 0);
     };
-
-    // Чекбоксы и отображение итоговой суммы заказа ==================================================
 
     return (
         <div>
@@ -268,7 +201,7 @@ const CartPage = () => {
                         {/* Кнопка для оформления заказа */}
                         <button
                             onClick={(e) => {
-                                OrderProductAsync(e);
+                                orderProductAsync(e);
                                 alert(`Оформление заказа на сумму ${calculateTotal()} ₽`);
                             }}
                             disabled={!cartItems.some(item => item.isSelected && item.quantity > 0)}

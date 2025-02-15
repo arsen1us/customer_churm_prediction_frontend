@@ -13,7 +13,7 @@ const Promotion = () => {
     const [promotion, setPromotion] = useState();
 
     // Метод для обновления токена
-    const {token, refreshToken} = useContext(AuthContext);
+    const {token, refreshToken, handleRequestError} = useContext(AuthContext);
 
     // Получить таргетированную рекламу для пользователя
     const GetPromotionForCurrentUser = async () => {
@@ -28,14 +28,8 @@ const Promotion = () => {
                 }
             }
         }
-        catch(error)
-        {
-            // Если действия токена истекло
-            if(error.response && error.response.status === 401)
-            {
-                await refreshToken();
-                await GetPromotionForCurrentUser();
-            }
+        catch(error){
+            await handleRequestError(error);
         }
     }
 
@@ -56,14 +50,8 @@ const Promotion = () => {
                 }
             }
         }
-        catch(error)
-        {
-            // Если действия токена истекло
-            if(error.response && error.response.status === 401)
-            {
-                await refreshToken();
-                await GetPromotionForCurrentUser();
-            }
+        catch(error){
+            await handleRequestError(error);
         }
     }
 

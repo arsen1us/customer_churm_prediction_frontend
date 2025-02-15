@@ -1,18 +1,25 @@
 import React, {useState, useContext} from "react";
 import axios from "axios";
 import {AuthContext} from "../../AuthProvider"
+import useTracking from "../../hooks/useTracking";
 
 const AuthenticateForm = () => {
     
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    
-    // Метод для обновления токена
-    const {login} = useContext(AuthContext);
+    const [attempts, setAttempts] = useState(1);
+
+    const {user, login} = useContext(AuthContext);
+    const {trackUserAction} = useTracking();
 
     const HandleSubmit = async (e) => {
         e.preventDefault();
         await login(email, password);
+
+        await trackUserAction("Authenticate", {
+            isSuccess: String(true),
+            attempts: String(attempts)
+        });   
     }
 
     return(

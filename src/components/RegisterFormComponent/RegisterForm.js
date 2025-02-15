@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from "../../AuthProvider"
-import axios from "axios";
+import useTracking from '../../hooks/useTracking';
 
 const RegisterForm = () => {
 
@@ -9,13 +9,19 @@ const RegisterForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [submitPassword, setSubmitPassword] = useState("");
+    const [attempts, setAttempts] = useState(1);
 
-    // Метод для обновления токена
     const {register} = useContext(AuthContext);
+    const {trackUserAction} = useTracking(); 
 
     const HandleSubmit = async (e) => {
         e.preventDefault();
         await register(firstName, lastName, email, password);
+        
+        await trackUserAction("Register", {
+            isSuccess: String(true),
+            attempts: String(attempts)
+        });
     }
 
     return(

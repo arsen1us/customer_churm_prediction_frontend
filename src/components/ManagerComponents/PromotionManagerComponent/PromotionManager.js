@@ -18,7 +18,7 @@ const PromotionManager = () => {
     const [isPromotionChanging, setIsPromotionChanging] = useState(false);
     const [currentPromotionIdEditing, setCurrentPromotionIdEditing] = useState("");
 
-    const [company, setCompany] = useState(null);
+    const [company, setCompany, handleRequestError] = useState(null);
 
     // Метод для обновления токена
     const {token, refreshToken} = useContext(AuthContext);
@@ -41,16 +41,7 @@ const PromotionManager = () => {
             }
         }
         catch(error){
-            // Внутрянняя ошибка сервера (Internal server error)
-            if(error.response && error.response.status === 500)
-                console.log(error);
-
-            // Not Found
-            else if(error.response && error.response.status === 404)
-                console.log(error);
-
-            else
-                console.log(error);
+            await handleRequestError(error);
         }
     }
 
@@ -72,20 +63,7 @@ const PromotionManager = () => {
             }
         }
         catch (error) {
-            // Если истёк срок действия токена
-            if(error.response && error.response.status === 401) {
-                await refreshToken();
-                await GetPromotionByCompanyIdAsync();
-            }
-            else if(error.response && error.response.status === 500) {
-
-            }
-            else if(error.response) {
-
-            }
-            else {
-
-            }
+            await handleRequestError(error);
         }
     }
     
@@ -114,20 +92,7 @@ const PromotionManager = () => {
             }
         }
         catch (error) {
-            // Если истёк срок действия токена
-            if(error.response && error.response.status === 401) {
-                await refreshToken();
-                await AddPromotionAsync();
-            }
-            else if(error.response && error.response.status === 500) {
-
-            }
-            else if(error.response && error.response) {
-                console.log(error);
-            }
-            else {
-                console.log(error);
-            }
+            await handleRequestError(error);
         }
     }
     
@@ -158,22 +123,7 @@ const PromotionManager = () => {
             }
         }
         catch (error) {
-            // Если истёк срок действия токена
-            if(error.response.status === 401) {
-                await refreshToken();
-
-                // МБ ТУТ ПОЛОМАЕТСЯ !!! По поводу этого метода максимально не уверен 
-                await UpdatePromotionAsync(currentPromotionIdEditing);
-            }
-            else if(error.response.status === 500) {
-
-            }
-            else if(error.response) {
-
-            }
-            else {
-
-            }
+            await handleRequestError(error);
         }
     }
     
@@ -195,22 +145,7 @@ const PromotionManager = () => {
             }
         }
         catch (error) {
-            // Если истёк срок действия токена
-            if(error.response.status === 401) {
-                await refreshToken();
-
-                // МБ ТУТ ПОЛОМАЕТСЯ !!! По поводу этого метода максимально не уверен 
-                await DeletePromotionAsync(currentPromotionIdEditing);
-            }
-            else if(error.response.status === 500) {
-
-            }
-            else if(error.response) {
-
-            }
-            else {
-
-            }
+            await handleRequestError(error);
         }
     }
 

@@ -28,7 +28,7 @@ import CouponAddForm from './components/FormComponents/Coupon/CouponAddForm';
 import CartPage from './components/PageComponents/CartPage';
 import ChurnPredictionPage from './components/PageComponents/ChurnPredictionPageComponent/ChurnPredictionPage';
 import NotificationList from './components/ListComponents/NotificationList';
-import usePageTracking from './PageTracking';
+import usePageTracking from './hooks/usePageTracking';
 
 function App() {
   usePageTracking();
@@ -80,7 +80,7 @@ function App() {
 
         </Routes>
       <footer>
-          
+          <Footer/>
         </footer>
     </div>
   );

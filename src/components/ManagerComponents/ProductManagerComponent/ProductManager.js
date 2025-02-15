@@ -25,7 +25,7 @@ const ProductManager = () => {
     const [companyId, setCompanyId] = useState("67431437a422c6e797c334de");
 
     // Метод для обновления токена
-    const {token, refreshToken} = useContext(AuthContext);
+    const {token, refreshToken, handleRequestError} = useContext(AuthContext);
 
     // Получить список категорий 
     const GetProductListAsync = async () => {
@@ -71,19 +71,8 @@ const ProductManager = () => {
                     setProductList(list => [...list, response.data.product])
             }
         }
-        catch (error)
-        {
-            // Если токен истёк или не зарегистировался/вошёл
-            if(error.response && error.response.status === 401)
-                await refreshToken();
-            // Внутрянняя ошибка сервера (Internal server error)
-            else if(error.response && error.response.status === 500)
-            {
-                console.log(error);
-            }
-            else{
-                console.log(error);
-            }
+        catch (error){
+            await handleRequestError(error);
         }
     }
 
@@ -106,19 +95,8 @@ const ProductManager = () => {
                     setProductList(list => [...list, response.data.product])
             }
         }
-        catch (error)
-        {
-            // Если токен истёк или не зарегистировался/вошёл
-            if(error.response && error.response.status === 401)
-                await refreshToken();
-            // Внутрянняя ошибка сервера (Internal server error)
-            else if(error.response && error.response.status === 500)
-            {
-                console.log(error);
-            }
-            else{
-                console.log(error);
-            }
+        catch (error){
+            await handleRequestError(error);
         }
     }
 
@@ -137,19 +115,8 @@ const ProductManager = () => {
                 }
             }
         }
-        catch (error)
-        {
-            // Если токен истёк или не зарегистировался/вошёл
-            if(error.response && error.response.status === 401)
-                await refreshToken();
-            // Внутрянняя ошибка сервера (Internal server error)
-            else if(error.response && error.response.status === 500)
-            {
-                console.log(error);
-            }
-            else{
-                console.log(error);
-            }
+        catch (error){
+            await handleRequestError(error);
         }
     }
 

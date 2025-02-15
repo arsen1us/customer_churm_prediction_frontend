@@ -12,19 +12,11 @@ import "./CompanyProfile.css"
 // Надо откуда-то достать id компании
 
 const CompanyProfile = () => {
-    
-    // const {companyId} = useParams();
-
     const [companyId, setCompanyId] = useState("");
-
     const [company, setCompany] = useState(null);
-
     const [orderList, setOrderList] = useState([]);
-
     const [productList, setProductList] = useState([]);
-
-    // Метод для обновления токена
-    const {token, refreshToken} = useContext(AuthContext);
+    const {token, refreshToken, handleRequestError} = useContext(AuthContext);
 
     // Скорее всего надо делать fetch для получения списка самых посследних заказов
     /// <summary>
@@ -52,35 +44,7 @@ const CompanyProfile = () => {
             }
         }
         catch (error){
-
-            if(error.response){
-                const status = error.response.status;
-
-                switch(status) {
-                    case 401:
-                        await refreshToken();
-                        await GetCompanyByIdAsync();
-                        await GetOrderListByCompanyIdAsync();
-                        break;
-                    case 403:
-                        alert("У вас недостаточно прав для доступа к ресурсу!")
-                        break;
-                    case 404:
-                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
-                        break;
-                    case 405:
-                        alert("Ошибка 405. Method Not Allowed (Не могу пока это починить)!")
-                        break;
-                    case 500:
-                        alert("Произошла ошибка сервера!")
-                        break;
-                    default:
-                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
-                }
-            }
-            else {
-                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
-            }
+            await handleRequestError(error);
         }
     }
 
@@ -114,31 +78,7 @@ const CompanyProfile = () => {
             }
         }
         catch (error){
-
-            if(error.response){
-                const status = error.response.status;
-
-                switch(status) {
-                    case 401:
-                        await refreshToken();
-                        await GetCompanyByIdAsync();
-                        break;
-                    case 403:
-                        alert("У вас недостаточно прав для доступа к ресурсу!")
-                        break;
-                    case 404:
-                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
-                        break;
-                    case 500:
-                        alert("Произошла ошибка сервера!")
-                        break;
-                    default:
-                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
-                }
-            }
-            else {
-                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
-            }
+            await handleRequestError(error);
         }
     }
 
@@ -168,31 +108,7 @@ const CompanyProfile = () => {
             }
         }
         catch (error){
-
-            if(error.response){
-                const status = error.response.status;
-
-                switch(status) {
-                    case 401:
-                        await refreshToken();
-                        await GetCompanyByIdAsync();
-                        break;
-                    case 403:
-                        alert("У вас недостаточно прав для доступа к ресурсу!")
-                        break;
-                    case 404:
-                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
-                        break;
-                    case 500:
-                        alert("Произошла ошибка сервера!")
-                        break;
-                    default:
-                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
-                }
-            }
-            else {
-                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
-            }
+            await handleRequestError(error);
         }
     }
 

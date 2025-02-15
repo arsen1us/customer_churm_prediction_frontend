@@ -12,7 +12,7 @@ import ProductItem from "../ListItemComponents/ProductItemComponent/ProductItem"
 const ProductList = () => {
 
     // Метод для обновления токена
-    const {user,token, refreshToken} = useContext(AuthContext);
+    const {user,token, refreshToken, handleRequestError} = useContext(AuthContext);
 
     const {categoryId} = useParams();
     const [productList, setProductList] = useState([]);
@@ -59,19 +59,8 @@ const ProductList = () => {
                 }
             }
         }
-        catch(error)
-        {
-            // Если токен истёк или не зарегистировался/вошёл
-            if(error.response && error.response.status === 401) {
-                await refreshToken();
-                await FetchProductsAsync();
-            }
-
-            // Ошибка сервера
-            if(error.response && error.response.status === 500)
-            {
-
-            }
+        catch(error){
+            await handleRequestError(error);
         }
     }
 
@@ -94,14 +83,8 @@ const ProductList = () => {
                 }
             }
         }
-        catch(error)
-        {
-            // Если действия токена истекло
-            if(error.response && error.response.status === 401)
-            {
-                await refreshToken();
-                await GetPromotionAsync();
-            }
+        catch(error){
+            await handleRequestError(error);
         }
     }
 
@@ -125,17 +108,8 @@ const ProductList = () => {
                 }
             }
         }
-        catch (error)
-        {
-            if(categoryId != null && categoryId != "")
-            {
-                // Если токен истёк или не зарегистировался/вошёл
-                if(error.response && error.response.status === 401)
-                {
-                    await refreshToken();
-                    await GetProductListByCategoryIdAsync();
-                }
-            }
+        catch (error){
+            await handleRequestError(error);
         }
     }
 
@@ -201,22 +175,7 @@ const ProductList = () => {
                 }
             }
             catch(error) {
-                // Если действия токена истекло
-                if(error.response && error.response.status === 401)
-                    {
-                        await refreshToken();
-                        await SearchProductAsync();
-                    }
-                // Внутрянняя ошибка сервера (Internal server error)
-                if(error.response && error.response.status === 500)
-                    console.log(error);
-
-                // Not Found
-                else if(error.response && error.response.status === 404)
-                    console.log(error);
-
-                else
-                    console.log(error);
+                await handleRequestError(error);
             }
         }
     }

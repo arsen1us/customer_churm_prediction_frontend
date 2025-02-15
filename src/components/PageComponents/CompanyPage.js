@@ -13,7 +13,7 @@ const CompanyPage = () => {
     const [orderList, setOrderList] = useState([]);
     const [productList, setProductList] = useState([]);
     // Метод для обновления токена
-    const {token, refreshToken} = useContext(AuthContext);
+    const {token, refreshToken, handleRequestError} = useContext(AuthContext);
 
     /// summary
     /// Получить компанию по id
@@ -33,11 +33,7 @@ const CompanyPage = () => {
             }
         }
         catch(error){
-            if(error.response && error.response.status === 401)
-                {
-                    await refreshToken();
-                    await GetCompanyByIdAsync(companyId);
-                }
+            await handleRequestError(error);
         }
     }
 
@@ -59,16 +55,7 @@ const CompanyPage = () => {
             }
         }
         catch (error){
-            // Внутрянняя ошибка сервера (Internal server error)
-            if(error.response && error.response.status === 500)
-                console.log(error);
-
-            // Not Found
-            else if(error.response && error.response.status === 404)
-                console.log(error);
-
-            else
-                console.log(error);
+            await handleRequestError(error);
         }
     }
 
@@ -92,16 +79,7 @@ const CompanyPage = () => {
 
         }
         catch (error){
-            // Внутрянняя ошибка сервера (Internal server error)
-            if(error.response && error.response.status === 500)
-                console.log(error);
-
-            // Not Found
-            else if(error.response && error.response.status === 404)
-                console.log(error);
-
-            else
-                console.log(error);
+            await handleRequestError(error);
         }
     }
 

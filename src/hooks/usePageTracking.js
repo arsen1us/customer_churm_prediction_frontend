@@ -1,12 +1,12 @@
 import { useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { AuthContext } from "./AuthProvider";
+import { AuthContext } from "../AuthProvider";
 
 const usePageTracking = () => {
 
     const location = useLocation();
-    const { user } = useContext(AuthContext);
+    const { user, handleRequestError } = useContext(AuthContext);
 
     ///<summary>
     /// Отправить информацию о посещении пользователя страницы
@@ -19,7 +19,7 @@ const usePageTracking = () => {
             });
         } 
         catch (error) {
-            console.error("Ошибка отправки данных о посещении страницы", error);
+            await handleRequestError(error);
         }
     }
 
