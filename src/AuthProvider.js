@@ -103,9 +103,14 @@ export const AuthProvider = ({children}) => {
         }
     }   
 
-    ///<summary>
-    /// Обновить информацию о пользователе
-    ///</summary>
+    /**
+     * Обновить информацию о пользователе
+     * @param {*} firstName 
+     * @param {*} lastName 
+     * @param {*} email 
+     * @param {*} password 
+     * @param {*} selectedFiles 
+     */
     const updateUser = async (
         firstName,
         lastName,
@@ -141,10 +146,9 @@ export const AuthProvider = ({children}) => {
         }
     }
 
-
-    ///<summary>
-    /// Обновить jwt-токен
-    ///</summary>
+    /**
+     * Обновить jwt-токен
+     */
     const refreshToken = async () => {
         try{
             const response = await axios.get("https://localhost:7299/api/token/update", {
@@ -222,108 +226,6 @@ export const AuthProvider = ({children}) => {
             alert("Не удалось подписаться на получение уведомлений. Детали: " + error)
         }
     }, [connection]);
-
-    ///<summary>
-    /// Создать сессию
-    ///</summary>
-    const createSession = async () => {
-        try{
-            const response = await axios.post("https://localhost:7299/api/session", {
-                userId:user.id,
-                // time: new Date().toISOString(),
-            }, {
-                headers: {
-                    "Authorization": "Bearer "+ token
-                }
-            });
-
-            if(response && response.status === 200){
-                alert("session successfully created");
-                startSendingData();
-            }
-        }
-        catch (error){
-            await handleRequestError(error);
-        }
-    }
-
-    ///<summary>
-    /// Обновить сессию
-    ///<summary>
-    const updateSession = async () => {
-        try{
-            const response = await axios.put(`https://localhost:7299/api/session/${user.id}`, {
-                userId: user.id,
-                // sessionTimeStart: new Date().toISOString()
-            }, {
-                headers: {
-                    "Authorization": "Bearer "+ token
-                }
-            });
-            if(response && response.status === 200){
-                console.log("session updated");
-            }
-        }
-        catch (error){
-            await handleRequestError(error);
-        }
-    }
-
-    const startSendingData = () => {
-        // Если никакая вкладка не отправляет информацию о сессии
-        if(!localStorage.getItem("sendingData")){
-            localStorage.setItem("sendingData", true);
-
-            setInterval(updateSession, 60000);
-        }
-    }
-
-    const timeoutId = useRef(null);
-    
-    useEffect(() => {
-        const handleMouseMove = () => {
-            if (timeoutId.current) {
-                clearTimeout(timeoutId.current);
-            }
-
-            timeoutId.current = setTimeout(() => {
-                console.log("mousemove after 3 seconds delay");
-            }, 3000);
-        };
-
-        const handleClick = () => {
-            if (timeoutId.current) {
-                clearTimeout(timeoutId.current);
-            }
-
-            timeoutId.current = setTimeout(() => {
-                console.log("click after 3 seconds delay");
-            }, 3000);
-        };
-
-        // Добавление слушателя на движение мышки
-        window.addEventListener("mousemove", handleMouseMove);
-        // Добавление слушателя на клик мышки
-        window.addEventListener("click", handleClick);
-
-        return () => {
-            window.removeEventListener("mousemove", handleMouseMove);
-            window.removeEventListener("click", handleClick);
-
-            if (timeoutId.current) {
-                clearTimeout(timeoutId.current);
-            }
-        };
-    }, []);
-
-    // Удалить переменную из localStorage, отвечающую за контроль сессии
-    window.addEventListener("beforeunload", () => {
-        localStorage.removeItem("sendingData");
-    })
-
-    useEffect(() => {
-        createSession();
-    }, [])
 
     useEffect(() =>{
         getUser();
