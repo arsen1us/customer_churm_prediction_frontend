@@ -11,10 +11,6 @@ export const AuthProvider = ({children}) => {
     const [token, setToken] = useState(localStorage.getItem("token") || "");
     // пользователь
     const [user, setUser] = useState(null);
-    // подключение к SignalR
-    const [connection, setConnection] = useState(null);
-    // информация о сессии пользователя
-    const [session, setSession] = useState(null);
 
     ///<summary>
     /// Аутентификация пользователя
@@ -171,61 +167,6 @@ export const AuthProvider = ({children}) => {
             await handleRequestError(error);
         }
     };
-
-    /// <summary>
-    /// Установить соединение с хабом SignalR 
-    /// </summary>
-    const connectToSignalR = async () => {
-        try{
-            const newConnection = new HubConnectionBuilder()
-                .withUrl("https://localhost:7299/notification-hub", {
-                    accessTokenFactory: token
-                })
-                .withAutomaticReconnect() // автоматическое переподключение
-                .configureLogging(LogLevel.Information) // логирование
-                .build();
-            
-            setConnection(newConnection);
-        }
-        catch(error){
-            alert(`Произошла ошибка при подключении к SignalR. Детали ошибки:` + error);
-        }
-    }
-
-    useEffect(() => {
-        connectToSignalR();
-    }, [token]);
-    
-    /// <summary>
-    /// Подписка на получение уведомлений
-    /// </summary>
-    useEffect(() => {
-        try{
-            if(connection){
-                connection.start()
-                .then(() => {
-    
-                    connection.on("ReceiveNotification", () => {
-                        
-                    });
-    
-                    connection.on("ReceivePersonalNotification", () => {
-                        
-                    });
-                })
-                .catch((error) => alert("Connection failed", error));
-    
-                return () => {
-                    if(connection){
-                        connection.stop();
-                    }
-                };
-            }
-        }
-        catch(error){
-            alert("Не удалось подписаться на получение уведомлений. Детали: " + error)
-        }
-    }, [connection]);
 
     useEffect(() =>{
         getUser();

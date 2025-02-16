@@ -7,6 +7,7 @@ import { jwtDecode } from "jwt-decode";
 import Popup from "../PopupComponent/Popup";
 import ImageSlider from "../ImageSliderComponent/ImageSlider";
 import {AuthContext} from "../../AuthProvider"
+import useTracking from "../../hooks/useTracking";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -14,8 +15,8 @@ import "slick-carousel/slick/slick-theme.css";
 // Компонент для отображения страницы с продуктом
 const ProductPage = () => {
 
-    // Метод для обновления токена
     const {user, token, refreshToken, handleRequestError} = useContext(AuthContext);
+    const {trackUserAction} = useTracking();
     const {productId} = useParams();
     const [product, setProduct] = useState(null);
     const [company, setCompany] = useState(null);
@@ -73,13 +74,10 @@ const ProductPage = () => {
         }
     }
 
-    /// summary
-    /// Заказать товар
-    /// summary
-    // Цена товара 
-    // Количество товара => цена товара 
-    // Создать и отправить запрос на сервак => отобразить инфу о заказе на странице компании (послать уведомление о том, что заказали продукт)
-    // Списать кэш с баланса юзера 
+    /**
+     * Заказать продукт
+     * @param {*} e 
+     */
     const OrderProductAsync = async (e) => {
         e.preventDefault();
         try{
@@ -97,10 +95,13 @@ const ProductPage = () => {
             
             if(response && response.status === 200)
             {
-                // обработать успешное создание заказа
                 if(response.data && response.data.orderStatus) {
-                    setOrderStatus(response.data.orderStatus)
-                    alert(`Заказ успешно создан. Статус заказа - ${response.data.orderStatus}`)
+                    setOrderStatus(response.data.orderStatus);
+                    alert(`Заказ успешно создан. Статус заказа - ${response.data.orderStatus}`);
+                    
+                    await trackUserAction("CreateOrder", {
+
+                    });
                 }
             }
         }
@@ -125,6 +126,10 @@ const ProductPage = () => {
             if(response && response.status === 200){
                 if(response.data && response.data.cart){
                     alert("Продукт успешно добавлен в корзину");
+                    
+                    await trackUserAction("CreateOrder", {
+
+                    });
                 }
             }
         }
@@ -133,9 +138,10 @@ const ProductPage = () => {
         }
     }
 
-    /// <summary>
-    /// Добавить отзыв на продукт
-    /// <summary>
+    /**
+     * Добавить отзыв на продукт
+     * @param {*} e 
+     */
     const AddReviewForProduct = async (e) => {
         e.preventDefault();
         try{
@@ -161,9 +167,9 @@ const ProductPage = () => {
         }
     }
 
-    /// <summary>
-    /// Добавить отзыв на продукт
-    /// <summary>
+    /**
+     * Загрузить отзвы для продуктов
+     */
     const LoadReviewsForProduct = async () => {
         try{
             const response = await axios.get(`https://localhost:7299/api/review/${productId}`, {
@@ -174,30 +180,6 @@ const ProductPage = () => {
             if(response && response.status === 200){
                 if(response.data && response.data.reviewModelList)
                     setReviewModelList(response.data.reviewModelList);
-            }
-        }
-        catch (error){
-            await handleRequestError(error);
-        }
-    }
-
-
-    /// <summary>
-    /// Добавить действие Добавить в корзину
-    /// </summary>
-    const AddActionAsync = async () => {
-        try{
-            const response = await axios.get(`https://localhost:7299/api/user-action/add-to-cart`,{
-                userId: user.id,
-                productId: productId
-            }, {
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
-            });
-            if(response && response.status === 200){
-                if(response.data && response.data.isSuccess === true)
-                    alert("Действие Добавить в корзину было успешно добавлено")
             }
         }
         catch (error){
