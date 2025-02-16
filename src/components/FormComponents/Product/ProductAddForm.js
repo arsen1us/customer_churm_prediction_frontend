@@ -97,15 +97,11 @@ const ProductAddForm = () => {
         GetCategoryListAsync();
     }, [])
 
-    // =====================================================================
-
     const [selectedFiles, setSelectedFiles] = useState(null);
   
     const handleFileChange = (event) => {
-        setSelectedFiles(event.target.files); // Сохраняем все выбранные файлы
+        setSelectedFiles(event.target.files);
     };
-
-    // =====================================================================
 
     return (
         <div>

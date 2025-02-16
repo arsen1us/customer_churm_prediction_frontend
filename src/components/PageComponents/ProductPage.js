@@ -21,7 +21,7 @@ const ProductPage = () => {
     const [product, setProduct] = useState(null);
     const [company, setCompany] = useState(null);
 
-    const [productCount, setProductCount] = useState(0);
+    const [quantity, setQuantity] = useState(0);
 
     // Статус заказа (успешно/не успешно создан)
     const [orderStatus, setOrderStatus] = useState(false);
@@ -29,9 +29,10 @@ const ProductPage = () => {
     // Темплейт для отображения изображений (временное решение, думаю)
     const imageTemplate = "https://localhost:7299/uploads/";
 
-    /// summary
-    /// Получить продукт по id
-    /// summary
+    /**
+     * Получить продукт по id
+     * @param {*} e 
+     */
     const GetProductByIdAsync = async (productId) => {
         try{
             const response = await axios.get(`https://localhost:7299/api/product/${productId}`, {
@@ -52,9 +53,10 @@ const ProductPage = () => {
         }
     }
 
-    /// <summary>
-    /// Получить компанию по id
-    /// </summary>
+    /**
+     * Получить компанию по id
+     * @param {*} e 
+     */
     const GetCompanyByProductIdAsync = async () => {
         try{
                 const response = await axios.get(`https://localhost:7299/api/company/product/${productId}`, {
@@ -82,11 +84,11 @@ const ProductPage = () => {
         e.preventDefault();
         try{
             const response = await axios.post("https://localhost:7299/api/order", {
-                productId: product.id,
-                productCount: productCount,
-                companyId: product.companyId, //product.companyId,
                 userId: user.id,
-                price: product.price
+                items: [{
+                    productId: product.id,
+                    quantity: quantity
+                }]
             }, {
                 headers: {
                     "Authorization": "Bearer " + token
@@ -110,9 +112,10 @@ const ProductPage = () => {
         }
     }
 
-    /// <summary>
-    /// Добавить продукт в корзину
-    /// </summary>
+    /**
+     * Добавить продукт в корзину
+     * @param {*} e 
+     */
     const AddProductToCartAsync = async () => {
         try{
             const response = await axios.post("https://localhost:7299/api/cart", {
@@ -125,10 +128,8 @@ const ProductPage = () => {
             });
             if(response && response.status === 200){
                 if(response.data && response.data.cart){
-                    alert("Продукт успешно добавлен в корзину");
-                    
-                    await trackUserAction("CreateOrder", {
-
+                    await trackUserAction("AddToCart", {
+                        productId: productId
                     });
                 }
             }
@@ -260,8 +261,8 @@ const ProductPage = () => {
                                     <label>Количество продукта</label>
                                     <input 
                                         text="number"
-                                        value={productCount}
-                                        onChange={(e) => setProductCount(e.target.value)}
+                                        value={quantity}
+                                        onChange={(e) => setQuantity(e.target.value)}
                                         placeholder="0"
                                     />
                                 </div>

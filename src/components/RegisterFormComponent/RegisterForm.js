@@ -11,18 +11,31 @@ const RegisterForm = () => {
     const [submitPassword, setSubmitPassword] = useState("");
     const [attempts, setAttempts] = useState(1);
 
-    const {register} = useContext(AuthContext);
+    const {user, register} = useContext(AuthContext);
     const {trackUserAction} = useTracking(); 
+    const [isRegister, setIsRegister] = useState(false);
 
+    /**
+     * Регистрация пользователя
+     * @param {*} e 
+     */
     const HandleSubmit = async (e) => {
         e.preventDefault();
         await register(firstName, lastName, email, password);
-        
-        await trackUserAction("Register", {
-            isSuccess: String(true),
-            attempts: String(attempts)
-        });
+        setIsRegister(true);
     }
+
+    /**
+     * Добавить действие регистрации пользователя
+     */
+    useEffect(() => {
+        if(isRegister && user?.id){
+            trackUserAction("Register", {
+                isSuccess: String(true),
+                attempts: String(attempts)
+            });
+        }
+    }, [user, isRegister]);
 
     return(
         <div>

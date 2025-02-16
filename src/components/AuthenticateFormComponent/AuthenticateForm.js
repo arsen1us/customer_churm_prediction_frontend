@@ -1,5 +1,4 @@
-import React, {useState, useContext} from "react";
-import axios from "axios";
+import React, {useState, useContext, useEffect} from "react";
 import {AuthContext} from "../../AuthProvider"
 import useTracking from "../../hooks/useTracking";
 
@@ -11,16 +10,29 @@ const AuthenticateForm = () => {
 
     const {user, login} = useContext(AuthContext);
     const {trackUserAction} = useTracking();
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+    /**
+     * Аутентификация пользователя 
+     * @param {*} e 
+     */
     const HandleSubmit = async (e) => {
         e.preventDefault();
         await login(email, password);
-
-        await trackUserAction("Authenticate", {
-            isSuccess: String(true),
-            attempts: String(attempts)
-        });   
+        setIsAuthenticated(true);
     }
+
+    /**
+     * Добавить действие аутентификация пользователя
+     */
+    useEffect(() => {
+        if(isAuthenticated && user?.id){
+            trackUserAction("Authenticate", {
+                isSuccess: String(true),
+                attempts: String(attempts)
+            });
+        }
+    }, [user, isAuthenticated])
 
     return(
         <div>

@@ -11,10 +11,14 @@ export const AuthProvider = ({children}) => {
     const [token, setToken] = useState(localStorage.getItem("token") || "");
     // пользователь
     const [user, setUser] = useState(null);
+    // обновлён ли токен или нет
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
-    ///<summary>
-    /// Аутентификация пользователя
-    ///</summary>
+    /**
+     * Аутентификация пользователя
+     * @param {*} email 
+     * @param {*} password 
+     */
     const login = async (email,password) => {
         try{
             var response = await axios.post("https://localhost:7299/api/user/auth", 
@@ -35,18 +39,22 @@ export const AuthProvider = ({children}) => {
         }
     };
 
-    ///<summary>
-    /// Выйти из аккаунта
-    ///</summary> 
+    /**
+     * Выйти из аккаунта
+     */
     const logout = () => {
         setUser(null);
         setToken("");
         localStorage.removeItem("token");
     }
 
-    ///<summary>
-    /// Регистрация пользователя
-    ///</summary>
+    /**
+     * Регистрация пользователя
+     * @param {*} firstName 
+     * @param {*} lastName 
+     * @param {*} email 
+     * @param {*} password 
+     */
     const register = async (firstName, lastName, email, password) => {
         try{
             var response = await axios.post("https://localhost:7299/api/user/reg", 
@@ -69,9 +77,9 @@ export const AuthProvider = ({children}) => {
         }
     };
 
-    /// summary
-    /// Получить информацию о пользователе
-    /// summary
+    /**
+     * Получить информацию о пользователе
+     */
     const getUser = async () => {
         try{
             if(token){
@@ -164,7 +172,11 @@ export const AuthProvider = ({children}) => {
             }
         }
         catch (error){
-            await handleRequestError(error);
+            // await handleRequestError(error);
+            await logout();
+        }
+        finally{
+            setIsRefreshing(false);
         }
     };
 
@@ -182,7 +194,21 @@ export const AuthProvider = ({children}) => {
 
             switch(status) {
                 case 401:
-                    await refreshToken();
+                    if(!isRefreshing){
+                        setIsRefreshing(true);
+                        try{
+                            await refreshToken();
+                            setIsRefreshing(false);
+                        }
+                        catch(refreshError){
+                            setIsRefreshing(false);
+                            await logout();
+                        }
+                    }
+                    else{
+                        await logout();
+                    }
+
                     break;
                 case 403:
                     alert("У вас недостаточно прав для доступа к ресурсу!")

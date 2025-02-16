@@ -4,27 +4,37 @@ import {AuthContext} from "../../AuthProvider"
 import useTracking from "../../hooks/useTracking";
 import ProductItem from "../ListItemComponents/ProductItemComponent/ProductItem";
 
-/// <summary>
-/// Компонент для отображения корзины пользователя
-/// </summary>
+/**
+ * Компонент для отображения корзины пользователя
+ * @returns 
+ */
 const CartPage = () => {
 
-    const [productList, setProductList] = useState([]);
     const {user, token, refreshToken, handleRequestError} = useContext(AuthContext);
     const {trackUserAction} = useTracking();
 
-    /// <summary>
-    /// Получить корзину
-    /// </summary>
-    const getCartAsync = async () => {
+    const [productList, setProductList] = useState([]);
+    const [cartItems, setCartItems] = useState(
+        productList.map(product => ({
+            product: product,
+            quantity: 0,
+            isSelected: false
+        }))
+    );
+
+    /**
+     * Загрузить корзину пользователя
+     */
+    const getCart = async () => {
         try{ 
             const response = await axios.get(`https://localhost:7299/api/cart/${user.id}`, {
                 headers:{
-                    "Authorization": "Bearer " + token
+                    "Authorization": `Bearer ${token}`
                 }
             })
             if(response && response.status === 200){
                 if(response.data && response.data.productList){
+                    console.log(response.data.productList)
                     setProductList(response.data.productList)
                     setCartItems(response.data.productList.map(product => ({
                         product,
@@ -39,9 +49,9 @@ const CartPage = () => {
         }
     }
 
-    /// summary
-    /// Заказать товар
-    /// summary
+    /**
+     * Заказать товар
+     */
     const orderProductAsync = async (e) => {
         e.preventDefault();
         try{
@@ -52,10 +62,10 @@ const CartPage = () => {
 
             const response = await axios.post("https://localhost:7299/api/order", {
                 userId: user.id,
-                orderList: orderList
+                items: orderList
             }, {
                 headers: {
-                    "Authorization": "Bearer " + token
+                    "Authorization": `Bearer ${token}`
                 }
             });
 
@@ -74,42 +84,34 @@ const CartPage = () => {
         }
     }
 
+    /**
+     * Загрузить корзину при монтировании
+     */
     useEffect(() => {
-        getCartAsync();
+        getCart();
     }, [])
 
-    /// <summary>
-    /// Состояние для хранения выбранных продуктов и их количества
-    /// </summary>
-    const [cartItems, setCartItems] = useState(
-        productList.map(product => ({
-            product: product,
-            quantity: 0,
-            isSelected: false
-        }))
-    );
-
-    /// <summary>
-    /// Обработчик для изменения количества продукта
-    /// </summary>
+    /**
+     * Обработчик для изменения количества продукта
+     */
     const handleQuantityChange = (index, value) => {
         const updatedCartItems = [...cartItems];
         updatedCartItems[index].quantity = Math.max(0, value);
         setCartItems(updatedCartItems);
     };
 
-    /// <summary>
-    /// Обработчик для переключения выбора одного продукта
-    /// </summary>
+    /**
+     * Обработчик для переключения выбора одного продукта
+     */
     const handleSelectChange = (index, isSelected) => {
         const updatedCartItems = [...cartItems];
         updatedCartItems[index].isSelected = isSelected;
         setCartItems(updatedCartItems);
     };
 
-    /// <summary>
-    /// Обработчик для выбора/снятия выбора со всех продуктов
-    /// </summary>
+    /**
+     * Обработчик для выбора/снятия выбора со всех продуктов
+     */
     const handleSelectAll = (isSelected) => {
         const updatedCartItems = cartItems.map(item => ({
             ...item,
@@ -118,9 +120,9 @@ const CartPage = () => {
         setCartItems(updatedCartItems);
     };
 
-    /// <summary>
-    /// Подсчет общей стоимости заказа
-    /// </summary>
+    /**
+     * Подсчет общей стоимости заказа
+     */
     const calculateTotal = () => {
         return cartItems.reduce((total, item) => {
             if (item.isSelected) {

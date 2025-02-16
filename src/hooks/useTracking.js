@@ -2,20 +2,21 @@ import axios from "axios";
 import { useContext } from "react";
 import { AuthContext  } from "../AuthProvider";
 
-///<summary>
-/// Хук, для отслеживания действий пользователя на сайте
-///</summary>
+/**
+ * Хук, для отслеживания действий пользователя на сайте
+ * @returns 
+ */
 const useTracking = () => {
     const {token, user, refreshToken, handleRequestError} = useContext(AuthContext);
 
-    ///<summary>
-    /// Добавить действие пользователя
-    ///</summary>
+    /**
+     * Добавить действие пользователя
+     * @param {*} actionType 
+     * @param {*} metadata 
+     * @returns 
+     */
     const trackUserAction = async (actionType, metadata) => {
         if(!user) return;
-
-        console.log(user);
-
         try{
             const response = await axios.post(`https://localhost:7299/api/action`,
             {

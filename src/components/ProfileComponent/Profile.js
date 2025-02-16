@@ -5,12 +5,13 @@ import OrderItem from "../ListItemComponents/OrderItem";
 import { Link } from "react-router-dom";
 import {AuthContext} from "../../AuthProvider"
 import "./Profile.css"
+import OrderList from "../ListComponents/OrderList";
 
 const Profile = () => {
 
     const [orderList, setOrderList] = useState([]);
     // Метод для обновления токена
-    const {user, token, refreshToken, logout} = useContext(AuthContext);
+    const {user, token, refreshToken, logout, handleRequestError} = useContext(AuthContext);
 
     // Скорее всего надо делать fetch для получения списка самых последних заказов
     /// summary
@@ -30,33 +31,7 @@ const Profile = () => {
             }
         }
         catch (error){
-
-            if(error.response){
-                const status = error.response.status;
-
-                switch(status) {
-                    case 401:
-                        await refreshToken();
-                        break;
-                    case 403:
-                        alert("У вас недостаточно прав для доступа к ресурсу!")
-                        break;
-                    case 404:
-                        alert("Ошибка 404. Ресурс не найден (Надо добавить, что именно не найдено)!")
-                        break;
-                    case 405:
-                        alert("Ошибка 405. Method Not Allowed (Не могу пока это починить)!")
-                        break;
-                    case 500:
-                        alert("Произошла ошибка сервера!")
-                        break;
-                    default:
-                        alert("Произошла непредвиденная ошибка. Попробуйте позже!")
-                }
-            }
-            else {
-                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
-            }
+          await handleRequestError(error);
         }
     }
 
@@ -104,16 +79,8 @@ const Profile = () => {
             
               {/* Правая часть: Список заказов */}
               <div className="order-list">
-                <h4>Список заказов</h4>
-                <ul>
-                  {orderList.length > 0 ? (
-                    orderList.map((order, index) => (
-                      <OrderItem key={index} order={order} />
-                    ))
-                  ) : (
-                    <p>Заказы отсутствуют</p>
-                  )}
-                </ul>
+                <h4>Нормальный список заказов</h4>
+                <OrderList orders={orderList}/>
               </div>
             </div>
 
