@@ -6,6 +6,7 @@ import ProductItem from "../ListItemComponents/ProductItemComponent/ProductItem"
 import OrderItem from "../ListItemComponents/OrderItem";
 
 import {AuthContext} from "../../AuthProvider"
+import OrderList from "../ListComponents/OrderList";
 
 import "./CompanyProfile.css"
 
@@ -174,16 +175,11 @@ const CompanyProfile = () => {
                         </div>
                                 
                         <div className="company-right">
+
                             {/* Правая часть: заказы и продукты */}
                             <div className="company-orders">
-                                <h3>Список заказов</h3>
-                                {orderList.length > 0 ? (
-                                    orderList.map((order, index) => (
-                                        <OrderItem key={index} order={order} />
-                                    ))
-                                ) : (
-                                    <p>Заказов в данный момент нет</p>
-                                )}
+                                <h4>Нормальный список заказов</h4>
+                                <OrderList orders={orderList}/>
                             </div>
                             
                             <div className="company-products">

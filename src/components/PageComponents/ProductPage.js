@@ -87,7 +87,8 @@ const ProductPage = () => {
                 userId: user.id,
                 items: [{
                     productId: product.id,
-                    quantity: quantity
+                    quantity: quantity,
+                    companyId: product.companyId
                 }]
             }, {
                 headers: {

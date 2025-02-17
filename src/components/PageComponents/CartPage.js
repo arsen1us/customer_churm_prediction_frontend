@@ -57,7 +57,8 @@ const CartPage = () => {
         try{
             const orderList = cartItems.map((item) => ({
                 productId: item.product.id,
-                quantity: item.quantity
+                quantity: item.quantity,
+                companyId: item.companyId
             }));
 
             const response = await axios.post("https://localhost:7299/api/order", {
