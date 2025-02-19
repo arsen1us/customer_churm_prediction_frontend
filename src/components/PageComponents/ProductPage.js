@@ -8,6 +8,7 @@ import Popup from "../PopupComponent/Popup";
 import ImageSlider from "../ImageSliderComponent/ImageSlider";
 import {AuthContext} from "../../AuthProvider"
 import useTracking from "../../hooks/useTracking";
+import DateRangeDropdown from "../DateRangeDropdown";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";

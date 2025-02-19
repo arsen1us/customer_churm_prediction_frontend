@@ -14,7 +14,7 @@ import {AuthContext} from "../../AuthProvider"
 
 const Header = () => {
     
-  const {user, token, refreshToken} = useContext(AuthContext);
+  const {user, ownedCompany} = useContext(AuthContext);
 
     const [notificationsCount, setNotificationsCount] = useState(5);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -44,7 +44,11 @@ const Header = () => {
               <ul className="nav-links nav-links-right">
 
                 <li>
-                      <Link to="/company-profile">Профиль компании</Link>
+                    {ownedCompany ? (
+                      <Link to="/company">Моя компания</Link>
+                    ):(
+                      <Link to="/company">Профиль компании</Link>
+                    )}
                 </li>
 
                 <li>

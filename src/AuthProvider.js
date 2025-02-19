@@ -1,7 +1,6 @@
-import React, {createContext, useEffect, useState, useRef} from "react";
+import React, {createContext, useEffect, useState} from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 export const AuthContext = createContext();
 
@@ -11,6 +10,8 @@ export const AuthProvider = ({children}) => {
     const [token, setToken] = useState(localStorage.getItem("token") || "");
     // пользователь
     const [user, setUser] = useState(null);
+    // Компания, которой владеет или которую администрирует текущий пользователь
+    const [ownedCompany, setOwnedCompany] = useState(null);
     // обновлён ли токен или нет
     const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -32,6 +33,7 @@ export const AuthProvider = ({children}) => {
 
                 const token = authToken.replace("Bearer", "")
                 localStorage.setItem("token", token)
+                window.location.reload();
             }
         }
         catch (error){
@@ -70,6 +72,7 @@ export const AuthProvider = ({children}) => {
 
                 const token = authToken.replace("Bearer", "")
                 localStorage.setItem("token", token)
+                window.location.reload();
             }
         }
         catch (error){
@@ -180,10 +183,56 @@ export const AuthProvider = ({children}) => {
         }
     };
 
+    /**
+     * Загрузить пользователя при изменении токена
+     */
     useEffect(() =>{
         getUser();
     }, [token]);
 
+
+    /**
+     * Загрузить компанию по id пользователя 
+     */
+    const getCompany = async () => {
+        try{
+            console.log("123");
+            const response = await axios.get(`https://localhost:7299/api/company/user/${user.id}`,
+            {
+                headers: {
+                    "Authorization": "Bearer "+ token
+                }
+            });
+
+            if(response && response.status === 200){
+                if(response.data && response.data.company)
+                setOwnedCompany(response.data.company);
+                console.log(response.data.company);
+            }
+        }
+        catch (error){
+            if(error.response){
+                const status = error.response.status;
+                // Обработать только 404 ошибку
+                switch (status){
+                    case 404:
+                        alert("Вы не ОБЛАДАЕТе компанией!")
+                    break;
+
+                    default:
+                        await handleRequestError(error);
+                        break;
+                }
+            }
+            else{
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
+            }
+        }
+    }
+
+    useEffect(() => {
+        getCompany();
+    }, [user])
     /**
      * Обработка ошибок запроса
      * @param {*} error 
@@ -233,7 +282,8 @@ export const AuthProvider = ({children}) => {
 
     return (
         <AuthContext.Provider value={{
-            user, 
+            user,
+            ownedCompany,
             token, 
             refreshToken,
             login,

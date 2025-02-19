@@ -1,22 +1,18 @@
 import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
-import { Link, Navigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../AuthProvider"
 
 const CompanyAddForm = () => {
-
     const [companyName, setCompanyName] = useState("");
     const [companyDescription, setCompanyDescription] = useState("");
-
     const navigate = useNavigate();
-
     const {user, token, refreshToken, handleRequestError} = useContext(AuthContext);
 
-    /// <summary>
-    /// Добавить компанию
-    /// </summary>
+    /**
+     * Создать компанию
+     * @param {*} e 
+     */
     const AddCompanyAsync = async (e) => {
         e.preventDefault();
         try{
@@ -36,7 +32,7 @@ const CompanyAddForm = () => {
             });
             if(response.status && response.status === 200) {
                if(response.data && response.data.company) {
-                    navigate(`/company-profile/${response.data.company.id}`)
+                    navigate(`/company/${response.data.company.id}`)
                }
             }
         }

@@ -12,11 +12,9 @@ import CategoryList from './components/ListComponents/CategoryList';
 import Footer from './components/FooterComponent/Footer'
 import ProductList from './components/ListComponents/ProductList';
 import ProductPage from './components/PageComponents/ProductPage';
-import CompanyPage from './components/PageComponents/CompanyPage';
 import CompanySettings from './components/SettingsComponents/CompanySettingsComponent/CompanySettings';
 import ControlPanel from './components/ManagerComponents/ControlPanelComponent/ControlPanel';
 import CategoryManager from './components/ManagerComponents/CategoryManagerComponent/CategoryManager';
-import CouponManager from './components/ManagerComponents/CouponManagerComponent/CouponManager';
 import ProductManager from './components/ManagerComponents/ProductManagerComponent/ProductManager';
 import PromotionManager from './components/ManagerComponents/PromotionManagerComponent/PromotionManager';
 import ReviewManager from './components/ManagerComponents/ReviewManagerComponent/ReviewManager';
@@ -46,16 +44,15 @@ function App() {
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/edit-profile" element={<ProfileEditForm/>}/>
 
-          <Route path="/company-profile" element={<CompanyProfile/>}/>
-          <Route path="/company-profile/:companyId" element={<CompanyProfile/>}/> 
+          <Route path="/company" element={<CompanyProfile/>}/> 
+          <Route path="/company/:companyId" element={<CompanyProfile/>}/>
 
           <Route path="/category" exact element={<CategoryList/>}/>
 
           <Route path="/category/:categoryId" element={<ProductList/>}/>
           <Route path="/product/:productId" element={<ProductPage/>}/>
-          <Route path="/company/:companyId" element={<CompanyPage/>}/>
           <Route path="/promotion/:companyId" element={<PromotionManager/>}/>
-          <Route path="/coupon/:companyId" element={<CouponManager/>}/>
+          
           
           <Route path="/company-settings/:companyId" element={<CompanySettings/>}/>
           <Route path="/company-add" element={<CompanyAddForm/>}/>
@@ -65,7 +62,6 @@ function App() {
 
           <Route path="control-panel" element={<ControlPanel/>}/>
           <Route path="handle-category" element={<CategoryManager/>}/>
-          <Route path="handle-coupon" element={<CouponManager/>}/>
           <Route path="handle-product" element={<ProductManager/>}/>
           <Route path="handle-promotion" element={<PromotionManager/>}/>
           <Route path="handle-review" element={<ReviewManager/>}/>

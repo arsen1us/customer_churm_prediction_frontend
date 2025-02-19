@@ -1,215 +1,71 @@
 import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
-import ProductItem from "../ListItemComponents/ProductItemComponent/ProductItem";
-import OrderItem from "../ListItemComponents/OrderItem";
-
+import { useParams } from "react-router-dom";
 import {AuthContext} from "../../AuthProvider"
-import OrderList from "../ListComponents/OrderList";
-
 import "./CompanyProfile.css"
-
-// Надо откуда-то достать id компании
+import OwnerCompanyProfile from "../OwnerCompanyProfileComponent/OwnerCompanyProfile";
+import UserCompanyProfile from "../UserCompanyProfileComponent/UserCompanyProfile";
 
 const CompanyProfile = () => {
-    const [companyId, setCompanyId] = useState("");
-    const [company, setCompany] = useState(null);
-    const [orderList, setOrderList] = useState([]);
-    const [productList, setProductList] = useState([]);
-    const {token, refreshToken, handleRequestError} = useContext(AuthContext);
+    const {companyId} = useParams();
+    const {token, ownedCompany, handleRequestError} = useContext(AuthContext);
+    const [company, setCompany] = useState(null)
 
-    // Скорее всего надо делать fetch для получения списка самых посследних заказов
-    /// <summary>
-    /// Получить список заказов
-    /// </summary>
-    const GetOrderListByCompanyIdAsync = async () => {
+    /**
+     * Загрузить компанию по id 
+     */
+    const getCompany = async () => {
         try{
-            if(token){
-                const decodedToken = jwtDecode(token);
-                if(decodedToken){
-                    if(decodedToken.CompanyId)
-                    {
-                        const response = await axios.get(`https://localhost:7299/api/order/company/${decodedToken.CompanyId}`, {
-                            headers: {
-                                "Authorization": "Bearer " + token
-                            }
-                        });
-                        if(response && response.status === 200){
-                            if(response.data.orderList){
-                                setOrderList(response.data.orderList);
-                            }
-                        }
-                    }
+            const response = await axios.get(`https://localhost:7299/api/company/${companyId}`,
+            {
+                headers: {
+                    "Authorization": "Bearer "+ token
                 }
+            });
+
+            if(response && response.status === 200){
+                if(response.data && response.data.company)
+                    setCompany(response.data.company);
             }
         }
         catch (error){
-            await handleRequestError(error);
-        }
-    }
+            if(error.response){
+                const status = error.response.status;
+                // Обработать только 404 ошибку
+                switch (status){
+                    case 404:
+                        alert("Вы не ОБЛАДАЕТе компанией!")
+                    break;
 
-    // !Добавить join запрос на получение списка заказов 
-
-
-    // Скорее всего надо делать fetch для получения части продуктов (первой страницы)
-    /// <summary>
-    /// Получить список продуктов по id компании
-    /// </summary>
-    const GetProductListByCompanyIdAsync = async () => {
-        try{
-            if(token){
-                const decodedToken = jwtDecode(token);
-                if(decodedToken){
-                    if(decodedToken.CompanyId)
-                    {
-                        const response = await axios.get(`https://localhost:7299/api/product/company/${decodedToken.CompanyId}`, {
-                            headers: {
-                                "Authorization": "Bearer " + token
-                            }
-                        });
-            
-                        if(response && response.status === 200){
-                            if(response.data.productList){
-                                setProductList(response.data.productList);
-                            }
-                        }
-                    }
+                    default:
+                        await handleRequestError(error);
+                        break;
                 }
             }
-        }
-        catch (error){
-            await handleRequestError(error);
-        }
-    }
-
-    /// <summary>
-    /// Получить компанию по id
-    /// </summary>
-    const GetCompanyByIdAsync = async () => {
-        try{
-            if(token){
-                const decodedToken = jwtDecode(token);
-                if(decodedToken){
-                    if(decodedToken.CompanyId)
-                    {
-                        const response = await axios.get(`https://localhost:7299/api/company/${decodedToken.CompanyId}`, {
-                            headers:{
-                                "Authorization": "Bearer " + token
-                            }
-                        });
-            
-                        if(response && response.status === 200) {
-                            if(response.data.company) {
-                                setCompany(response.data.company);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        catch (error){
-            await handleRequestError(error);
-        }
-    }
-
-    /// <summary>
-    /// Декодировать id компании из jwt-токена
-    /// </summary>
-    const GetCompanyIdFromToken = () => {
-        const token = localStorage.getItem("token");
-        if(token){
-            const decodedToken = jwtDecode(token);
-            if(decodedToken){
-                if(decodedToken.CompanyId){
-                    setCompanyId(decodedToken.CompanyId);
-                }
+            else{
+                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
             }
         }
     }
 
     useEffect(() => {
-        GetCompanyIdFromToken();
-        GetCompanyByIdAsync();
-        GetProductListByCompanyIdAsync();
-        GetOrderListByCompanyIdAsync();
-    }, [])
+        if(companyId && (!ownedCompany || ownedCompany?.id !== companyId)){
+            getCompany();
+        }
+        else{
+            setCompany(ownedCompany);
+        }
+    }, [companyId, ownedCompany]);
+
+    const isOwner = ownedCompany && ownedCompany.id == companyId; 
 
     return (
         <div>
-            <div className="company-container">
-                {company ? (
-                    <>
-                        <div className="company-left">
-                            {/* Левая часть: информация и настройки */}
-                            <div className="company-info">
-
-                                <div>
-                                    {company.imageSrcs && company.imageSrcs.map((src, index) => (
-                                        <div key={index} className="company-avatar">
-                                            <img 
-                                                src={`https://localhost:7299/uploads/${src}`}
-                                                alt={`Image ${index}`}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <div>
-                                    <h4>{company.name}</h4>
-                                </div>
-
-                                <div>
-                                    <p>{company.description}</p>
-                                </div>
-                            </div>
-                                
-                            <div className="company-settings">
-                                <h3>Настройки компании</h3>
-                                <Link to={`/company-settings/${companyId}`}>Перейти к настройкам</Link>
-                                <h3>Управление рекламой</h3>
-                                <Link to={`/promotion/${companyId}`}>Перейти к настройке рекламы</Link>
-                                <h3>Управление купонами</h3>
-                                <Link to={`/coupon/${companyId}`}>Перейти к настройке купонов</Link>
-                            </div>
-                        </div>
-                                
-                        <div className="company-right">
-
-                            {/* Правая часть: заказы и продукты */}
-                            <div className="company-orders">
-                                <h4>Нормальный список заказов</h4>
-                                <OrderList orders={orderList}/>
-                            </div>
-                            
-                            <div className="company-products">
-                                <h3>Список продуктов</h3>
-                                <Link to="/addproduct">Добавить продукт</Link>
-                                <ul>
-                        <div
-                            style={{ 
-                                display: 'grid', 
-                                gridTemplateColumns: 
-                                'repeat(auto-fill, minmax(200px, 1fr))', 
-                                gap: '20px', margin: '20px 30px 0px 0px' }}>
-                            {productList.map((product, index) => {
-                                return (
-                                    <li key={index}>
-                                        {product.name && (
-                                            <ProductItem product={product}/>
-                                        )}
-                                    </li>
-                                );
-                        })}
-                        </div>
-                    </ul>
-                            </div>
-                        </div>
-                    </>
-                ) : (
-                    <p>Информация о компании не найдена</p>
-                )}
-            </div>
+            {isOwner ? (
+                <OwnerCompanyProfile/>
+                ):(
+                <UserCompanyProfile company={company}/>
+            )}
         </div>
     );
 }

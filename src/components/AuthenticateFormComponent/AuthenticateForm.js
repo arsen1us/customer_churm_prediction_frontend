@@ -1,6 +1,7 @@
 import React, {useState, useContext, useEffect} from "react";
 import {AuthContext} from "../../AuthProvider"
 import useTracking from "../../hooks/useTracking";
+import { useNavigate } from "react-router-dom";
 
 const AuthenticateForm = () => {
     
@@ -12,6 +13,8 @@ const AuthenticateForm = () => {
     const {trackUserAction} = useTracking();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+    const navigate = useNavigate();
+    
     /**
      * Аутентификация пользователя 
      * @param {*} e 
@@ -20,6 +23,7 @@ const AuthenticateForm = () => {
         e.preventDefault();
         await login(email, password);
         setIsAuthenticated(true);
+        navigate("/");
     }
 
     /**
