@@ -7,25 +7,32 @@ import { AuthContext } from "../AuthProvider"
 const useSignalR = () => {
     const {token, user, handleRequestError} = useContext(AuthContext)
     const [connection, setConnection] = useState(null);
+    const [notificationList, setNotificationList] = useState([]);
 
     /**
      * Установить соединение с хабом SignalR 
      */
     const connectToSignalR = async () => {
-        try{
-            const newConnection = new HubConnectionBuilder()
-                .withUrl("https://localhost:7299/notification-hub", {
-                    accessTokenFactory: token
-                })
-                .withAutomaticReconnect()
-                .configureLogging(LogLevel.Information)
-                .build();
-            
-            setConnection(newConnection);
-            alert("Успешно подключено к SignalR");
-        }
-        catch(error){
-            alert(`Произошла ошибка при подключении к SignalR. Детали ошибки:` + error);
+        if(token){
+            try{
+                const newConnection = new HubConnectionBuilder()
+                    .withUrl("https://localhost:7299/notification-hub", {
+                        accessTokenFactory: () => token
+                    })
+                    .withAutomaticReconnect()
+                    .configureLogging(LogLevel.Information)
+                    .build();
+
+                    newConnection.on("OnConnected", (message) => {
+                        console.log("Получено уведомление:", message)
+                    });
+                
+                setConnection(newConnection);
+                alert("Успешно подключено к SignalR");
+            }
+            catch(error){
+                alert(`Произошла ошибка при подключении к SignalR. Детали ошибки:` + error);
+            }
         }
     }
 
@@ -44,13 +51,15 @@ const useSignalR = () => {
             .then(() => {
                 console.log("SignalR Connected");
 
-                connection.on("ReceiveNotification", (message) => {
-                    setNotifications((prev) => [...prev, message]);
+                connection.on("OnConnected", (message) => {
+                    console.log("Получено уведомление:", message)
+                });
+                connection.on("SendDatabaseNotification", (message) => {
                     console.log("Получено уведомление:", message);
                 });
 
                 connection.on("ReceivePersonalNotification", (message) => {
-                    setNotifications((prev) => [...prev, message]);
+                    setNotificationList((prev) => [...prev, message]);
                     console.log("Личное уведомление:", message);
                 });
             })

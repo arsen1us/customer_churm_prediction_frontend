@@ -27,9 +27,12 @@ import CartPage from './components/PageComponents/CartPage';
 import ChurnPredictionPage from './components/PageComponents/ChurnPredictionPageComponent/ChurnPredictionPage';
 import NotificationList from './components/ListComponents/NotificationList';
 import usePageTracking from './hooks/usePageTracking';
+import useSignalR from './hooks/useSignalR';
+import { useBootstrapBreakpoints } from 'react-bootstrap/esm/ThemeProvider';
 
 function App() {
   usePageTracking();
+  useSignalR();
 
   return (
     <div className="App">

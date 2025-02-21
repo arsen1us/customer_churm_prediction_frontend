@@ -65,10 +65,10 @@ const ProductAddForm = () => {
             formData.append("name", name);
             formData.append("description", description);
             formData.append("categoryId", categoryId);
-            formData.append("count", count);
+            formData.append("quantity", count);
             formData.append("price", price);
             formData.append("companyId", decodedToken.CompanyId);
-            formData.append("userId", decodedToken.Id);
+            formData.append("userId", user.id);
 
                 const response = await axios.post("https://localhost:7299/api/product", formData, {
                     headers: {

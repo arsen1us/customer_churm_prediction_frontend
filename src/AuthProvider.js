@@ -196,7 +196,6 @@ export const AuthProvider = ({children}) => {
      */
     const getCompany = async () => {
         try{
-            console.log("123");
             const response = await axios.get(`https://localhost:7299/api/company/user/${user.id}`,
             {
                 headers: {
@@ -205,9 +204,9 @@ export const AuthProvider = ({children}) => {
             });
 
             if(response && response.status === 200){
-                if(response.data && response.data.company)
-                setOwnedCompany(response.data.company);
-                console.log(response.data.company);
+                if(response.data && response.data.company){
+                    setOwnedCompany(response.data.company);
+                }
             }
         }
         catch (error){
