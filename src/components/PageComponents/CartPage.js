@@ -34,7 +34,6 @@ const CartPage = () => {
             })
             if(response && response.status === 200){
                 if(response.data && response.data.productList){
-                    console.log(response.data.productList)
                     setProductList(response.data.productList)
                     setCartItems(response.data.productList.map(product => ({
                         product,

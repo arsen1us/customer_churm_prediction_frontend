@@ -1,47 +1,71 @@
-import React, { useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef, useContext} from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Popup from "../../PopupComponent/Popup";
+import { AuthContext } from "../../../AuthProvider";
 
 import "./RetentionAction.css"
 const ChurnPredictionPage = () => {
 
-// Логика таблицы ==========================================================================
-
-    // Список пользователей
+  const {token,handleRequestError} = useContext(AuthContext);
+  const [churnPredictionList, setChurnPredictionList] = useState([]);
   const [users, setUsers] = useState([
     { id: 1, name: "Иванов Иван", lastActivity: "3 дня назад", action: "Просмотр страницы", churnRate: "90%", selected: false },
     { id: 2, name: "Дмитриев Дмитрий", lastActivity: "3 дня назад", action: "Добавление в корзину", churnRate: "85%", selected: false },
     { id: 3, name: "Александров Александр", lastActivity: "5 часов назад", action: "Просмотр страницы", churnRate: "55%", selected: false },
   ]);
 
-  // Выбор всех пользователей
   const [selectAll, setSelectAll] = useState(false);
 
-  // Обработчик для выбора всех пользователей
+  /**
+  * Загрузить список предсказаний оттока пользователей
+  */
+  const getCharnPredictionList = async () => {
+    try{ 
+        const response = await axios.get(`https://localhost:7299/api/churn-prediction`, {
+            headers:{
+                "Authorization": `Bearer ${token}`
+            }
+        })
+        if(response && response.status === 200){
+            if(response.data && response.data.churnPredictionList){
+              setChurnPredictionList(response.data.churnPredictionList);
+              console.log(response.data.churnPredictionList);
+            }
+        }
+    }
+    catch (error){
+        await handleRequestError(error);
+    }
+  }
+
+  /**
+   * Обработчик для выбора всех пользователей
+   */
   const handleSelectAll = () => {
     const newSelectAll = !selectAll;
     setSelectAll(newSelectAll);
     setUsers(users.map(user => ({ ...user, selected: newSelectAll })));
   };
 
-  // Обработчик для выбора отдельного пользователя
+  /**
+   * Обработчик для выбора отдельного пользователя
+   * @param {*} id 
+   */
   const handleUserSelect = (id) => {
     setUsers(users.map(user => user.id === id ? { ...user, selected: !user.selected } : user));
   };
 
-  // Кнопка для действий по удержанию
+  /**
+   * Кнопка для действий по удержанию
+   */
   const handleRetentionActions = () => {
     const selectedUsers = users.filter(user => user.selected);
     alert(`Действия применяются к пользователям: ${selectedUsers.map(u => u.name).join(", ")}`);
   };
 
-// Логика таблицы ==========================================================================
-
-
-// Popup ===================================================================================
 const [selectAllPopup, setSelectAllPopup] = useState(false);
   const [selectedActions, setSelectedActions] = useState({
     personalDiscount: false,
@@ -50,7 +74,10 @@ const [selectAllPopup, setSelectAllPopup] = useState(false);
     viewedProducts: false,
   });
 
-  // Обработчик выбора всех чекбоксов
+  /**
+   * Обработчик выбора всех чекбоксов
+   * 
+   */
   const handleSelectAllPopup = () => {
     const newValue = !selectAllPopup;
     setSelectAllPopup(newValue);
@@ -62,12 +89,17 @@ const [selectAllPopup, setSelectAllPopup] = useState(false);
     });
   };
 
-// Обработчик отдельного чекбокса
+/**
+ * Обработчик отдельного чекбокса
+ * @param {*} action 
+ */
 const handleCheckboxChange = (action) => {
     setSelectedActions({ ...selectedActions, [action]: !selectedActions[action] });
   };
 
-  // Обработчик выполнения действий
+  /**
+   * Обработчик выполнения действий
+   */
   const handleSubmit = () => {
     const actions = Object.keys(selectedActions).filter(
       (key) => selectedActions[key]
@@ -76,7 +108,7 @@ const handleCheckboxChange = (action) => {
     alert(`Действия: ${actions.join(", ")} выполнены!`);
   };
 
-    // Управление popup ===================================
+  
 
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const openPopup = () => setIsPopupOpen(true);
@@ -86,9 +118,9 @@ const handleCheckboxChange = (action) => {
     const [reviewGrade, setReviewGrade] = useState(1);
     const [reviewModelList, setReviewModelList] = useState([]);
 
-    // Управление popup ===================================
-
-// Popup ===================================================================================
+  useEffect(() => {
+    getCharnPredictionList()
+  }, []);
 
 
   return (
