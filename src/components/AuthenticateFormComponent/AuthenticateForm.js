@@ -2,6 +2,7 @@ import React, {useState, useContext, useEffect} from "react";
 import {AuthContext} from "../../AuthProvider"
 import useTracking from "../../hooks/useTracking";
 import { useNavigate } from "react-router-dom";
+import { useLogging } from "../../hooks/useLogging";
 
 const AuthenticateForm = () => {
     
@@ -9,21 +10,33 @@ const AuthenticateForm = () => {
     const [password, setPassword] = useState("");
     const [attempts, setAttempts] = useState(1);
 
-    const {user, login} = useContext(AuthContext);
+    const {handleRequestError, user, login} = useContext(AuthContext);
     const {trackUserAction} = useTracking();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     const navigate = useNavigate();
+    const {logInfo, logWarning, logError} = useLogging();
     
     /**
      * Аутентификация пользователя 
      * @param {*} e 
      */
-    const HandleSubmit = async (e) => {
-        e.preventDefault();
-        await login(email, password);
-        setIsAuthenticated(true);
-        navigate("/");
+    const authAsync = async (e) => {
+        if(email === "" || password === ""){
+            alert("Заполните поле login и password");
+            logWarning(`Попытка аутентификации. Не все поля были заполнены`);
+        }
+        try{
+            e.preventDefault();
+            await login(email, password);
+            setIsAuthenticated(true);
+            navigate("/");
+            logInfo(`Пользователь с email [${email}] успешно вошёл в систему `);
+        }
+        catch(error){
+            logError(`Произошла ошибка во время аутентификации пользователя`);
+            handleRequestError(error);
+        }
     }
 
     /**
@@ -43,7 +56,7 @@ const AuthenticateForm = () => {
             <div>
                 Форма аутентификации
             </div>
-            <form method="post" onSubmit={HandleSubmit}>
+            <form method="post" onSubmit={authAsync}>
                 <label>Email</label>
                 <input 
                     type="text"

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from "../../AuthProvider"
 import useTracking from '../../hooks/useTracking';
+import { useLogging } from "../../hooks/useLogging";
 
 const RegisterForm = () => {
 
@@ -11,18 +12,32 @@ const RegisterForm = () => {
     const [submitPassword, setSubmitPassword] = useState("");
     const [attempts, setAttempts] = useState(1);
 
-    const {user, register} = useContext(AuthContext);
+    const {user, register, handleRequestError} = useContext(AuthContext);
     const {trackUserAction} = useTracking(); 
     const [isRegister, setIsRegister] = useState(false);
-
+    const {logInfo, logWarning, logError} = useLogging();
     /**
      * Регистрация пользователя
      * @param {*} e 
      */
-    const HandleSubmit = async (e) => {
-        e.preventDefault();
-        await register(firstName, lastName, email, password);
-        setIsRegister(true);
+    const registerAsync = async (e) => {
+        if(firstName === "" 
+            || lastName === "" 
+            || email === "" 
+            || password === ""){
+                alert ("Поля firstName, lastName, email, password должны быть заполнены")
+                logWarning(`Попытка регистрации. Не все поля были заполнены`);
+        }
+        try{
+            e.preventDefault();
+            await register(firstName, lastName, email, password);
+            setIsRegister(true);
+            logInfo(`Регистрация пользователя прошла успешно. Email: [${email}]`)
+        }
+        catch(error){
+            logError("Произошла ошибка во время регистрации пользователя");
+            handleRequestError(error);
+        }
     }
 
     /**
@@ -42,7 +57,7 @@ const RegisterForm = () => {
             <div>
                 Форма регистрации
             </div>
-            <form method="post" onSubmit={HandleSubmit}>
+            <form method="post" onSubmit={registerAsync}>
                 
                 <div>
                     <label>FirstName</label>

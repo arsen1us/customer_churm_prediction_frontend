@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "./AuthProvider";
+import { useLogging } from "./hooks/useLogging";
 
 const SessionManager = () => {
     const {user, token, handleRequestError} = useContext(AuthContext);
     const timeoutId = useRef(null);
     const sessionUpdateInterval = useRef(null);
-    
+    const {logInfo, logWarning, logError} = useLogging();
     /**
      * Создание сессии
      * @returns 
@@ -46,7 +47,7 @@ const SessionManager = () => {
             });
 
             if (response.status === 200) {
-                alert("Сессия обновлена");
+                
             }
         } catch (error) {
             handleRequestError(error);

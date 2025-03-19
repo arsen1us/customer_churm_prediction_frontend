@@ -25,6 +25,10 @@ const CompanyAddForm = () => {
             formData.append("name", companyName);
             formData.append("description", companyDescription);
             formData.append("userId", user.id)
+
+            console.log("FormData: ");
+            console.log(formData);
+
             const response = await axios.post("https://localhost:7299/api/company", formData, {
                 headers:{
                     "Authorization": "Bearer " + token
