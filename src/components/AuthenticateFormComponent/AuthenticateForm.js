@@ -3,7 +3,7 @@ import {AuthContext} from "../../AuthProvider"
 import useTracking from "../../hooks/useTracking";
 import { useNavigate } from "react-router-dom";
 import { useLogging } from "../../hooks/useLogging";
-
+import "./AuthenticateForm.css"
 const AuthenticateForm = () => {
     
     const [email, setEmail] = useState("");
@@ -51,30 +51,43 @@ const AuthenticateForm = () => {
         }
     }, [user, isAuthenticated])
 
-    return(
-        <div>
-            <div>
-                Форма аутентификации
+    return (
+        <div className="auth-page">
+          <div className="auth-container">
+            <div className="auth-header">
+              <h2>Форма аутентификации</h2>
             </div>
-            <form method="post" onSubmit={authAsync}>
+            
+            <form className="auth-form" method="post" onSubmit={authAsync}>
+              <div className="auth-form-group">
                 <label>Email</label>
                 <input 
-                    type="text"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Email"
+                  type="text"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
                 />
+              </div>
+              
+              <div className="auth-form-group">
                 <label>Password</label>
                 <input 
-                    type="password"
-                    value={password}    
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password"
+                  type="password"
+                  value={password}    
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
                 />
-                <button type="submit">Authenticate</button>
+              </div>
+              
+              <button type="submit" className="auth-submit-btn">Authenticate</button>
+              
+              <div className="auth-footer">
+                Нет аккаунта? <a href="/register">Зарегистрируйтесь</a>
+              </div>
             </form>
+          </div>
         </div>
-    );
+      );
 };
 
 export default AuthenticateForm;
