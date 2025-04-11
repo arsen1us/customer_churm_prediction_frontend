@@ -15,38 +15,12 @@ import { Dropdown } from 'react-bootstrap';
 // import { FaUser, FaCog, FaSignOutAlt } from "react-icons/fa";
 
 const HomePage = () => {
-
-  // Метод для обновления токена
-  const {refreshToken} = useContext(AuthContext);
-  const options = [
-    { value: 1, label: "Product 1" },
-    { value: 2, label: "Product 2" },
-    { value: 3, label: "Product 3" }, ];
-
-    const [selectedOptions, setSelectedOptions] = useState([]);
-
-    const handleChange = (selected) => {
-      setSelectedOptions(selected);
-    }
-
-    const handleSubmit = () => {
-      console.log("Selected items:", selectedOptions);
-    }
-
-    const handleMenuOpen = () => {
-
-    }
-
-    const handleInputChange = () => {
-
-    }
-
-    const handleMenuClose = () => {
-
-    }
     return (
         <div>
             <div>
+              <div>
+                <img src="/home_page_background.jpg"/>
+              </div>
               <div>
                 <p>Чай Жигулевских гор</p>
               </div>
@@ -82,19 +56,19 @@ const HomePage = () => {
                 {/* Блок с 4 колонками */}
                 <div>
                   <div>
-                    <img/>
+                    <img src="/home_column_1.png"/>
                     <p>Уникальность продукта обусловленная местом его прорастания и изготовления - волжская излучина с Жигулевскими горами.</p>
                   </div>
                   <div>
-                    <img/>
+                    <img src="/home_column_2.png"/>
                     <p>Продукции присвоен знак Самарский продукт и Одобрено Хозяйкой Жигулей.</p>
                   </div>
                   <div>
-                    <img/>
+                    <img src="/home_column_3.png"/>
                     <p>Ограниченное количество продукта и его вкусовая неповторимость при проверенном качестве.</p>
                   </div>
                   <div>
-                    <img/>
+                    <img src="/home_column_4.png"/>
                     <p>Наш девиз — чай для каждого, но не для всех. Мы стараемся индивидуально работать с каждым покупателем и подбирать для него его индивидуальный чайный состав.</p>
                   </div>
                 </div>

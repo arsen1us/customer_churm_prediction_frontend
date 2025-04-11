@@ -23,14 +23,30 @@ const Header = () => {
 
     return(
         <div>
+
             <nav className="header-nav">
               {/* Левая часть */}
               <ul className="nav-links nav-links-left">
-
                 <li>
-                  <Link to="/">Главная</Link>
+                  <Link to="/">
+                    <img src="/logo.png"/>
+                  </Link>
                 </li>
-
+                <li>
+                  <Link to="/">ГЛАВНАЯ</Link>
+                </li>
+                <li>
+                  <Link to="/">О НАС</Link>
+                </li>
+                <li>
+                  <Link to="/">КАТАЛОГ</Link>
+                </li>
+                <li>
+                  <Link to="/">АКЦИИ</Link>
+                </li>
+                <li>
+                  <Link to="/">КОНТАКТЫ</Link>
+                </li>
                 <li>
                   <Link to="/category">Категории</Link>
                 </li>
