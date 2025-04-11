@@ -29,9 +29,9 @@ const ProductList = () => {
     const [input, setInput] = useState("");
     const [debouncedInput, setDebouncedInput] = useState("");
 
-    ///summary
-    /// Получить список из 15 продуктов и рекламу при нажатии на кнопку
-    ///summary
+    /**
+     * Получить список из 15 продуктов и рекламу при нажатии на кнопку
+     */
     const LoadProductAsync = async () => {
         setPageNumber(prevPageNumber => prevPageNumber + 1);
         // Получаю 15 продуктов
@@ -40,9 +40,9 @@ const ProductList = () => {
         await GetPromotionAsync(); 
     }
 
-    ///summary
-    /// Получить список из 15 продуктов
-    ///summary
+    /**
+     * Получить список из 15 продуктов
+     */
     const FetchProductsAsync = async () => {
         try{
             // fixme исопльзовался данный запрос: `https://localhost:7299/api/product/${pageNumber}/${pageSize}`
@@ -64,9 +64,9 @@ const ProductList = () => {
         }
     }
 
-    ///summary
-    /// Получить первый рекламный пост (тестовый метод)
-    ///summary
+    /**
+     * Получить первый рекламный пост (тестовый метод)
+     */
     const GetPromotionAsync = async () => {
         try{
             const response = await axios.get("https://localhost:7299/api/promotion/first", {
@@ -88,9 +88,9 @@ const ProductList = () => {
         }
     }
 
-    ///summary
-    /// Получить список категорий по id категории
-    ///summary
+    /**
+     * Получить список категорий по id категории
+     */
     const GetProductListByCategoryIdAsync = async () => {
         try{
             const response = await axios.get(`https://localhost:7299/api/product/category/${categoryId}`, {
@@ -113,18 +113,19 @@ const ProductList = () => {
         }
     }
 
-    ///summary
-    /// Выбрать текущую категорию
-    ///summary
+    /**
+     * Выбрать текущую категорию
+     * @param {*} name 
+     */
     const ChangeCurrentCategory = (name) => {
         if(name)
             setCategoryName(name);
         console.log(name);
     }
 
-    ///summary
-    /// Получить список продуктов при загрузке страницы
-    ///summary
+    /**
+     * Получить список продуктов при загрузке страницы
+     */
     useEffect(() => {
         if(categoryId){
             GetProductListByCategoryIdAsync();
@@ -136,29 +137,34 @@ const ProductList = () => {
             }
     }, []);
 
-    // Обновляем `debouncedInput` через 1 секунду после последнего ввода
+    /**
+     * Обновить `debouncedInput` через 1 секунду после последнего ввода
+     */
     useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedInput(input);
     }, 1000);
 
-    // Очищаем таймер при новом вводе
+    /**
+     * Очистить таймер при новом вводе
+     */
     return () => {
       clearTimeout(handler);
     };
     }, [input]);
 
-    // Выполняем запрос на сервер при изменении `debouncedInput`
+    /**
+     * Выполняем запрос на сервер при изменении `debouncedInput`
+     */
     useEffect(() => {
     if (debouncedInput.trim() === "") {
       setProductList([]);
       return;
     }
     
-
-    ///summary
-    /// Получить список продуктов по названию или описанию
-    ///summary
+    /**
+     * Получить список продуктов по названию или описанию
+     */
     const SearchProductAsync = async () => {
         if(input)
         {
@@ -190,7 +196,7 @@ const ProductList = () => {
                 <input
                     type="text"
                     value={input}
-                    placeholder="Найти продукт"
+                    placeholder="Поиск чая"
                     onChange={(e) => setInput(e.target.value)}
                     className="search-input"
                 />

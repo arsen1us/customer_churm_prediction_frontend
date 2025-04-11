@@ -23,7 +23,6 @@ const Header = () => {
 
     return(
         <div>
-
             <nav className="header-nav">
               {/* Левая часть */}
               <ul className="nav-links nav-links-left">
@@ -39,7 +38,7 @@ const Header = () => {
                   <Link to="/">О НАС</Link>
                 </li>
                 <li>
-                  <Link to="/">КАТАЛОГ</Link>
+                  <Link to="/catalog">КАТАЛОГ</Link>
                 </li>
                 <li>
                   <Link to="/">АКЦИИ</Link>

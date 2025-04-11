@@ -30,6 +30,8 @@ import usePageTracking from './hooks/usePageTracking';
 import useSignalR from './hooks/useSignalR';
 import { useBootstrapBreakpoints } from 'react-bootstrap/esm/ThemeProvider';
 
+import TeaCatalog from './components/TeaCatalogComponent/TeaCatalog';
+
 function App() {
   usePageTracking();
   useSignalR();
@@ -49,6 +51,8 @@ function App() {
 
           <Route path="/company" element={<CompanyProfile/>}/> 
           <Route path="/company/:companyId" element={<CompanyProfile/>}/>
+
+          <Route path="/catalog" element={<TeaCatalog/>}/>
 
           <Route path="/category" exact element={<CategoryList/>}/>
 
