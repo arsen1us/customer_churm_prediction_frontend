@@ -7,7 +7,7 @@ import AuthenticateForm from './components/AuthenticateFormComponent/Authenticat
 import Profile from './components/ProfileComponent/Profile';
 import ProfileEditForm from './components/FormComponents/Profile/ProfileEditForm';
 import CompanyProfile from './components/CompanyProfileComponent/CompanyProfile';
-import HomePage from './components/PageComponents/HomePage';
+import HomePage from './components/HomePageComponent/HomePage';
 import CategoryList from './components/ListComponents/CategoryList';
 import Footer from './components/FooterComponent/Footer'
 import ProductList from './components/ListComponents/ProductList';
