@@ -47,24 +47,20 @@ const Header = () => {
                   <Link to="/">КОНТАКТЫ</Link>
                 </li>
                 <li>
-                  <Link to="/category">Категории</Link>
-                </li>
-
-                <li>
-                  <Link to="/churn-prediction">Управление пользователями</Link>
+                  <Link to="/personal-order">СДЕЛАТЬ ПЕРСОНАЛЬНЫЙ ЗАКАЗ</Link>
                 </li>
               </ul>
 
               {/* Правая часть */}
               <ul className="nav-links nav-links-right">
 
-                <li>
+                {/* <li>
                     {ownedCompany ? (
                       <Link to="/company">Моя компания</Link>
                     ):(
                       <Link to="/company">Стать продавцом</Link>
                     )}
-                </li>
+                </li> */}
 
                 <li>
               

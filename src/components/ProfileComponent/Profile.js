@@ -6,12 +6,19 @@ import { Link } from "react-router-dom";
 import {AuthContext} from "../../AuthProvider"
 import "./Profile.css"
 import OrderList from "../ListComponents/OrderList";
+import OwnerCompanyProfile from "../CompanyProfileComponent/OwnerCompanyProfileComponent/OwnerCompanyProfile";
 
 const Profile = () => {
 
     const [orderList, setOrderList] = useState([]);
     // Метод для обновления токена
-    const {user, token, refreshToken, logout, handleRequestError} = useContext(AuthContext);
+    const {
+      user, 
+      token, 
+      refreshToken, 
+      logout, 
+      handleRequestError,
+      ownedCompany} = useContext(AuthContext);
 
     // Скорее всего надо делать fetch для получения списка самых последних заказов
     /// summary
@@ -83,7 +90,10 @@ const Profile = () => {
                 <OrderList orders={orderList}/>
               </div>
             </div>
-
+            
+            <div>
+              <OwnerCompanyProfile/>
+            </div>
         </div>
     );
 }

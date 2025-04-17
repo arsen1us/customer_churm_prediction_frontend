@@ -30,6 +30,8 @@ import usePageTracking from './hooks/usePageTracking';
 import useSignalR from './hooks/useSignalR';
 import { useBootstrapBreakpoints } from 'react-bootstrap/esm/ThemeProvider';
 
+import PersonalOrderCreateForm from './components/FormComponents/PersonalOrderCreateFormComponent/PersonalOrderCreateForm';
+
 import TeaCatalog from './components/TeaCatalogComponent/TeaCatalog';
 import AboutUs from './components/AboutUsComponent/AboutUs';
 
@@ -83,6 +85,8 @@ function App() {
           <Route path="/churn-prediction" element={<ChurnPredictionPage/>}/>
           
           <Route path="/notifications" element={<NotificationList/>}/>
+
+          <Route path="/personal-order" element={<PersonalOrderCreateForm/>}/>
 
         </Routes>
       <footer>

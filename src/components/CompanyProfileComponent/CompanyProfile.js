@@ -5,14 +5,15 @@ import {AuthContext} from "../../AuthProvider"
 import "./CompanyProfile.css"
 
 import OwnerCompanyProfile from "./OwnerCompanyProfileComponent/OwnerCompanyProfile";
-import UserCompanyProfile from "./UserCompanyProfileComponent/UserCompanyProfile";
+import BecomeSellerComponent from "./BecomeSellerComponent/BecomeSellerComponent";
+
 const CompanyProfile = () => {
     const {companyId} = useParams();
     const {token, ownedCompany, handleRequestError, user} = useContext(AuthContext);
     const [company, setCompany] = useState(null)
 
     /**
-     * Загрузить компанию по id 
+     * Загрузить компанию по id пользователя (user.id)
      */
     const getCompany = async () => {
         try{
@@ -34,7 +35,7 @@ const CompanyProfile = () => {
                 // Обработать только 404 ошибку
                 switch (status){
                     case 404:
-                        alert("Вы не ОБЛАДАЕТе компанией!")
+                        alert("Вы не являетесь продавцом (CompanyProfile.js)!")
                     break;
 
                     default:
@@ -48,23 +49,14 @@ const CompanyProfile = () => {
         }
     }
 
-    useEffect(() => {
-        if(companyId && (!ownedCompany || ownedCompany?.id !== companyId)){
-            getCompany();
-        }
-        else{
-            setCompany(ownedCompany);
-        }
-    }, [companyId, ownedCompany]);
-
-    const isOwner = ownedCompany && ownedCompany.id == companyId; 
+    
 
     return (
         <div>
-            {isOwner ? (
+            {ownedCompany ? (
                 <OwnerCompanyProfile/>
                 ):(
-                <UserCompanyProfile company={company}/>
+                <BecomeSellerComponent/>
             )}
         </div>
     );

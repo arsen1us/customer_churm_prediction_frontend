@@ -121,10 +121,6 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-              
-        <div>
-          <ProductList/>
-        </div>
       </div>
     );
 };

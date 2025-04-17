@@ -6,4 +6,4 @@ const CompanyUpdateForm = () => {
     )
 }
 
-return CompanyUpdateForm;
+export default CompanyUpdateForm;
