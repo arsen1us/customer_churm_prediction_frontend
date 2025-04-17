@@ -62,7 +62,7 @@ const Header = () => {
                     {ownedCompany ? (
                       <Link to="/company">Моя компания</Link>
                     ):(
-                      <Link to="/company">Профиль компании</Link>
+                      <Link to="/company">Стать продавцом</Link>
                     )}
                 </li>
 

@@ -3,12 +3,12 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import {AuthContext} from "../../AuthProvider"
 import "./CompanyProfile.css"
-import OwnerCompanyProfile from "../OwnerCompanyProfileComponent/OwnerCompanyProfile";
-import UserCompanyProfile from "../UserCompanyProfileComponent/UserCompanyProfile";
 
+import OwnerCompanyProfile from "./OwnerCompanyProfileComponent/OwnerCompanyProfile";
+import UserCompanyProfile from "./UserCompanyProfileComponent/UserCompanyProfile";
 const CompanyProfile = () => {
     const {companyId} = useParams();
-    const {token, ownedCompany, handleRequestError} = useContext(AuthContext);
+    const {token, ownedCompany, handleRequestError, user} = useContext(AuthContext);
     const [company, setCompany] = useState(null)
 
     /**
@@ -16,7 +16,7 @@ const CompanyProfile = () => {
      */
     const getCompany = async () => {
         try{
-            const response = await axios.get(`https://localhost:7299/api/company/${companyId}`,
+            const response = await axios.get(`https://localhost:7299/api/company/user/${user.id}`,
             {
                 headers: {
                     "Authorization": "Bearer "+ token

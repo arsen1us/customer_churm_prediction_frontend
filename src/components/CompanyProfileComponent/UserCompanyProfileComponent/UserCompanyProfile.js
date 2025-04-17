@@ -1,12 +1,12 @@
 import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
-import ProductItem from "../ListItemComponents/ProductItemComponent/ProductItem";
-import {AuthContext} from "../../AuthProvider"
+import {AuthContext} from "../../../AuthProvider"
 import "./UserCompanyProfile.css"
+import ProductItem from "../../ListItemComponents/ProductItemComponent/ProductItem";
 
 /**
- * Компонент обычного пользователя компании
+ * Компонент профиля компании для обычного пользователя
  */
 const UserCompanyProfile = ({company}) => {
     const [productList, setProductList] = useState([]);

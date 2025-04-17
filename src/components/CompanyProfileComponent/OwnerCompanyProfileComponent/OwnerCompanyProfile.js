@@ -1,16 +1,16 @@
 import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
-import ProductItem from "../ListItemComponents/ProductItemComponent/ProductItem";
-import OrderItem from "../ListItemComponents/OrderItem";
+import ProductItem from "../../ListItemComponents/ProductItemComponent/ProductItem";
+import OrderItem from "../../ListItemComponents/OrderItem";
 
-import {AuthContext} from "../../AuthProvider"
-import OrderList from "../ListComponents/OrderList";
-import CouponList from "../ListComponents/CouponList";
+import {AuthContext} from "../../../AuthProvider"
+import OrderList from "../../ListComponents/OrderList";
+import CouponList from "../../ListComponents/CouponList";
 import "./OwnerCompanyProfile.css"
 
 /**
- * Компонент владельца компании
+ * Компонент профиля компании для владельца компании
  */
 const OwnerCompanyProfile = () => {
     const [orderList, setOrderList] = useState([]);

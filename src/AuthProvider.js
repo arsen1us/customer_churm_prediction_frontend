@@ -215,7 +215,7 @@ export const AuthProvider = ({children}) => {
                 // Обработать только 404 ошибку
                 switch (status){
                     case 404:
-                        alert("Вы не ОБЛАДАЕТе компанией!")
+                        alert("Вы не создали компанию (AuthProvider)!")
                     break;
 
                     default:
