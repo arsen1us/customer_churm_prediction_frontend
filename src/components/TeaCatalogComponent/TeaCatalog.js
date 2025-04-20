@@ -12,6 +12,7 @@ import Promotion from "../PromotionComponent/Promotion";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Dropdown } from 'react-bootstrap';
+import Category from "../CategoryComponent/Category";
 
 import "./TeaCatalog.css"
 
@@ -40,6 +41,7 @@ const TeaCatalog = () => {
             <div>
                 <ProductList/>
             </div>
+
             <div>
                 <div>
                     <h1>Предлагаемый чай</h1>
@@ -52,6 +54,8 @@ const TeaCatalog = () => {
                     ))}
                 </div>
             </div>
+
+            {/* Форма для создания персонального заказа */}
             <div>
                 <div>
                     <h1>Хотите заказать чай?</h1>
@@ -81,6 +85,11 @@ const TeaCatalog = () => {
                         </div>
                     </form>
                 </div>
+            </div>
+
+            {/* Категории чая */}
+            <div>
+                <Category/>
             </div>
 
 

@@ -106,6 +106,8 @@ const OwnerCompanyProfile = () => {
                                 <Link to={`/coupon/${ownedCompany.id}`}>Перейти к настройке купонов</Link>
                                 <h3>Временный список купонов</h3>
                                 <CouponList/>
+                                <h3>Управление категориями чая</h3>
+                                <Link to={"/category-add"}>Добавить категорию</Link>
                             </div>
                         </div>
                                 

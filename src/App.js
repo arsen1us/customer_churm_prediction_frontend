@@ -35,6 +35,10 @@ import PersonalOrderCreateForm from './components/FormComponents/PersonalOrderCr
 import TeaCatalog from './components/TeaCatalogComponent/TeaCatalog';
 import AboutUs from './components/AboutUsComponent/AboutUs';
 
+import CategoryCreateForm from './components/FormComponents/Category/CategoryCreateFormComponent/CategoryCreateForm';
+
+import TeaCreateForm from './components/FormComponents/Tea/TeaCreateFormComponent/TeaCreateForm';
+
 function App() {
   usePageTracking();
   useSignalR();
@@ -60,6 +64,9 @@ function App() {
           <Route path="about" element={<AboutUs/>}/>
 
           <Route path="/category" exact element={<CategoryList/>}/>
+          <Route path="/category-add" element={<CategoryCreateForm/>}/>
+
+          <Route path="/tea-add" element={<TeaCreateForm/>}/>
 
           <Route path="/category/:categoryId" element={<ProductList/>}/>
           <Route path="/product/:productId" element={<ProductPage/>}/>
@@ -87,6 +94,7 @@ function App() {
           <Route path="/notifications" element={<NotificationList/>}/>
 
           <Route path="/personal-order" element={<PersonalOrderCreateForm/>}/>
+
 
         </Routes>
       <footer>
