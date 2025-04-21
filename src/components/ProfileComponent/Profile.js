@@ -26,7 +26,7 @@ const Profile = () => {
     /// summary
     /// Получить список заказов по id пользователя
     /// summary
-    const GetOrderListByUserIdAsync = async () => {
+    const GetOrdersByUserIdAsync = async () => {
         try{
             const response = await axios.get(`https://localhost:7299/api/order/user/${user.id}`, {
                 headers: {
@@ -45,7 +45,7 @@ const Profile = () => {
     }
 
     useEffect(() => {
-        GetOrderListByUserIdAsync();
+        GetOrdersByUserIdAsync();
     }, [])
 
     return (

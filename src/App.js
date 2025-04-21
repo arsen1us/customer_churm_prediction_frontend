@@ -10,8 +10,6 @@ import CompanyProfile from './components/CompanyProfileComponent/CompanyProfile'
 import HomePage from './components/HomePageComponent/HomePage';
 import CategoryList from './components/ListComponents/CategoryList';
 import Footer from './components/FooterComponent/Footer'
-import ProductList from './components/ListComponents/ProductList';
-import ProductPage from './components/PageComponents/ProductPage';
 import CompanySettings from './components/SettingsComponents/CompanySettingsComponent/CompanySettings';
 import ControlPanel from './components/ManagerComponents/ControlPanelComponent/ControlPanel';
 import CategoryManager from './components/ManagerComponents/CategoryManagerComponent/CategoryManager';
@@ -23,7 +21,7 @@ import CompanyManager from './components/ManagerComponents/CompanyManagerCompone
 import CompanyAddForm from './components/FormComponents/Company/CompanyAddForm';
 import ProductAddForm from './components/FormComponents/Product/ProductAddForm';
 import CouponAddForm from './components/FormComponents/Coupon/CouponAddForm';
-import CartPage from './components/PageComponents/CartPage';
+import Cart from './components/CartComponent/Cart';
 import ChurnPredictionPage from './components/PageComponents/ChurnPredictionPageComponent/ChurnPredictionPage';
 import NotificationList from './components/ListComponents/NotificationList';
 import usePageTracking from './hooks/usePageTracking';
@@ -38,6 +36,7 @@ import AboutUs from './components/AboutUsComponent/AboutUs';
 import CategoryCreateForm from './components/FormComponents/Category/CategoryCreateFormComponent/CategoryCreateForm';
 
 import TeaCreateForm from './components/FormComponents/Tea/TeaCreateFormComponent/TeaCreateForm';
+import TeaPage from './components/TeaPageComponent/TeaPage';
 
 function App() {
   usePageTracking();
@@ -67,9 +66,8 @@ function App() {
           <Route path="/category-add" element={<CategoryCreateForm/>}/>
 
           <Route path="/tea-add" element={<TeaCreateForm/>}/>
+          <Route path="/tea/:teaId" element={<TeaPage/>}/>
 
-          <Route path="/category/:categoryId" element={<ProductList/>}/>
-          <Route path="/product/:productId" element={<ProductPage/>}/>
           <Route path="/promotion/:companyId" element={<PromotionManager/>}/>
           
           
@@ -87,7 +85,7 @@ function App() {
           <Route path="handle-user" element={<UserManager/>}/>
           <Route path="handle-company" element={<CompanyManager/>}/>
 
-          <Route path="/cart" element={<CartPage/>}/>
+          <Route path="/cart" element={<Cart/>}/>
 
           <Route path="/churn-prediction" element={<ChurnPredictionPage/>}/>
           

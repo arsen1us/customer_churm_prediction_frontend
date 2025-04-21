@@ -2,13 +2,13 @@ import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
 import {AuthContext} from "../../AuthProvider"
 import useTracking from "../../hooks/useTracking";
-import ProductItem from "../ListItemComponents/ProductItemComponent/ProductItem";
+import { Link } from "react-router-dom";
 
 /**
  * Компонент для отображения корзины пользователя
  * @returns 
  */
-const CartPage = () => {
+const Cart = () => {
 
     const {user, token, refreshToken, handleRequestError} = useContext(AuthContext);
     const {trackUserAction} = useTracking();
@@ -23,9 +23,9 @@ const CartPage = () => {
     );
 
     /**
-     * Загрузить корзину пользователя
+     * Загружает корзину пользователя
      */
-    const getCart = async () => {
+    const GetCartAsync = async () => {
         try{ 
             const response = await axios.get(`https://localhost:7299/api/cart/${user.id}`, {
                 headers:{
@@ -33,10 +33,10 @@ const CartPage = () => {
                 }
             })
             if(response && response.status === 200){
-                if(response.data && response.data.productList){
-                    setProductList(response.data.productList)
-                    setCartItems(response.data.productList.map(product => ({
-                        product,
+                if(response.data && response.data.teas){
+                    setProductList(response.data.teas)
+                    setCartItems(response.data.teas.map(tea => ({
+                        tea,
                         quantity: 0,
                         isSelected: false
                     })));
@@ -49,13 +49,13 @@ const CartPage = () => {
     }
 
     /**
-     * Заказать товар
+     * Отправляет запрос на создание заказа
      */
-    const orderProductAsync = async (e) => {
+    const OrderTeaAsync = async (e) => {
         e.preventDefault();
         try{
             const orderList = cartItems.map((item) => ({
-                productId: item.product.id,
+                teaId: item.tea.id,
                 quantity: item.quantity,
                 companyId: item.companyId
             }));
@@ -85,14 +85,14 @@ const CartPage = () => {
     }
 
     /**
-     * Загрузить корзину при монтировании
+     * Загружает корзину при монтировании
      */
     useEffect(() => {
-        getCart();
+        GetCartAsync();
     }, [])
 
     /**
-     * Обработчик для изменения количества продукта
+     * Обрабатывает изменения количества продукта
      */
     const handleQuantityChange = (index, value) => {
         const updatedCartItems = [...cartItems];
@@ -101,7 +101,7 @@ const CartPage = () => {
     };
 
     /**
-     * Обработчик для переключения выбора одного продукта
+     * Обрабатывает переключения выбора одного продукта
      */
     const handleSelectChange = (index, isSelected) => {
         const updatedCartItems = [...cartItems];
@@ -110,7 +110,7 @@ const CartPage = () => {
     };
 
     /**
-     * Обработчик для выбора/снятия выбора со всех продуктов
+     * Обрабатывает выбор/снятия выбора со всех продуктов
      */
     const handleSelectAll = (isSelected) => {
         const updatedCartItems = cartItems.map(item => ({
@@ -121,12 +121,12 @@ const CartPage = () => {
     };
 
     /**
-     * Подсчет общей стоимости заказа
+     * Подсчитывает общую стоимость заказа
      */
     const calculateTotal = () => {
         return cartItems.reduce((total, item) => {
             if (item.isSelected) {
-                return total + item.product.price * item.quantity;
+                return total + item.tea.price * item.quantity;
             }
             return total;
         }, 0);
@@ -153,13 +153,36 @@ const CartPage = () => {
                         </div>
                     </div>
                     <div>
-                        {/* Список продуктов */}
+                        {/* Список чаёв */}
                         <ul>
                             {cartItems.map((cartItem, index) => (
-                                <li key={cartItem.product.id}>
+                                <li key={cartItem.tea.id}>
                                     <div>
-                                        {/* Отображение компонента продукта */}
-                                        <ProductItem product={cartItem.product} />
+                                        {/* Отображение чая */}
+                                        <div className="col-md-4" key={index}>
+                                            <div className="card h-100 shadow-sm">
+                                                <Link to={`/tea/${cartItem.tea.id}`}>
+                                                <img
+                                                    src={`https://localhost:7299/uploads/${cartItem.tea.imageSrcs[0]}`}
+                                                    alt={cartItem.tea.name}
+                                                    className="card-img-top"
+                                                    style={{ height: '200px', objectFit: 'cover' }}
+                                                />
+                                                <div className="card-body d-flex flex-column">
+                                                    <h5 className="card-title">{cartItem.tea.name}</h5>
+                                                    <p className="card-text">Цена: {cartItem.tea.price} ₽</p>
+                                                </div>
+                                                </Link>
+                                                <div className="mt-auto d-flex justify-content-between">
+                                                    <button className="btn btn-outline-secondary">
+                                                        Добавить в корзину
+                                                    </button>
+                                                    <button className="btn btn-primary">
+                                                        Заказать
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                             
                                         {/* Указание количества */}
                                         <div>
@@ -203,7 +226,7 @@ const CartPage = () => {
                         {/* Кнопка для оформления заказа */}
                         <button
                             onClick={(e) => {
-                                orderProductAsync(e);
+                                OrderTeaAsync(e);
                                 alert(`Оформление заказа на сумму ${calculateTotal()} ₽`);
                             }}
                             disabled={!cartItems.some(item => item.isSelected && item.quantity > 0)}
@@ -217,4 +240,4 @@ const CartPage = () => {
     )
 }
 
-export default CartPage;
+export default Cart;

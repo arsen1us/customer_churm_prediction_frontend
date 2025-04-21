@@ -7,7 +7,6 @@ import CategoryList from "../ListComponents/CategoryList";
 import Select from "react-select/base";
 
 import ProductManager from "../ManagerComponents/ProductManagerComponent/ProductManager";
-import ProductList from "../ListComponents/ProductList";
 import Promotion from "../PromotionComponent/Promotion";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -116,6 +115,11 @@ const HomePage = () => {
               <div>
                 <Link to="#">
                   <img src="/icons/instagram_logo_icon.png" width="100px" alt="Instagram" />
+                </Link>
+              </div>
+              <div>
+                <Link to="#">
+                  <img src="/icons/telegram_logo_icon.png" width="100px" alt="Telegram" />
                 </Link>
               </div>
             </div>

@@ -1,26 +1,26 @@
 import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
-import ProductItem from "../../ListItemComponents/ProductItemComponent/ProductItem";
-import OrderItem from "../../ListItemComponents/OrderItem";
 
 import {AuthContext} from "../../../AuthProvider"
 import OrderList from "../../ListComponents/OrderList";
 import CouponList from "../../ListComponents/CouponList";
 import "./OwnerCompanyProfile.css"
 
+
 /**
  * Компонент профиля компании для владельца компании
  */
 const OwnerCompanyProfile = () => {
     const [orderList, setOrderList] = useState([]);
-    const [productList, setProductList] = useState([]);
     const {ownedCompany, token, handleRequestError} = useContext(AuthContext);
+    /**Список чаёв */
+    const [teas, setTeas] = useState([]);
 
     /**
-     * Получить список заказов
+     * Загружает список заказов
      */
-    const GetOrderListByCompanyIdAsync = async () => {
+    const GetOrdersAsync = async () => {
         try{
             const response = await axios.get(`https://localhost:7299/api/order/company/${ownedCompany.id}`, {
                 headers: {
@@ -39,33 +39,33 @@ const OwnerCompanyProfile = () => {
     }
 
     /**
-     * Получить список продуктов по id компании
+     * Загружает список чая
      */
-    const GetProductListByCompanyIdAsync = async () => {
+    const GetTeasAsync = async () => {
         try{
-            const response = await axios.get(`https://localhost:7299/api/product/company/${ownedCompany.id}`, {
+            const response = await axios.get("https://localhost:7299/api/tea", {
                 headers: {
-                    "Authorization": "Bearer " + token
+                    "Authorization": "Bearer" + token
                 }
             });
 
             if(response && response.status === 200){
-                if(response.data.productList){
-                    setProductList(response.data.productList);
+                if(response.data && response.data.teas){
+                    setTeas(response.data.teas)
                 }
             }
         }
         catch (error){
             await handleRequestError(error);
         }
-    }
+    };
 
     /**
-     * Загрузить список продуктов и заказов при монтировании компонента
+     * Загружает список чая и список заказов при инициализации компонента
      */
     useEffect(() => {
-        GetProductListByCompanyIdAsync();
-        GetOrderListByCompanyIdAsync();
+        GetTeasAsync();
+        GetOrdersAsync();
     }, [])
 
     return (
@@ -120,26 +120,41 @@ const OwnerCompanyProfile = () => {
                             </div>
                             
                             <div className="company-products">
-                                <h3>Список продуктов</h3>
-                                <Link to="/addproduct">Добавить продукт</Link>
-                                <ul>
-                        <div
-                            style={{ 
-                                display: 'grid', 
-                                gridTemplateColumns: 
-                                'repeat(auto-fill, minmax(200px, 1fr))', 
-                                gap: '20px', margin: '20px 30px 0px 0px' }}>
-                            {productList.map((product, index) => {
-                                return (
-                                    <li key={index}>
-                                        {product.name && (
-                                            <ProductItem product={product}/>
-                                        )}
-                                    </li>
-                                );
-                        })}
-                        </div>
-                    </ul>
+                                <h3>Список созданных чаёв</h3>
+                                <Link to="/tea-add">Создать чай</Link>
+                                <div>
+                                    <h1>Список чая</h1>
+                                    <div className="container my-5">
+                                        <div className="row g-4">
+                                            {teas.map((tea, index) => (
+                                                <div className="col-md-4" key={index}>
+                                                    <div className="card h-100 shadow-sm">
+                                                        <Link to={`/tea/${tea.id}`}>
+                                                        <img
+                                                            src={`https://localhost:7299/uploads/${tea.imageSrcs[0]}`}
+                                                            alt={tea.name}
+                                                            className="card-img-top"
+                                                            style={{ height: '200px', objectFit: 'cover' }}
+                                                        />
+                                                        <div className="card-body d-flex flex-column">
+                                                            <h5 className="card-title">{tea.name}</h5>
+                                                            <p className="card-text">Цена: {tea.price} ₽</p>
+                                                        </div>
+                                                        </Link>
+                                                        <div className="mt-auto d-flex justify-content-between">
+                                                            <button className="btn btn-outline-secondary">
+                                                                Редактировать
+                                                            </button>
+                                                            <button className="btn btn-primary">
+                                                                Удалить
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </>

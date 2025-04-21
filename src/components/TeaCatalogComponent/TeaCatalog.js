@@ -7,12 +7,13 @@ import CategoryList from "../ListComponents/CategoryList";
 import Select from "react-select/base";
 
 import ProductManager from "../ManagerComponents/ProductManagerComponent/ProductManager";
-import ProductList from "../ListComponents/ProductList";
+import TeaList from "../TeaListComponent/TeaList";
 import Promotion from "../PromotionComponent/Promotion";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Dropdown } from 'react-bootstrap';
 import Category from "../CategoryComponent/Category";
+
 
 import "./TeaCatalog.css"
 
@@ -39,7 +40,7 @@ const TeaCatalog = () => {
                 <p>Сувенирной продукции делается своими руками с учетом Ваших предпочтений и пожеланий.</p>
             </div>
             <div>
-                <ProductList/>
+                <TeaList/>
             </div>
 
             <div>
