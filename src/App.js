@@ -37,6 +37,7 @@ import CategoryCreateForm from './components/FormComponents/Category/CategoryCre
 
 import TeaCreateForm from './components/FormComponents/Tea/TeaCreateFormComponent/TeaCreateForm';
 import TeaPage from './components/TeaPageComponent/TeaPage';
+import Orders from './components/OrdersComponent/Orders';
 
 function App() {
   usePageTracking();
@@ -84,6 +85,8 @@ function App() {
           <Route path="handle-review" element={<ReviewManager/>}/>
           <Route path="handle-user" element={<UserManager/>}/>
           <Route path="handle-company" element={<CompanyManager/>}/>
+
+          <Route path="/orders" element={<Orders/>}/>
 
           <Route path="/cart" element={<Cart/>}/>
 

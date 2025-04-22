@@ -3,7 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import OrderItem from "../ListItemComponents/OrderItem";
 import { Link } from "react-router-dom";
-import {AuthContext} from "../../AuthProvider"
+import { AuthContext } from "../../AuthProvider";
 import "./Profile.css"
 import OrderList from "../ListComponents/OrderList";
 import OwnerCompanyProfile from "../CompanyProfileComponent/OwnerCompanyProfileComponent/OwnerCompanyProfile";
@@ -12,40 +12,59 @@ import PersonalUserBid from "../PersonalUserBidComponent/PersonalUserBid";
 
 const Profile = () => {
 
-    const [orderList, setOrderList] = useState([]);
-    // Метод для обновления токена
-    const {
-      user, 
-      token, 
-      refreshToken, 
-      logout, 
-      handleRequestError,
-      ownedCompany} = useContext(AuthContext);
+    const [orders, setOrders] = useState([]);
+    const {user, token, refreshToken, handleRequestError, logout} = useContext(AuthContext);
 
-    // Скорее всего надо делать fetch для получения списка самых последних заказов
-    /// summary
-    /// Получить список заказов по id пользователя
-    /// summary
+    /**
+     * Получает список заказов по id пользователя
+     */
     const GetOrdersByUserIdAsync = async () => {
-        try{
-            const response = await axios.get(`https://localhost:7299/api/order/user/${user.id}`, {
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
-            });
-            if(response && response.status === 200){
-                if(response.data.orderList){
-                    setOrderList(response.data.orderList);
-                }
+      try{
+        if(user)
+        {
+          const response = await axios.get(`https://localhost:7299/api/order/user/${user.id}`, {
+            headers: {
+                "Authorization": "Bearer " + token
             }
+          });
+          if(response && response.status === 200){
+            console.log(response.data.orders);
+              if(response.data.orders){
+                  setOrders(response.data.orders);
+              }
+          }
         }
-        catch (error){
-          await handleRequestError(error);
+      }
+      catch (error){
+        await handleRequestError(error);
+      }
+    }
+
+    /** Отменяет заказ */
+    const CancelOrder = async (orderId) => {
+      try{
+        if(user)
+        {
+          const response = await axios.delete(`https://localhost:7299/api/order/${orderId}`, {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+          });
+          if(response && response.status === 200){
+            console.log(response.data.order);
+              if(response.data.order){
+                  alert("Заказ успешно отменён")
+              }
+          }
         }
+      }
+      catch (error){
+        await handleRequestError(error);
+      }
     }
 
     useEffect(() => {
-        GetOrdersByUserIdAsync();
+      GetOrdersByUserIdAsync();
     }, [])
 
     return (
@@ -90,9 +109,35 @@ const Profile = () => {
               </div>
             
               {/* Правая часть: Список заказов */}
+              <h1>Список заказов</h1>
               <div className="order-list">
-                <h4>Нормальный список заказов</h4>
-                <OrderList orders={orderList}/>
+              {orders.length === 0 ? (
+                <p>Заказов пока нет.</p>
+              ) : (
+                orders.map((orderDto, index) => (
+                  <div key={index} className="border p-4 rounded-lg mb-4 shadow-md">
+                    <h3 className="text-lg font-semibold">Заказ #{orderDto.order.id}</h3>
+                    <p className="text-sm text-gray-600">Статус: {orderDto.order.orderStatus}</p>
+                    <p className="text-sm text-gray-600">Общая стоимость: {orderDto.totalPrice} ₽</p>
+                    <div className="mt-2">
+                      {orderDto.teas.map((item, index) => (
+                        <div key={item.teaId} className="flex items-center gap-4 border-b py-2">
+                          <img width="200px" src={`https://localhost:7299/uploads/${item.productImageUrl}`} alt={item.productName} className="w-16 h-16 object-cover rounded" />
+                          <div>
+                            <p className="font-medium">{item.productName}</p>
+                            <p className="text-sm text-gray-500">
+                              {item.quantity} x {item.unitPrice} ₽ = {item.totalPrice} ₽
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div>
+                      <button onClick={() => CancelOrder(orderDto.order.id)}>Отменить заказ</button>
+                    </div>
+                  </div>
+                ))
+              )}
               </div>
             </div>
             

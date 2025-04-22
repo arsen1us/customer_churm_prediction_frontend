@@ -54,6 +54,9 @@ const Header = () => {
               {/* Правая часть */}
               <ul className="nav-links nav-links-right">
 
+                <li>
+                  <Link to="/orders">СПИСОК ЗАКАЗОВ</Link>
+                </li>
                 {/* <li>
                     {ownedCompany ? (
                       <Link to="/company">Моя компания</Link>

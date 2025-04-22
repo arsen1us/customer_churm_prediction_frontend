@@ -6,14 +6,16 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({children}) => {
 
-    // jwt-токен
+    /** jwt-токен */
     const [token, setToken] = useState(localStorage.getItem("token") || "");
-    // пользователь
+    /** пользователь*/
     const [user, setUser] = useState(null);
-    // Компания, которой владеет или которую администрирует текущий пользователь
+    
+    /** Компания, которой владеет или которую администрирует текущий пользователь */
     const [ownedCompany, setOwnedCompany] = useState(null);
-    // обновлён ли токен или нет
+    /** обновлён ли токен или нет*/
     const [isRefreshing, setIsRefreshing] = useState(false);
+
 
     /**
      * Аутентификация пользователя

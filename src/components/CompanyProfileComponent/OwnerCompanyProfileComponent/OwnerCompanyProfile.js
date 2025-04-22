@@ -20,23 +20,23 @@ const OwnerCompanyProfile = () => {
     /**
      * Загружает список заказов
      */
-    const GetOrdersAsync = async () => {
-        try{
-            const response = await axios.get(`https://localhost:7299/api/order/company/${ownedCompany.id}`, {
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
-            });
-            if(response && response.status === 200){
-                if(response.data.orderList){
-                    setOrderList(response.data.orderList);
-                }
-            }
-        }
-        catch (error){
-            await handleRequestError(error);
-        }
-    }
+    // const GetOrdersAsync = async () => {
+    //     try{
+    //         const response = await axios.get(`https://localhost:7299/api/order/company/${ownedCompany.id}`, {
+    //             headers: {
+    //                 "Authorization": "Bearer " + token
+    //             }
+    //         });
+    //         if(response && response.status === 200){
+    //             if(response.data.orderList){
+    //                 setOrderList(response.data.orderList);
+    //             }
+    //         }
+    //     }
+    //     catch (error){
+    //         await handleRequestError(error);
+    //     }
+    // }
 
     /**
      * Загружает список чая
@@ -65,7 +65,7 @@ const OwnerCompanyProfile = () => {
      */
     useEffect(() => {
         GetTeasAsync();
-        GetOrdersAsync();
+        // GetOrdersAsync();
     }, [])
 
     return (

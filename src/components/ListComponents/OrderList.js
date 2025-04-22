@@ -13,8 +13,8 @@ const OrderList = ({ orders }) => {
             <p className="text-sm text-gray-600">Статус: {order.orderStatus}</p>
             <p className="text-sm text-gray-600">Общая стоимость: {order.totalPrice} ₽</p>
             <div className="mt-2">
-              {order.items.map((item) => (
-                <div key={item.productId} className="flex items-center gap-4 border-b py-2">
+              {order.items.map((item, index) => (
+                <div key={item.teaId} className="flex items-center gap-4 border-b py-2">
                   <img width="200px" src={`https://localhost:7299/uploads/${item.productImageUrl}`} alt={item.productName} className="w-16 h-16 object-cover rounded" />
                   <div>
                     <p className="font-medium">{item.productName}</p>
