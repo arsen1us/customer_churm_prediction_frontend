@@ -41,10 +41,10 @@ const Header = () => {
                   <Link to="/catalog">КАТАЛОГ</Link>
                 </li>
                 <li>
-                  <Link to="/">АКЦИИ</Link>
+                  <Link to="/promotions">АКЦИИ</Link>
                 </li>
                 <li>
-                  <Link to="/">КОНТАКТЫ</Link>
+                  <Link to="/contacts">КОНТАКТЫ</Link>
                 </li>
                 <li>
                   <Link to="/personal-order">СДЕЛАТЬ ПЕРСОНАЛЬНЫЙ ЗАКАЗ</Link>

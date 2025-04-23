@@ -1,6 +1,7 @@
 import React, {useEffect, useState, useContext} from "react";
 import axios from "axios";
 import { AuthContext } from "../../AuthProvider";
+import NotAuthorizedComponent from "../NotAuthorizedComponent/NotAuthorizedComponent";
 
 /**
  * Компонент для отображения заказов пользователей
@@ -40,36 +41,44 @@ const Orders = () => {
 
     return (
         <div>
-            <div>
-              {/* Правая часть: Список заказов */}
-              <h1>Список заказов</h1>
-              <div className="order-list">
-              {orders.length === 0 ? (
-                <p>Заказов пока нет.</p>
-              ) : (
-                orders.map((orderDto, index) => (
-                  <div key={index} >
-                    <h3>Заказ #{orderDto.order.id}</h3>
-                    <p>Статус: {orderDto.order.orderStatus}</p>
-                    <p>Общая стоимость: {orderDto.totalPrice} ₽</p>
-                    <div>
-                      {orderDto.teas.map((item, index) => (
-                        <div key={index}>
-                          <img width="200px" src={`https://localhost:7299/uploads/${item.productImageUrl}`} alt={item.productName} className="w-16 h-16 object-cover rounded" />
-                          <div>
-                            <p>{item.productName}</p>
-                            <p>
-                              {item.quantity} x {item.unitPrice} ₽ = {item.totalPrice} ₽
-                            </p>
+          {user ? (
+            <>
+              <div>
+                <h1>Список заказов</h1>
+                <div className="order-list">
+                {orders.length === 0 ? (
+                  <p>Заказов пока нет.</p>
+                ) : (
+                  orders.map((orderDto, index) => (
+                    <div key={index} >
+                      <h3>Заказ #{orderDto.order.id}</h3>
+                      <p>Статус: {orderDto.order.orderStatus}</p>
+                      <p>Общая стоимость: {orderDto.totalPrice} ₽</p>
+                      <div>
+                        {orderDto.teas.map((item, index) => (
+                          <div key={index}>
+                            <img width="200px" src={`https://localhost:7299/uploads/${item.productImageUrl}`} alt={item.productName} className="w-16 h-16 object-cover rounded" />
+                            <div>
+                              <p>{item.productName}</p>
+                              <p>
+                                {item.quantity} x {item.unitPrice} ₽ = {item.totalPrice} ₽
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))
-              )}
+                  ))
+                )}
+                </div>
               </div>
-            </div>
+            </>
+          ):(
+            <>
+              <div>
+                <NotAuthorizedComponent/>
+              </div>
+            </>)}
         </div>
     );
 }

@@ -3,6 +3,7 @@ import axios from "axios";
 import {AuthContext} from "../../AuthProvider"
 import useTracking from "../../hooks/useTracking";
 import { Link } from "react-router-dom";
+import NotAuthorizedComponent from "../NotAuthorizedComponent/NotAuthorizedComponent";
 
 /**
  * Компонент для отображения корзины пользователя
@@ -88,7 +89,9 @@ const Cart = () => {
      * Загружает корзину при монтировании
      */
     useEffect(() => {
-        GetCartAsync();
+        if(user){
+            GetCartAsync();
+        }
     }, [])
 
     /**
@@ -134,108 +137,119 @@ const Cart = () => {
 
     return (
         <div>
-            <div>
-                <div>
-                    <h3> Корзина </h3>
-                </div>
-                <div>
+            {user ? (
+                <>
                     <div>
-                        {/* Чекбокс для выбора всех продуктов */}
                         <div>
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    onChange={(e) => handleSelectAll(e.target.checked)}
-                                    checked={cartItems.every(item => item.isSelected)}
-                                />
-                                Выбрать все
-                            </label>
+                            <h3> Корзина </h3>
                         </div>
-                    </div>
-                    <div>
-                        {/* Список чаёв */}
-                        <ul>
-                            {cartItems.map((cartItem, index) => (
-                                <li key={cartItem.tea.id}>
-                                    <div>
-                                        {/* Отображение чая */}
-                                        <div className="col-md-4" key={index}>
-                                            <div className="card h-100 shadow-sm">
-                                                <Link to={`/tea/${cartItem.tea.id}`}>
-                                                <img
-                                                    src={`https://localhost:7299/uploads/${cartItem.tea.imageSrcs[0]}`}
-                                                    alt={cartItem.tea.name}
-                                                    className="card-img-top"
-                                                    style={{ height: '200px', objectFit: 'cover' }}
-                                                />
-                                                <div className="card-body d-flex flex-column">
-                                                    <h5 className="card-title">{cartItem.tea.name}</h5>
-                                                    <p className="card-text">Цена: {cartItem.tea.price} ₽</p>
+                        <div>
+                            <div>
+                                {/* Чекбокс для выбора всех продуктов */}
+                                <div>
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            onChange={(e) => handleSelectAll(e.target.checked)}
+                                            checked={cartItems.every(item => item.isSelected)}
+                                        />
+                                        Выбрать все
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                {/* Список чаёв */}
+                                <ul>
+                                    {cartItems.map((cartItem, index) => (
+                                        <li key={cartItem.tea.id}>
+                                            <div>
+                                                {/* Отображение чая */}
+                                                <div className="col-md-4" key={index}>
+                                                    <div className="card h-100 shadow-sm">
+                                                        <Link to={`/tea/${cartItem.tea.id}`}>
+                                                        <img
+                                                            src={`https://localhost:7299/uploads/${cartItem.tea.imageSrcs[0]}`}
+                                                            alt={cartItem.tea.name}
+                                                            className="card-img-top"
+                                                            style={{ height: '200px', objectFit: 'cover' }}
+                                                        />
+                                                        <div className="card-body d-flex flex-column">
+                                                            <h5 className="card-title">{cartItem.tea.name}</h5>
+                                                            <p className="card-text">Цена: {cartItem.tea.price} ₽</p>
+                                                        </div>
+                                                        </Link>
+                                                        <div className="mt-auto d-flex justify-content-between">
+                                                            <button className="btn btn-outline-secondary">
+                                                                Добавить в корзину
+                                                            </button>
+                                                            <button className="btn btn-primary">
+                                                                Заказать
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                </Link>
-                                                <div className="mt-auto d-flex justify-content-between">
-                                                    <button className="btn btn-outline-secondary">
-                                                        Добавить в корзину
-                                                    </button>
-                                                    <button className="btn btn-primary">
-                                                        Заказать
-                                                    </button>
+                                    
+                                                {/* Указание количества */}
+                                                <div>
+                                                    <label>Количество:</label>
+                                                    <input
+                                                        type="number"
+                                                        placeholder="0"
+                                                        value={cartItem.quantity}
+                                                        onChange={(e) =>
+                                                            handleQuantityChange(
+                                                                index,
+                                                                parseInt(e.target.value, 10) || 0
+                                                            )
+                                                        }
+                                                    />
+                                                </div>
+                                                    
+                                                {/* Чекбокс для выбора продукта */}
+                                                <div>
+                                                    <label>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={cartItem.isSelected}
+                                                            onChange={(e) =>
+                                                                handleSelectChange(index, e.target.checked)
+                                                            }
+                                                        />
+                                                        {cartItem.isSelected === true ? (<>Выбрано</>) : (<>Выбрать</>)}
+                                                    </label>
                                                 </div>
                                             </div>
-                                        </div>
-                            
-                                        {/* Указание количества */}
-                                        <div>
-                                            <label>Количество:</label>
-                                            <input
-                                                type="number"
-                                                placeholder="0"
-                                                value={cartItem.quantity}
-                                                onChange={(e) =>
-                                                    handleQuantityChange(
-                                                        index,
-                                                        parseInt(e.target.value, 10) || 0
-                                                    )
-                                                }
-                                            />
-                                        </div>
-                                            
-                                        {/* Чекбокс для выбора продукта */}
-                                        <div>
-                                            <label>
-                                                <input
-                                                    type="checkbox"
-                                                    checked={cartItem.isSelected}
-                                                    onChange={(e) =>
-                                                        handleSelectChange(index, e.target.checked)
-                                                    }
-                                                />
-                                                {cartItem.isSelected === true ? (<>Выбрано</>) : (<>Выбрать</>)}
-                                            </label>
-                                        </div>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                        
-                        {/* Итоговая сумма */}
-                        <div>
-                            <strong>Итоговая стоимость: {calculateTotal()} ₽</strong>
+                                        </li>
+                                    ))}
+                                </ul>
+                                
+                                {/* Итоговая сумма */}
+                                <div>
+                                    <strong>Итоговая стоимость: {calculateTotal()} ₽</strong>
+                                </div>
+                                
+                                {/* Кнопка для оформления заказа */}
+                                <button
+                                    onClick={(e) => {
+                                        OrderTeaAsync(e);
+                                        alert(`Оформление заказа на сумму ${calculateTotal()} ₽`);
+                                    }}
+                                    disabled={!cartItems.some(item => item.isSelected && item.quantity > 0)}
+                                >
+                                Оформить заказ
+                                </button>
+                            </div>
                         </div>
-                        
-                        {/* Кнопка для оформления заказа */}
-                        <button
-                            onClick={(e) => {
-                                OrderTeaAsync(e);
-                                alert(`Оформление заказа на сумму ${calculateTotal()} ₽`);
-                            }}
-                            disabled={!cartItems.some(item => item.isSelected && item.quantity > 0)}
-                        >
-                        Оформить заказ
-                        </button>
                     </div>
-                </div>
-            </div>
+                </>
+            ) : (
+                <>
+                    <div>
+                        <NotAuthorizedComponent/>
+                    </div>
+                </>
+            )}
+            
         </div>
     )
 }

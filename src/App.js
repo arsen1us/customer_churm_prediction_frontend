@@ -32,6 +32,8 @@ import PersonalOrderCreateForm from './components/FormComponents/PersonalOrderCr
 
 import TeaCatalog from './components/TeaCatalogComponent/TeaCatalog';
 import AboutUs from './components/AboutUsComponent/AboutUs';
+import Contacts from './components/ContactsComponent/Contacts';
+import Promotions from './components/PromotionsComponent/Promotions';
 
 import CategoryCreateForm from './components/FormComponents/Category/CategoryCreateFormComponent/CategoryCreateForm';
 
@@ -60,8 +62,10 @@ function App() {
           <Route path="/company/:companyId" element={<CompanyProfile/>}/>
 
           <Route path="/catalog" element={<TeaCatalog/>}/>
+          <Route path="/about" element={<AboutUs/>}/>
+          <Route path="/contacts" element={<Contacts/>}/>
+          <Route path="/promotions" element={<Promotions/>}/>
 
-          <Route path="about" element={<AboutUs/>}/>
 
           <Route path="/category" exact element={<CategoryList/>}/>
           <Route path="/category-add" element={<CategoryCreateForm/>}/>

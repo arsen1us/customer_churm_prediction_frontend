@@ -9,6 +9,7 @@ import OrderList from "../ListComponents/OrderList";
 import OwnerCompanyProfile from "../CompanyProfileComponent/OwnerCompanyProfileComponent/OwnerCompanyProfile";
 
 import PersonalUserBid from "../PersonalUserBidComponent/PersonalUserBid";
+import NotAuthorizedComponent from "../NotAuthorizedComponent/NotAuthorizedComponent";
 
 const Profile = () => {
 
@@ -68,10 +69,12 @@ const Profile = () => {
     }, [])
 
     return (
-        <div>
-          <div>
-            <h1>Профиль пользователя</h1>
-          </div>
+      <div>
+        {user ? (
+          <>
+            <div>
+              <h1>Профиль пользователя</h1>
+            </div>
             <div className="profile-container">
               {/* Левая часть: Информация о пользователе */}
               <div className="profile-info">
@@ -154,7 +157,14 @@ const Profile = () => {
             <div>
                 <PersonalUserBid/>
             </div>
-        </div>
+          </>
+        ) : (
+          <>
+            <div>
+              <NotAuthorizedComponent/>
+            </div>
+          </>)}
+      </div>
     );
 }
 
