@@ -180,11 +180,13 @@ const Cart = () => {
                                                         </Link>
                                                         <div className="mt-auto d-flex justify-content-between">
                                                             <button className="btn btn-outline-secondary">
-                                                                Добавить в корзину
+                                                                Удалить из корзины
                                                             </button>
-                                                            <button className="btn btn-primary">
-                                                                Заказать
-                                                            </button>
+                                                            <Link to={`/making-order/${cartItem.tea.id}/${cartItem.quantity}`}>
+                                                                <button className="btn btn-primary">
+                                                                    Купить
+                                                                </button>
+                                                            </Link>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -238,6 +240,10 @@ const Cart = () => {
                                 >
                                 Оформить заказ
                                 </button>
+
+                                <Link to="/payment">
+                                    <button>Перейти на страницу оплаты заказа</button>
+                                </Link>
                             </div>
                         </div>
                     </div>

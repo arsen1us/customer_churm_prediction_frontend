@@ -34,6 +34,8 @@ import TeaCatalog from './components/TeaCatalogComponent/TeaCatalog';
 import AboutUs from './components/AboutUsComponent/AboutUs';
 import Contacts from './components/ContactsComponent/Contacts';
 import Promotions from './components/PromotionsComponent/Promotions';
+import Payment from './components/PaymentComponent/Payment';
+import MakingOrder from './components/MakingOrderComponent/MakingOrder';
 
 import CategoryCreateForm from './components/FormComponents/Category/CategoryCreateFormComponent/CategoryCreateForm';
 
@@ -65,7 +67,8 @@ function App() {
           <Route path="/about" element={<AboutUs/>}/>
           <Route path="/contacts" element={<Contacts/>}/>
           <Route path="/promotions" element={<Promotions/>}/>
-
+          <Route path="/making-order/:id/:count" element={<MakingOrder/>}/>
+          <Route path="/payment" element={<Payment/>}/>
 
           <Route path="/category" exact element={<CategoryList/>}/>
           <Route path="/category-add" element={<CategoryCreateForm/>}/>

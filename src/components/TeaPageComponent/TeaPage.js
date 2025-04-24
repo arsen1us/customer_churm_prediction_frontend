@@ -20,9 +20,9 @@ const TeaPage = () => {
     const {teaId} = useParams();
 
     /**
-     * Загружает чай по полученному из параметра id
+     * Загружает чай по id
      */
-    const getTeaByIdAsync = async () => {
+    const GetTeaByIdAsync = async () => {
         try{
             const response = await axios.get(`https://localhost:7299/api/tea/${teaId}`, {
                 headers: {
@@ -71,7 +71,7 @@ const TeaPage = () => {
      */
     useEffect(() => {
         if(teaId){
-            getTeaByIdAsync();
+            GetTeaByIdAsync();
         }
     }, [teaId]);
 
