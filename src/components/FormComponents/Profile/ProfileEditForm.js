@@ -1,7 +1,6 @@
 import React, {useEffect, useState, useContext} from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import OrderItem from "../../ListItemComponents/OrderItem";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../../AuthProvider"
 

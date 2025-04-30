@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 import Popup from "../PopupComponent/Popup";
-import NotificationList from "../ListComponents/NotificationList";
 
 import "./Header.css"
 
@@ -98,7 +97,7 @@ return(
                             {isPopupOpen && (
                                 <Popup isOpen={isPopupOpen} onClose={closePopup} title="Список уведомлений">
                                     <div>
-                                        <NotificationList />
+                                        <h1>Здесь должен быть список уведомлений</h1>
                                     </div>
                                 </Popup>
                             )}

@@ -1,16 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import {Link} from "react-router-dom"
 import {AuthContext} from "../../AuthProvider"
-
-import CategoryManager from "../ManagerComponents/CategoryManagerComponent/CategoryManager";
-import CategoryList from "../ListComponents/CategoryList";
-import Select from "react-select/base";
-
-import ProductManager from "../ManagerComponents/ProductManagerComponent/ProductManager";
-import Promotion from "../PromotionComponent/Promotion";
-
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { Dropdown } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import "./HomePage.css"
 // import { FaUser, FaCog, FaSignOutAlt } from "react-icons/fa";

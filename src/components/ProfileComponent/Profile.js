@@ -1,12 +1,9 @@
 import React, {useEffect, useState, useContext} from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import OrderItem from "../ListItemComponents/OrderItem";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../AuthProvider";
 import "./Profile.css"
-import OrderList from "../ListComponents/OrderList";
-import OwnerCompanyProfile from "../CompanyProfileComponent/OwnerCompanyProfileComponent/OwnerCompanyProfile";
 
 import PersonalUserBid from "../PersonalUserBidComponent/PersonalUserBid";
 import NotAuthorizedComponent from "../NotAuthorizedComponent/NotAuthorizedComponent";
@@ -141,16 +138,6 @@ const Profile = () => {
                   </div>
                 ))
               )}
-              </div>
-            </div>
-            
-            {/* Работа с профилем продавца */}
-            <div>
-              <div>
-                <h1>Профиль продавца</h1>
-              </div>
-              <div>
-                <OwnerCompanyProfile/>
               </div>
             </div>
             {/* Работа с персональными заявками */}

@@ -1,47 +1,30 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 
-import Header from './components/HeaderComponent/Header';
-import RegisterForm from './components/RegisterFormComponent/RegisterForm';
+import AboutUs from './components/AboutUsComponent/AboutUs';
 import AuthenticateForm from './components/AuthenticateFormComponent/AuthenticateForm';
-import Profile from './components/ProfileComponent/Profile';
-import ProfileEditForm from './components/FormComponents/Profile/ProfileEditForm';
-import HomePage from './components/HomePageComponent/HomePage';
-import CategoryList from './components/ListComponents/CategoryList';
-import Footer from './components/FooterComponent/Footer'
-import CompanySettings from './components/SettingsComponents/CompanySettingsComponent/CompanySettings';
-import ControlPanel from './components/ManagerComponents/ControlPanelComponent/ControlPanel';
-import CategoryManager from './components/ManagerComponents/CategoryManagerComponent/CategoryManager';
-import ProductManager from './components/ManagerComponents/ProductManagerComponent/ProductManager';
-import PromotionManager from './components/ManagerComponents/PromotionManagerComponent/PromotionManager';
-import ReviewManager from './components/ManagerComponents/ReviewManagerComponent/ReviewManager';
-import UserManager from './components/ManagerComponents/UserManagerComponent/UserManager';
-import CompanyManager from './components/ManagerComponents/CompanyManagerComponent/CompanyManager';
-import CompanyAddForm from './components/FormComponents/Company/CompanyAddForm';
-import ProductAddForm from './components/FormComponents/Product/ProductAddForm';
-import CouponAddForm from './components/FormComponents/Coupon/CouponAddForm';
 import Cart from './components/CartComponent/Cart';
-import ChurnPredictionPage from './components/PageComponents/ChurnPredictionPageComponent/ChurnPredictionPage';
-import NotificationList from './components/ListComponents/NotificationList';
+import Confidentiality from './components/Confidentiality/Confidentiality';
+import Contacts from './components/ContactsComponent/Contacts';
+import CategoryCreateForm from './components/FormComponents/Category/CategoryCreateFormComponent/CategoryCreateForm';
+import Footer from './components/FooterComponent/Footer';
+import Header from './components/HeaderComponent/Header';
+import HomePage from './components/HomePageComponent/HomePage';
+import MakingOrder from './components/MakingOrderComponent/MakingOrder';
+import Orders from './components/OrdersComponent/Orders';
+import Promotions from './components/PromotionsComponent/Promotions';
+import Payment from './components/PaymentComponent/Payment';
+import PersonalOrderCreateForm from './components/FormComponents/PersonalOrderCreateFormComponent/PersonalOrderCreateForm';
+import ProfileEditForm from './components/FormComponents/Profile/ProfileEditForm';
+import Profile from './components/ProfileComponent/Profile';
+import RegisterForm from './components/RegisterFormComponent/RegisterForm';
+import TeaCatalog from './components/TeaCatalogComponent/TeaCatalog';
+import TeaPage from './components/TeaPageComponent/TeaPage';
+import TeaCreateForm from './components/FormComponents/Tea/TeaCreateFormComponent/TeaCreateForm';
+
 import usePageTracking from './hooks/usePageTracking';
 import useSignalR from './hooks/useSignalR';
 import { useBootstrapBreakpoints } from 'react-bootstrap/esm/ThemeProvider';
-
-import PersonalOrderCreateForm from './components/FormComponents/PersonalOrderCreateFormComponent/PersonalOrderCreateForm';
-
-import TeaCatalog from './components/TeaCatalogComponent/TeaCatalog';
-import AboutUs from './components/AboutUsComponent/AboutUs';
-import Contacts from './components/ContactsComponent/Contacts';
-import Promotions from './components/PromotionsComponent/Promotions';
-import Payment from './components/PaymentComponent/Payment';
-import MakingOrder from './components/MakingOrderComponent/MakingOrder';
-
-import CategoryCreateForm from './components/FormComponents/Category/CategoryCreateFormComponent/CategoryCreateForm';
-
-import TeaCreateForm from './components/FormComponents/Tea/TeaCreateFormComponent/TeaCreateForm';
-import TeaPage from './components/TeaPageComponent/TeaPage';
-import Orders from './components/OrdersComponent/Orders';
-import Confidentiality from './components/Confidentiality/Confidentiality';
 
 function App() {
   usePageTracking();
@@ -54,55 +37,23 @@ function App() {
       </header>
         <Routes>
           <Route path="/" element={<HomePage/>} />
-          <Route path="/reg" element={<RegisterForm/>}/>
           <Route path="/auth" element={<AuthenticateForm/>}/>
-
-          <Route path="/profile" element={<Profile/>}/>
-          <Route path="/edit-profile" element={<ProfileEditForm/>}/>
-
-          <Route path="/catalog" element={<TeaCatalog/>}/>
           <Route path="/about" element={<AboutUs/>}/>
-          <Route path="/contacts" element={<Contacts/>}/>
-          <Route path="/promotions" element={<Promotions/>}/>
-          <Route path="/making-order" element={<MakingOrder/>}/>
-          <Route path="/confidentiality" element={<Confidentiality/>}/>
-
-          <Route path="/payment" element={<Payment/>}/>
-
-          <Route path="/category" exact element={<CategoryList/>}/>
+          <Route path="/edit-profile" element={<ProfileEditForm/>}/>
+          <Route path="/cart" element={<Cart/>}/>
+          <Route path="/catalog" element={<TeaCatalog/>}/>
           <Route path="/category-add" element={<CategoryCreateForm/>}/>
-
+          <Route path="/confidentiality" element={<Confidentiality/>}/>
+          <Route path="/contacts" element={<Contacts/>}/>
+          <Route path="/making-order" element={<MakingOrder/>}/>
+          <Route path="/orders" element={<Orders/>}/>
+          <Route path="/payment" element={<Payment/>}/>
+          <Route path="/personal-order" element={<PersonalOrderCreateForm/>}/>
+          <Route path="/profile" element={<Profile/>}/>
+          <Route path="/promotions" element={<Promotions/>}/>
+          <Route path="/reg" element={<RegisterForm/>}/>
           <Route path="/tea-add" element={<TeaCreateForm/>}/>
           <Route path="/tea/:teaId" element={<TeaPage/>}/>
-
-          <Route path="/promotion/:companyId" element={<PromotionManager/>}/>
-          
-          
-          <Route path="/company-settings/:companyId" element={<CompanySettings/>}/>
-          <Route path="/company-add" element={<CompanyAddForm/>}/>
-
-          <Route path="/addproduct" element={<ProductAddForm/>}/>
-          <Route path="/addcoupon" element={<CouponAddForm/>}/>
-
-          <Route path="control-panel" element={<ControlPanel/>}/>
-          <Route path="handle-category" element={<CategoryManager/>}/>
-          <Route path="handle-product" element={<ProductManager/>}/>
-          <Route path="handle-promotion" element={<PromotionManager/>}/>
-          <Route path="handle-review" element={<ReviewManager/>}/>
-          <Route path="handle-user" element={<UserManager/>}/>
-          <Route path="handle-company" element={<CompanyManager/>}/>
-
-          <Route path="/orders" element={<Orders/>}/>
-
-          <Route path="/cart" element={<Cart/>}/>
-
-          <Route path="/churn-prediction" element={<ChurnPredictionPage/>}/>
-          
-          <Route path="/notifications" element={<NotificationList/>}/>
-
-          <Route path="/personal-order" element={<PersonalOrderCreateForm/>}/>
-
-
         </Routes>
       <footer>
           <Footer/>
