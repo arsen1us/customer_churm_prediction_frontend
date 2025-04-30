@@ -6,7 +6,6 @@ import RegisterForm from './components/RegisterFormComponent/RegisterForm';
 import AuthenticateForm from './components/AuthenticateFormComponent/AuthenticateForm';
 import Profile from './components/ProfileComponent/Profile';
 import ProfileEditForm from './components/FormComponents/Profile/ProfileEditForm';
-import CompanyProfile from './components/CompanyProfileComponent/CompanyProfile';
 import HomePage from './components/HomePageComponent/HomePage';
 import CategoryList from './components/ListComponents/CategoryList';
 import Footer from './components/FooterComponent/Footer'
@@ -42,6 +41,7 @@ import CategoryCreateForm from './components/FormComponents/Category/CategoryCre
 import TeaCreateForm from './components/FormComponents/Tea/TeaCreateFormComponent/TeaCreateForm';
 import TeaPage from './components/TeaPageComponent/TeaPage';
 import Orders from './components/OrdersComponent/Orders';
+import Confidentiality from './components/Confidentiality/Confidentiality';
 
 function App() {
   usePageTracking();
@@ -60,14 +60,13 @@ function App() {
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/edit-profile" element={<ProfileEditForm/>}/>
 
-          <Route path="/company" element={<CompanyProfile/>}/> 
-          <Route path="/company/:companyId" element={<CompanyProfile/>}/>
-
           <Route path="/catalog" element={<TeaCatalog/>}/>
           <Route path="/about" element={<AboutUs/>}/>
           <Route path="/contacts" element={<Contacts/>}/>
           <Route path="/promotions" element={<Promotions/>}/>
-          <Route path="/making-order/:id/:count" element={<MakingOrder/>}/>
+          <Route path="/making-order" element={<MakingOrder/>}/>
+          <Route path="/confidentiality" element={<Confidentiality/>}/>
+
           <Route path="/payment" element={<Payment/>}/>
 
           <Route path="/category" exact element={<CategoryList/>}/>

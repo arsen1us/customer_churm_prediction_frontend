@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../AuthProvider";
 
@@ -13,10 +13,12 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 const TeaPage = () => {
 
     const {user, token, handleRequestError} = useContext(AuthContext);
-    /**Чай */
+    /** Чай */
     const [tea, setTea] = useState();
 
-    /**Получает id чая из параметра */
+    /** Количество чая */
+    const [quantity, setQuantity] = useState(0);
+    /** Получает id чая из параметра */
     const {teaId} = useParams();
 
     /**
@@ -167,9 +169,23 @@ const TeaPage = () => {
                             </button>
                         </div>
                         <div className="col-sm-8">
-                            <button className="btn btn-primary w-100">
-                                Заказать
-                            </button>
+                            <div>
+                                <label>Количество:</label>
+                                <input
+                                    type="number"
+                                    placeholder="Количество чая (шт.)"
+                                    value={quantity}
+                                    onChange={(e) => setQuantity(e.target.value)}/>
+                            </div>
+                            {/** Кнопка, для перехода на страницу оформления заявки */}
+                            <Link to={`/making-order`} state={{ cartItems: [{
+                                quantity: quantity,
+                                isSelected: true,
+                                tea: tea}] }} >
+                                <button className="btn btn-primary w-100">
+                                    Купить
+                                </button>
+                            </Link>
                         </div>
                     </div>
                 </>

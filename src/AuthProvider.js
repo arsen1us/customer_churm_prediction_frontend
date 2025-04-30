@@ -192,53 +192,6 @@ export const AuthProvider = ({children}) => {
         getUser();
     }, [token]);
 
-
-    /**
-     * Загрузить компанию по id пользователя 
-     */
-    const getCompany = async () => {
-        try{
-            const response = await axios.get(`https://localhost:7299/api/company/user/${user.id}`,
-            {
-                headers: {
-                    "Authorization": "Bearer "+ token
-                }
-            });
-
-            if(response && response.status === 200){
-                if(response.data && response.data.company){
-                    setOwnedCompany(response.data.company);
-                }
-            }
-        }
-        catch (error){
-            if(error.response){
-                const status = error.response.status;
-                // Обработать только 404 ошибку
-                switch (status){
-                    case 404:
-                        alert("Вы не создали компанию (AuthProvider)!")
-                    break;
-
-                    default:
-                        await handleRequestError(error);
-                        break;
-                }
-            }
-            else{
-                alert("Ошибка сети или нет ответа от сервера. Проверьте ваше соединение!");
-            }
-        }
-        
-        
-    }
-
-    /**Загрузка компании при изменении пользователя. Если объект user не определён, то загрузка не происходит */
-    useEffect(() => {
-        /*так как данный метод вызывается при изменении user, то добавлю проверку*/
-        if(user)
-            getCompany();
-    }, [user])
     /**
      * Обработка ошибок запроса
      * @param {*} error 

@@ -10,7 +10,7 @@ const useSignalR = () => {
     const [notificationList, setNotificationList] = useState([]);
 
     /**
-     * Установить соединение с хабом SignalR 
+     * Установливает соединение с хабом SignalR 
      */
     const connectToSignalR = async () => {
         if(token){
@@ -28,7 +28,6 @@ const useSignalR = () => {
                     });
                 
                 setConnection(newConnection);
-                alert("Успешно подключено к SignalR");
             }
             catch(error){
                 alert(`Произошла ошибка при подключении к SignalR. Детали ошибки:` + error);
@@ -41,7 +40,7 @@ const useSignalR = () => {
     }, [token]);
     
     /**
-     * Подписка на получение уведомлений
+     * Подписывает на получение уведомлений
      */
     useEffect(() => {
         if (!connection) return;

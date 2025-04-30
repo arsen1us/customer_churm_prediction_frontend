@@ -14,143 +14,138 @@ import {AuthContext} from "../../AuthProvider"
 
 const Header = () => {
     
-  const {user, ownedCompany} = useContext(AuthContext);
-
+    const {user, ownedCompany} = useContext(AuthContext);
     const [notificationsCount, setNotificationsCount] = useState(5);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const openPopup = () => setIsPopupOpen(true);
     const closePopup = () => setIsPopupOpen(false);
+    
+return(
+    <header>
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+            <div className="container">
 
-    return(
-        <div>
-            <nav className="header-nav">
-              {/* Левая часть */}
-              <ul className="nav-links nav-links-left">
-                <li>
-                  <Link to="/">
-                    <img src="/logo.png"/>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/">ГЛАВНАЯ</Link>
-                </li>
-                <li>
-                  <Link to="/about">О НАС</Link>
-                </li>
-                <li>
-                  <Link to="/catalog">КАТАЛОГ</Link>
-                </li>
-                <li>
-                  <Link to="/promotions">АКЦИИ</Link>
-                </li>
-                <li>
-                  <Link to="/contacts">КОНТАКТЫ</Link>
-                </li>
-                <li>
-                  <Link to="/personal-order">СДЕЛАТЬ ПЕРСОНАЛЬНЫЙ ЗАКАЗ</Link>
-                </li>
-              </ul>
+                {/* Логотип */}
+                <Link className="navbar-brand" to="/">
+                    <img src="/logo.png" alt="Логотип" style={{ height: '40px' }} />
+                </Link>
 
-              {/* Правая часть */}
-              <ul className="nav-links nav-links-right">
+                {/* Кнопка для мобильного меню */}
+                <button 
+                    className="navbar-toggler" 
+                    type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#navbarContent"
+                    aria-controls="navbarContent" 
+                    aria-expanded="false" 
+                    aria-label="Toggle navigation"
+                >
+                    <span className="navbar-toggler-icon"></span>
+                </button>
 
-                <li>
-                  <Link to="/orders">СПИСОК ЗАКАЗОВ</Link>
-                </li>
-                {/* <li>
-                    {ownedCompany ? (
-                      <Link to="/company">Моя компания</Link>
-                    ):(
-                      <Link to="/company">Стать продавцом</Link>
-                    )}
-                </li> */}
+                {/* Навигация */}
+                <div className="collapse navbar-collapse" id="navbarContent">
 
-                <li>
-              
-                <div style={{ position: "relative", display: "inline-block" }}>
-                    <button 
-                        onClick={openPopup} 
-                        style={{
-                            background: "none", // Убираем фон кнопки
-                            border: "none", // Убираем границу
-                            padding: 0, // Убираем отступы
-                            cursor: "pointer", // Указываем, что это кликабельный элемент
-                        }}
-                    >
-                        <img 
-                            src="https://localhost:7299/icons/notification.png" 
-                            alt="Уведомления" 
-                            style={{ width: "24px", height: "24px" }} 
-                        />
-                    </button>
-                    {notificationsCount > 0 && (
-                        <span
-                            style={{
-                                position: "absolute",
-                                top: "-5px",
-                                right: "-10px", 
-                                backgroundColor: "red",
-                                color: "white", 
-                                borderRadius: "50%", 
-                                padding: "4px 8px", 
-                                fontSize: "12px", 
-                                fontWeight: "bold", 
-                                minWidth: "20px", 
-                                textAlign: "center", 
-                                zIndex: 1, 
-                            }}
-                        >
-                            {notificationsCount}
-                        </span>
-                    )}
+                    {/* Левая часть меню */}
+                    <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/">Главная</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/about">О нас</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/catalog">Каталог</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/promotions">Акции</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/contacts">Контакты</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/personal-order">Персональный заказ</Link>
+                        </li>
+                    </ul>
+
+                    {/* Правая часть меню */}
+                    <ul className="navbar-nav mb-2 mb-lg-0 align-items-center">
+
+                        {/* Заказы */}
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/orders">Список заказов</Link>
+                        </li>
+
+                        {/* Уведомления */}
+                        <li className="nav-item position-relative me-3">
+                            <button 
+                                onClick={openPopup}
+                                className="btn btn-link nav-link p-0"
+                                style={{ position: "relative" }}
+                            >
+                                <img 
+                                    src="https://localhost:7299/icons/notification.png" 
+                                    alt="Уведомления" 
+                                    style={{ width: "24px", height: "24px" }}
+                                />
+                                {notificationsCount > 0 && (
+                                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        {notificationsCount}
+                                    </span>
+                                )}
+                            </button>
+
+                            {isPopupOpen && (
+                                <Popup isOpen={isPopupOpen} onClose={closePopup} title="Список уведомлений">
+                                    <div>
+                                        <NotificationList />
+                                    </div>
+                                </Popup>
+                            )}
+                        </li>
+
+                        {/* Корзина */}
+                        <li className="nav-item me-3">
+                            <Link className="nav-link p-0" to="/cart">
+                                <img src="https://localhost:7299/icons/cart.png" alt="Корзина" style={{ width: "24px", height: "24px" }} />
+                            </Link>
+                        </li>
+
+                        {/* Профиль или регистрация/вход */}
+                        {user?.id ? (
+                            <li className="nav-item dropdown">
+                                <Link className="nav-link dropdown-toggle d-flex align-items-center" to="/profile" role="button">
+                                    {user?.imageSrcs ? (
+                                        <img 
+                                            src={`https://localhost:7299/uploads/${user.imageSrcs[0]}`} 
+                                            alt="User Avatar" 
+                                            className="rounded-circle me-2" 
+                                            style={{ width: "32px", height: "32px", objectFit: "cover" }}
+                                        />
+                                    ) : (
+                                        <span className="default-avatar me-2">👤</span>
+                                    )}
+                                    <span>{user?.firstName} {user?.lastName}</span>
+                                </Link>
+                            </li>
+                        ) : (
+                            <>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/reg">Регистрация</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/auth">Вход</Link>
+                                </li>
+                            </>
+                        )}
+
+                    </ul>
                 </div>
-                  
-                {isPopupOpen && (
-                    <Popup isOpen={isPopupOpen} onClose={closePopup} title="Список уведомлений">
-                        <div>
-                            <NotificationList />
-                        </div>
-                    </Popup>
-                )}
 
-              
-                </li>
-                <li>
-                  <Link to="/cart">
-                    <img src="https://localhost:7299/icons/cart.png" alt="Корзина" />
-                  </Link>
-                </li>
-                {user?.id ? (
-                  <li className="profile-link">
-                    <Link to="/profile">
-                      {user && user.imageSrcs ? (
-                        <img
-                          src={`https://localhost:7299/uploads/${user.imageSrcs[0]}`}
-                          alt="User Avatar"
-                          className="profile-avatar"
-                        />
-                      ) : (
-                        <span className="default-avatar">👤</span>
-                      )}
-                      <span className="user-name">
-                        {user?.firstName} {user?.lastName}
-                      </span>
-                    </Link>
-                  </li>
-                ) : (
-                  <>
-                    <li>
-                      <Link to="/reg">Регистрация</Link>
-                    </li>
-                    <li>
-                      <Link to="/auth">Вход</Link>
-                    </li>
-                  </>
-                )}
-              </ul>
-            </nav>
-        </div>
-    );
+            </div>
+        </nav>
+    </header>
+);
 };
 
 export default Header;

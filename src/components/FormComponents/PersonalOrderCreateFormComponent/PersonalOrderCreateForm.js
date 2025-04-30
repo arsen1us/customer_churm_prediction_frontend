@@ -95,7 +95,7 @@ const PersonalOrderCreateForm = () => {
                                 </button>
                                 <p className="mt-3 small text-muted text-center">
                                     Нажимая кнопку <strong>"Отправить"</strong> вы соглашаетесь с{' '}
-                                    <a href="#" className="text-decoration-underline">политикой обработки персональных данных</a>.
+                                    <a href="/confidentiality" className="text-decoration-underline">политикой обработки персональных данных</a>.
                                 </p>
                             </form>
                         </div>

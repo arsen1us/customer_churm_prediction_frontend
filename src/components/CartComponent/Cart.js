@@ -4,6 +4,7 @@ import {AuthContext} from "../../AuthProvider"
 import useTracking from "../../hooks/useTracking";
 import { Link } from "react-router-dom";
 import NotAuthorizedComponent from "../NotAuthorizedComponent/NotAuthorizedComponent";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Компонент для отображения корзины пользователя
@@ -11,17 +12,11 @@ import NotAuthorizedComponent from "../NotAuthorizedComponent/NotAuthorizedCompo
  */
 const Cart = () => {
 
+    const navigate = useNavigate();
     const {user, token, refreshToken, handleRequestError} = useContext(AuthContext);
     const {trackUserAction} = useTracking();
 
-    const [productList, setProductList] = useState([]);
-    const [cartItems, setCartItems] = useState(
-        productList.map(product => ({
-            product: product,
-            quantity: 0,
-            isSelected: false
-        }))
-    );
+    const [cartItems, setCartItems] = useState([]);
 
     /**
      * Загружает корзину пользователя
@@ -35,7 +30,6 @@ const Cart = () => {
             })
             if(response && response.status === 200){
                 if(response.data && response.data.teas){
-                    setProductList(response.data.teas)
                     setCartItems(response.data.teas.map(tea => ({
                         tea,
                         quantity: 0,
@@ -179,10 +173,14 @@ const Cart = () => {
                                                         </div>
                                                         </Link>
                                                         <div className="mt-auto d-flex justify-content-between">
+
+                                                            {/** Кнопка удаления из корзины */}
                                                             <button className="btn btn-outline-secondary">
                                                                 Удалить из корзины
                                                             </button>
-                                                            <Link to={`/making-order/${cartItem.tea.id}/${cartItem.quantity}`}>
+
+                                                            {/** Кнопка, для перехода на страницу оформления заявки */}
+                                                            <Link to={`/making-order`} state={{ cartItems: [cartItem] }} >
                                                                 <button className="btn btn-primary">
                                                                     Купить
                                                                 </button>
@@ -229,20 +227,15 @@ const Cart = () => {
                                 <div>
                                     <strong>Итоговая стоимость: {calculateTotal()} ₽</strong>
                                 </div>
-                                
-                                {/* Кнопка для оформления заказа */}
-                                <button
-                                    onClick={(e) => {
-                                        OrderTeaAsync(e);
-                                        alert(`Оформление заказа на сумму ${calculateTotal()} ₽`);
-                                    }}
-                                    disabled={!cartItems.some(item => item.isSelected && item.quantity > 0)}
-                                >
-                                Оформить заказ
-                                </button>
 
-                                <Link to="/payment">
-                                    <button>Перейти на страницу оплаты заказа</button>
+                                <Link to={`/making-order`} state={{cartItems: cartItems.filter(item => item.isSelected && item.quantity > 0)}}>
+                                    <button
+                                        onClick={(e) => {
+                                            // OrderTeaAsync(e);
+                                            alert(`Оформление заказа на сумму ${calculateTotal()} ₽`);
+                                        }}
+                                        disabled={!cartItems.some(item => item.isSelected && item.quantity > 0)}
+                                    >Перейти на страницу оплаты заказа</button>
                                 </Link>
                             </div>
                         </div>

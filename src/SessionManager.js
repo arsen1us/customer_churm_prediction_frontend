@@ -9,7 +9,7 @@ const SessionManager = () => {
     const sessionUpdateInterval = useRef(null);
     const {logInfo, logWarning, logError} = useLogging();
     /**
-     * Создание сессии
+     * Создаёт сессию
      * @returns 
      */
     const createSession = async () => {
@@ -23,7 +23,6 @@ const SessionManager = () => {
             });
 
             if (response.status === 200) {
-                alert("Сессия успешно создана");
                 localStorage.setItem("sessionActive", JSON.stringify(true));
                 startUpdatingSession();
             }
@@ -33,7 +32,7 @@ const SessionManager = () => {
     };
 
     /**
-     * Обновление сессии
+     * Обновляет сессию
      * @returns 
      */
     const updateSession = async () => {
@@ -55,7 +54,7 @@ const SessionManager = () => {
     };
 
     /**
-     * Завершение сессии
+     * Завершает сессию
      * @returns 
      */
     const closeSession = async () => {
@@ -74,7 +73,7 @@ const SessionManager = () => {
     };
 
     /**
-     * Запуск периодического обновления сессии
+     * Запускает периодическое обновление сессии
      * @returns 
      */
     const startUpdatingSession = () => {
@@ -88,7 +87,7 @@ const SessionManager = () => {
     };
 
     /**
-     * Остановка обновления сессии
+     * Останавливает процесс обновления сессии
      * @returns 
      */
     const stopUpdatingSession = () => {
@@ -99,7 +98,7 @@ const SessionManager = () => {
     };
 
     /**
-     * Обработка активности пользователя (движение мыши / клики)
+     * Обрабатывает активность пользователя (движение мыши / клики)
      * @returns 
      */
     useEffect(() => {
@@ -128,7 +127,7 @@ const SessionManager = () => {
     }, []);
 
     /**
-     * Обработчик закрытия вкладки
+     * Обрабатывает закрытие вкладки
      * @returns 
      */
     useEffect(() => {
@@ -141,7 +140,7 @@ const SessionManager = () => {
     }, []);
 
     /**
-     * Создание сессии при монтировании
+     * Создаёт сессию при монтировании компонента
      * @returns 
      */
     useEffect(() => {
