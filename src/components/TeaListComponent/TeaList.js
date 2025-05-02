@@ -22,7 +22,7 @@ const TeaList = () => {
         try{
             const response = await axios.get("https://localhost:7299/api/tea", {
                 headers: {
-                    "Authorization": "Bearer" + token
+                    "Authorization": "Bearer " + token
                 }
             });
 
